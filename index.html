@@ -886,6 +886,25 @@
   #nbtBan .nr.end{opacity:.75} #nbtBan .nr.end em{color:#69f0ae}
   #nbtBan.ph{font-size:10px} #nbtBan.ph .nr{padding:2px 5px 4px}
   @keyframes nbtF{50%{opacity:.25}}
+  #qcCard .box,#qcRes .box,#qcResume .box{width:min(460px,92vw);max-height:calc(100dvh - 16px);overflow-y:auto}
+  #qcCard p,#qcRes p,#qcResume p{font-size:15px;margin:4px 0 10px}
+  #qcCard .qcP{background:rgba(0,0,0,.35);border:1px solid rgba(255,213,79,.5);border-radius:8px;padding:6px 8px;margin:6px 0 10px;font-size:14px;text-align:left}
+  #qcCard .qcP b{color:#ffd54f}
+  #qcBet{width:100%;margin:0 0 10px;min-height:42px}
+  #qcBet.on{background:#ffd54f;color:#2b1a0c;border-color:#ffd54f}
+  #qcBet[disabled]{opacity:.5;cursor:default}
+  #qcCard .qcSm,#qcResume .qcSm{font-size:12px;color:#d7c7a5}
+  #menuBtn{position:fixed;top:124px;right:11px;z-index:14;width:44px;height:44px;border-radius:50%;border:2px solid #e8c98a;background:rgba(40,25,10,.85);color:#ffd54f;
+    font:900 22px/40px Arial,Helvetica,sans-serif;padding:0;cursor:pointer;touch-action:manipulation;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+  body.tree #menuBtn{top:66px;right:11px}
+  body.tree #mpBank{padding-right:52px;box-sizing:border-box}
+  body.mpanel:not(.mpwide):has(#mpSheet.open) #menuBtn{visibility:hidden;pointer-events:none}
+  body.pmOpen #pauseOv{display:none!important}
+  #pmCard .box,#pmDone .box{width:min(380px,92vw);max-height:calc(100dvh - 16px);overflow-y:auto}
+  .pmBtns{display:flex;flex-direction:column;gap:8px}
+  .pmBtns .sbtn{min-height:44px;width:100%;margin:0}
+  #pmInfo{font-size:13px;min-height:16px;margin:0 0 8px;color:#e0d2b4}
+  #modeFile{margin-top:10px;font-size:13px;min-height:38px}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
@@ -898,14 +917,20 @@
 </head>
 <body>
 <button id="gear" aria-label="Settings" title="Settings / Pause">&#9881;</button>
+<button id="menuBtn" aria-label="Menu" title="Menu: save, exit, save to file">&#9776;</button>
+<div id="pmCard" class="gcard" role="dialog" aria-label="Menu"><div class="box"><h2>MENU</h2><p id="pmInfo"></p><div class="pmBtns"><button class="sbtn go" id="pmSave">SAVE</button><button class="sbtn" id="pmExit">SAVE &amp; EXIT TO MENU</button><button class="sbtn" id="pmQuit">SAVE &amp; QUIT</button><button class="sbtn" id="pmFile">SAVE TO FILE</button><button class="sbtn" id="pmResume" data-def="1">RESUME</button></div></div></div>
+<div id="pmDone" class="gcard" role="dialog" aria-label="Saved"><div class="box"><h2>SAVED!</h2><p>Safe to close this tab.</p><p style="font-size:13px;color:#d7c7a5">Browsers don&rsquo;t let a game close its own tab.</p><div class="row2"><button class="sbtn go" id="pmBack" data-def="1">KEEP PLAYING</button></div></div></div>
 <button id="pauseBtn" aria-label="Pause" title="Pause (P)">&#10074;&#10074;</button>
 <div id="pauseOv" role="dialog" aria-label="Paused"><i id="pauseTitle">PAUSE</i><b>PAUSED</b><span>tap to resume</span><div id="pauseInfo"></div><button id="saveQuit" class="sbtn">SAVE &amp; QUIT</button></div>
 <div id="tuCard" class="gcard" role="dialog" aria-label="Time's up"><div class="box"><h2>TIME'S UP!</h2><p id="tuTxt"></p><label><input type="checkbox" id="tuShow" checked> Show this every time</label><button class="sbtn go" id="tuNext" data-def="1">NEXT BALL &#9654;</button></div></div>
 <div id="tuPop" aria-hidden="true">TIME'S UP!<small>Runs safe in the bank · next ball coming up</small></div>
-<div id="modeCard" class="gcard" role="dialog" aria-label="Choose a game"><div class="box"><h2>ICCC GOATS PINBALL</h2><p>Pick a game</p><p id="newHome" class="nh" style="display:none">New home for Goats Pinball! Got a save code from an old link? Settings → LOAD SAVE.</p><div class="modeBtns"><button class="sbtn go" id="modeRogue" data-def="1">ROGUE GOATS CRICKET<small>runs, kit, skill tree &amp; new grounds</small></button><button class="sbtn mbC" id="modeClassic">CLASSIC 1979<small>Flash MCG &middot; 3 balls &middot; original factory rules</small></button></div></div></div>
+<div id="modeCard" class="gcard" role="dialog" aria-label="Choose a game"><div class="box"><h2>ICCC GOATS PINBALL</h2><p>Pick a game</p><p id="newHome" class="nh" style="display:none">New home for Goats Pinball! Got a save code from an old link? Settings → LOAD SAVE.</p><div class="modeBtns"><button class="sbtn go" id="modeRogue" data-def="1">ROGUE GOATS CRICKET<small>runs, kit, skill tree &amp; new grounds</small></button><button class="sbtn mbC" id="modeClassic">CLASSIC 1979<small>Flash MCG &middot; 3 balls &middot; original factory rules</small></button></div><button class="sbtn" id="modeFile">LOAD FROM FILE</button></div></div>
 <div id="clOver" class="gcard" role="dialog" aria-label="Game over"><div class="box"><h2>GAME OVER</h2><p id="clOverTxt"></p><div class="row2"><button class="sbtn go" id="clAgain" data-def="1">PLAY AGAIN</button><button class="sbtn" id="clQuit">START SCREEN</button></div></div></div>
 <div id="clStrip" aria-label="Classic score"><div class="c cs"><i>PLAYER 1</i><b id="clScore">0</b></div><div class="c"><i>BALL</i><b id="clBall">1/3</b></div><div class="c"><i>CREDITS</i><b id="clCred">0</b></div><div class="c"><i>HIGH SCORE</i><b id="clHsV">550000</b></div></div><div id="clMsg" aria-live="polite"></div>
 <div id="tmSigned" class="gcard" role="dialog" aria-label="12th signed"><div class="box"><h2>12TH SIGNED!</h2><p>He plays at the MCG for you.</p><p>Want to bat solo? Tap the <b>12th</b> pill (or Settings &rarr; Game) to bench him any time. No refund needed, flip him back whenever.</p><div class="row2"><button class="sbtn go" id="tmSignedOk" data-def="1">GOT IT</button></div></div></div>
+<div id="qcCard" class="gcard" role="dialog" aria-label="Quick Clash challenge"><div class="box"><h2>QUICK CLASH!</h2><p id="qcTxt"></p><div class="qcP" id="qcPrize"></div><button class="sbtn" id="qcBet" aria-pressed="false"></button><div class="row2"><button class="sbtn go" id="qcGo">ACCEPT &#9654;</button><button class="sbtn" id="qcNo">DECLINE</button></div><p class="qcSm" id="qcSm"></p></div></div>
+<div id="qcRes" class="gcard" role="dialog" aria-label="Quick Clash result"><div class="box"><h2 id="qcResH">QUICK CLASH</h2><p id="qcResTxt"></p><div class="row2"><button class="sbtn go" id="qcResOk" data-def="1">CONTINUE &#9654;</button></div></div></div>
+<div id="qcResume" class="gcard" role="dialog" aria-label="Unfinished Quick Clash"><div class="box"><h2>QUICK CLASH</h2><p id="qcRsTxt"></p><div class="row2"><button class="sbtn go" id="qcRsGo" data-def="1">RESUME &#9654;</button><button class="sbtn" id="qcRsNo">FORFEIT</button></div><p class="qcSm" id="qcRsSm"></p></div></div>
 <div id="rsCard" class="gcard" role="dialog" aria-label="Saved innings"><div class="box"><h2>INNINGS SAVED</h2><p id="rsInfo"></p><div class="row2"><button class="sbtn go" id="rsGo" data-def="1">RESUME INNINGS &#9654;</button><button class="sbtn" id="rsNew">NEW INNINGS</button></div></div></div>
 <div id="revealCard" class="gcard" role="dialog" aria-label="Secret"><div class="box"><h2 id="rvTitle"></h2><p id="rvTxt"></p><label><input type="checkbox" id="rvNoShow"> Don't show this again</label><button class="sbtn go" id="rvOk" data-def="1">NICE! &#9654;</button></div></div>
 <div id="help">Hold <b id="hLaunch">ENTER</b> (or LAUNCH) to bowl &middot; <b id="hLeft">Z</b> left bat &middot; <b id="hRight">/</b> right bat &middot; <b id="hNudge">SPACE</b> nudge &middot; <b id="hPause">ESC</b> settings</div>
@@ -979,7 +1004,7 @@
     <section class="setSec cur" data-sec="game" data-tab="main"><h3>Game</h3>
       <div class="srow"><span id="progLbl" class="sl prog">Bank: 0 runs</span><button class="sbtn" id="resetProgress">Reset progress</button></div>
       <p id="newHome2" class="nh" style="display:none">New home for Goats Pinball! Got a save code from an old link? Settings → LOAD SAVE.</p>
-      <div class="srow"><span class="sl">Save code: take your save to a new link or device<span id="scDevWrap" style="display:none"><label style="display:block;font-size:11px;margin-top:3px"><input type="checkbox" id="scDev"> include dev kit</label></span></span><span class="seg"><button class="sbtn" id="scCopy">COPY SAVE</button><button class="sbtn" id="scLoad">LOAD SAVE</button><button class="sbtn" id="scUndo" style="display:none">UNDO LOAD</button></span></div>
+      <div class="srow"><span class="sl">Save code: take your save to a new link or device<span id="scDevWrap" style="display:none"><label style="display:block;font-size:11px;margin-top:3px"><input type="checkbox" id="scDev"> include dev kit</label></span></span><span class="seg"><button class="sbtn" id="scCopy">COPY SAVE</button><button class="sbtn" id="scLoad">LOAD SAVE</button><button class="sbtn" id="scLoadF">LOAD FROM FILE</button><button class="sbtn" id="scUndo" style="display:none">UNDO LOAD</button></span></div>
       <div class="srow"><span class="sl">Save this innings, play it later</span><button class="sbtn" id="saveQuit2">SAVE &amp; QUIT</button></div>
       <div class="srow"><span class="sl">Start a fresh innings</span><button class="sbtn" id="restartGame">New innings</button></div>
       <div class="srow" id="tmBenchRow" style="display:none"><span class="sl">12th (MCG): bench him to bat solo. Level kept, flip back any time</span><button class="sbtn tog" id="tmBenchOpt" aria-pressed="true">12th: ON</button></div>
@@ -1028,7 +1053,7 @@
 <script>
 (function(){
 'use strict';
-var VERSION = 'v1.2.16';
+var VERSION = 'v1.3.1';
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
 var DRAFT_CARDS = [
   { id: 'pp', name: 'Power Play', fx: 'Stump bumper hits always pay the SIX (6 + Wicket Value level), never the four.', tags: ['WICKET', 'BATTING'] },
@@ -4032,7 +4057,7 @@ function endInnings() {
   stripTake('INNINGS OVER', score.toLocaleString() + ' runs', 5); lastInnings.stats = statsSnapshot();
   var blr = blLogInnings(blLastTU ? 'time up' : lives > 0 ? 'ended early (dev)' : 'all out', { mult: mult, banked: banked, bank0: statsPrev.bank, bank1: progress.bank, tot0: statsPrev.lifetime, tot1: progress.lifetime });
   if (draftOn()) { DRAFT.rowId = blr ? blr.id : null; DRAFT.picked = []; draftSave(); }
-  enterTree();
+  enterTree(); qcAfterInnings(vi);
   var scShown = showStatsCard(); blRateOffer(blr);
   if (draftDue()) { if (scShown) el('statsGo').textContent = 'DRAFT \u25b6'; else setTimeout(function () { if (!SC.open) draftOpen(); }, 300); }
   var newBalls = [lastInnings.ball].concat(lastInnings.extraBalls || []).filter(function (b) { return b && TRINKET[b]; });
@@ -4460,6 +4485,42 @@ function sweepGuard() {
       var sh = physShot(f, f.prevAngle, f.w, along, v.x, v.z, null, null, PHYS_JITTER_DEG);
       strikeBall(f, b, sh, along, f.prevAngle, { sweep: true }); sweepSaves++;
     }
+  }
+  if (!RUBBER) { ghostRescue(); ghostNote(); }
+}
+var ghostSaves = 0, GHOST_DEEP = 0.05;
+function ghostQ(f, ang, x, z) { var ux = f.dirx * Math.cos(ang), uz = -f.dirx * Math.sin(ang), rx = x - f.px, rz = z - f.pz; return { a: rx * ux + rz * uz, q: -rx * uz + rz * ux }; }
+function ghostNote() {
+  for (var i = 0; i < flippers.length; i++) {
+    var f = flippers[i], sg = f.up > f.rest ? 1 : -1;
+    if (f.prevAngle == null || sg * (f.angle - f.prevAngle) < 1e-4) continue;
+    for (var j = 0; j < balls.length; j++) {
+      var b = balls[j], p = b.body.position, p0 = b.prePos; if (!p0 || b.ramp || b.pend || b.ghostN) continue;
+      if (b.strikeF === f && gt - b.strikeT < 0.12) continue;
+      if (rbSD(f, f.angle, p.x, p.z).d >= GHOST_DEEP) continue;
+      if (rbSD(f, f.prevAngle, p0.x, p0.z).d < 0.5 * R) continue;
+      var da = f.angle - f.prevAngle, n = Math.max(4, Math.ceil(Math.abs(da) / 0.01)), hit = null;
+      for (var k = 1; k <= n; k++) { var t = k / n, ang = f.prevAngle + da * t, x = p0.x + (p.x - p0.x) * t, z = p0.z + (p.z - p0.z) * t; if (rbSD(f, ang, x, z).d < R) { hit = { ang: ang, x: x, z: z }; break; } }
+      if (!hit) continue;
+      var h = ghostQ(f, hit.ang, hit.x, hit.z), pv = b.preV || b.body.velocity;
+      b.ghostN = { f: f, t: gt, steps: 0, a: h.a, side: h.q < 0 ? -1 : 1, ang0: f.prevAngle, w: f.w, pvx: pv.x, pvz: pv.z };
+    }
+  }
+}
+function ghostRescue() {
+  for (var j = 0; j < balls.length; j++) {
+    var b = balls[j], g = b.ghostN; if (!g) continue;
+    if (g.steps++ > 3 || b.ramp || b.pend) { b.ghostN = null; continue; }
+    if (g.steps === 1) continue;
+    var f = g.f, p = b.body.position;
+    if (b.strikeF === f && gt - b.strikeT < 0.12) { b.ghostN = null; continue; }
+    var c = ghostQ(f, f.angle, p.x, p.z);
+    if (c.q * g.side > 0 || c.a < -0.05 || c.a > BAT_LP + R) continue;
+    var al = Math.max(0, Math.min(BAT_LP, g.a)), ux = f.dirx * Math.cos(f.angle), uz = -f.dirx * Math.sin(f.angle);
+    var X = f.px + ux * al + (-uz) * g.side * 0.3, Z = f.pz + uz * al + ux * g.side * 0.3, s2 = rbSD(f, f.angle, X, Z);
+    X += s2.nx * (R + 0.002 - s2.d); Z += s2.nz * (R + 0.002 - s2.d); p.x = X; p.z = Z;
+    var sh = physShot(f, g.ang0, g.w, Math.min(FLIP_LEN, al), g.pvx, g.pvz, null, null, PHYS_JITTER_DEG);
+    strikeBall(f, b, sh, al, g.ang0, { sweep: true }); ghostSaves++; b.ghostN = null;
   }
 }
 function parkGuard() {
@@ -5123,9 +5184,12 @@ var GOAT_LOGO = 'data:image/webp;base64,UklGRqYQAABXRUJQVlA4WAoAAAAQAAAAbwAAZwAA
   }
   if (GOAT_IMG.complete && GOAT_IMG.naturalWidth) go(); else GOAT_IMG.addEventListener('load', go);
 })();
+var SPIN_ART = { maroon: '#9c2a40', gold: '#ffd54f', key: '#5a0f1c', band: 15, side: 12, goat: 0.325 }, SPIN_ART_SELF = 0.3;
 function spinPlate(g, W, H, pw) {
-  g.fillStyle = '#7a1428'; g.fillRect(0, 0, W, H); g.fillStyle = '#ffd54f'; g.fillRect(0, 0, W, 10); g.fillRect(0, H - 10, W, 10);
-  var ph = 0.42, hW = 0.30, wW = hW * 112 / 104, lw = wW / pw * W, lh = hW / ph * H;
+  var A = SPIN_ART, sd = Math.max(6, Math.round(A.side * 0.62 / Math.max(0.3, pw)));
+  g.fillStyle = A.gold; g.fillRect(0, 0, W, H); g.fillStyle = A.key; g.fillRect(sd - 2, A.band - 2, W - 2 * sd + 4, H - 2 * A.band + 4);
+  g.fillStyle = A.maroon; g.fillRect(sd, A.band, W - 2 * sd, H - 2 * A.band);
+  var ph = 0.42, hW = A.goat, wW = hW * 112 / 104, lw = wW / pw * W, lh = hW / ph * H;
   if (GOAT_IMG.complete && GOAT_IMG.naturalWidth) g.drawImage(GOAT_IMG, W / 2 - lw / 2, H / 2 - lh / 2, lw, lh);
   if (pw > 0.9) { g.fillStyle = '#ffd54f'; g.font = 'bold 34px Trebuchet MS, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; var sx = W / 2 - lw / 2 - 40; g.fillText('SPIN', Math.max(40, sx), H / 2 + 2); g.fillText('SPIN', Math.min(W - 40, W - sx), H / 2 + 2); }
 }
@@ -5165,13 +5229,13 @@ function buildSpinner(Q) {
   var pw = Q.hw * 2 - 0.04, t = canvasTex(256, 128, function (g, W, H) { spinPlate(g, W, H, pw); });
   if (!(GOAT_IMG.complete && GOAT_IMG.naturalWidth)) GOAT_IMG.addEventListener('load', function () { var cv = t.image; spinPlate(cv.getContext('2d'), cv.width, cv.height, pw); t.needsUpdate = true; });
   if (BT) BT.texs.push(t);
-  var pm = new THREE.MeshStandardMaterial({ map: t, metalness: 0.3, roughness: 0.35, side: THREE.DoubleSide, emissive: col(0x000000) }); if (BT) BT.mats.push(pm);
+  var pm = new THREE.MeshStandardMaterial({ map: t, metalness: 0.3, roughness: 0.35, side: THREE.DoubleSide, emissive: col(0xffffff), emissiveMap: t, emissiveIntensity: SPIN_ART_SELF }); if (BT) BT.mats.push(pm);
   pm.side = THREE.FrontSide;
-  var em = new THREE.MeshStandardMaterial({ color: col(0xd4a83a), metalness: 0.5, roughness: 0.4 }); if (BT) BT.mats.push(em);
+  var em = new THREE.MeshStandardMaterial({ color: col(0xd4a83a), metalness: 0.5, roughness: 0.4, emissive: col(0x000000) }); if (BT) BT.mats.push(em);
   var plateG = new THREE.BoxGeometry(Q.hw * 2 - 0.04, 0.42, 0.03, 6, 3, 1), plate = new THREE.Mesh(plateG, [em, em, em, em, pm, pm]);
   plate.position.y = -0.23; flag.add(plate);
   tAdd(grp);
-  var S = { k: Q.k || '', hard: !!Q.hard, noPark: !!Q.noPark, x: Q.x, z: Q.z, hw: Q.hw, c: Math.cos(Q.yaw || 0), s: Math.sin(Q.yaw || 0), grp: grp, flag: flag, pm: pm, ang: 0, w: 0, acc: 0, glow: 0, oneWay: !!Q.oneWay, rw: 0, wob: 0, wall: null, closed: true, pw: 0, park: Q.park || null, parkV: Q.parkV || -1.4 };
+  var S = { k: Q.k || '', hard: !!Q.hard, noPark: !!Q.noPark, x: Q.x, z: Q.z, hw: Q.hw, c: Math.cos(Q.yaw || 0), s: Math.sin(Q.yaw || 0), grp: grp, flag: flag, pm: pm, em: em, ang: 0, w: 0, acc: 0, glow: 0, oneWay: !!Q.oneWay, rw: 0, wob: 0, wall: null, closed: true, pw: 0, park: Q.park || null, parkV: Q.parkV || -1.4 };
   spinRipInit(S, plateG, Q.hw * 2 - 0.04);
   if (Q.oneWay) {
     var wb = new CANNON.Body({ mass: 0, material: mWall });
@@ -5259,7 +5323,7 @@ function spinnerAnim1(dt, S) {
   if (S.fwA > 0) { S.fwT += dt; var wa = S.fwA * Math.exp(-S.fwT * SPIN_WAVE_K); if (wa < 0.004) S.fwA = 0; else { S.flag.rotation.x += SPIN_ROCK_F * wa * Math.sin(S.fwT * SPIN_WAVE_W); if (S.rg) spinRip(S, wa, S.fwT); } }
   if (S.rOn && !(S.fwA > 0)) spinRipFlat(S);
   if (S.wob > 0.001) { S.wob *= Math.max(0, 1 - dt * 5); S.flag.rotation.x += -Math.sin(animT * 40) * S.wob * 0.35; }
-  S.glow = Math.max(0, S.glow - dt * 4); S.pm.emissive.setRGB(0.6 * S.glow, 0.45 * S.glow, 0.1 * S.glow);
+  S.glow = Math.max(0, S.glow - dt * 4); (S.em || S.pm).emissive.setRGB(0.6 * S.glow, 0.45 * S.glow, 0.1 * S.glow);
 }
 var CLUB_POCKET_T = 0.35, pocketFreeN = 0;
 var EJECT_CFG = { 1: { x: -0.3, z: -4.4, award: 5, kicks: [[-0.62, -0.78], [0.16, -0.99], [0.62, -0.78]], spread: 0.12, speed: 13, kickSpd: [13, 13, 13],
@@ -7918,6 +7982,7 @@ function enterTree() {
 }
 function stScrollTop() { var b = el('mpBody'); if (!b) return; b.scrollTop = 0; b.querySelectorAll('.chainx').forEach(function (q) { q.scrollLeft = 0; }); }
 function leaveTree() {
+  qcLeaveTree();
   cabPick = -1; stScrollTop(); if (typeof cabQClose === 'function') cabQClose(); if (treeTab === 'balls' && typeof cabNewSeen === 'function') cabNewSeen();
   phase = 'play'; document.body.classList.remove('tree', 'eoiFull'); syncPanelMode();
   el('innings').classList.remove('open'); el('treeHot').classList.remove('open'); hideStadium();
@@ -8627,7 +8692,7 @@ function renderDraftDev() {
   el('devDraftNote').textContent = 'Draft Lite (roguelite Phase 1): Tour ' + DRAFT.tour + ' \u00b7 cards: ' + (DRAFT.cards.length ? draftCardNames(DRAFT.cards).replace(/; /g, ', ') : 'none') + ' \u00b7 tokens waiting: ' + DRAFT.pend + (on ? '' : ' \u00b7 OFF = the cards do nothing');
 }
 function setDraftOn(on) { DRAFT.on = !!on; draftSave(); renderDraftDev(); if (window.devBadgeSync) setTimeout(window.devBadgeSync, 0); return DRAFT.on; }
-function draftNewTour() { DRAFT.tour = (DRAFT.tour | 0) + 1; DRAFT.cards = []; DRAFT.pend = 0; DRAFT.offer = null; DRAFT.picked = []; DRAFT.rowId = null; if (inn) inn.dTok = 0; draftSave(); draftClose(true); renderDraftDev(); return DRAFT.tour; }
+function draftNewTour() { DRAFT.tour = (DRAFT.tour | 0) + 1; DRAFT.cards = []; DRAFT.pend = 0; DRAFT.offer = null; DRAFT.picked = []; DRAFT.rowId = null; if (inn) inn.dTok = 0; draftSave(); draftClose(true); renderDraftDev(); qcTourCheck(); return DRAFT.tour; }
 el('devDraft').addEventListener('click', function () { var on = setDraftOn(!DRAFT.on); toast('Draft Lite ' + (on ? 'ON' : 'OFF'), 1400); });
 el('devNewTour').addEventListener('click', function (e) { e.preventDefault(); var b = el('devNewTour');
   if (!(DRAFTUI.tourArm > performance.now())) { DRAFTUI.tourArm = performance.now() + 3500; b.textContent = 'TAP AGAIN: wipe ' + DRAFT.cards.length + ' card(s)'; setTimeout(renderDraftDev, 3600); return; }
@@ -8753,13 +8818,14 @@ function scCheck(text) {
   SCODE.dec = r; pv.innerHTML = scPreview(r); pv.style.display = 'block'; scRes('Check it, then REPLACE MY SAVE.'); el('scApply').disabled = false; return r;
 }
 el('scPick').addEventListener('change', function () { var f = el('scPick').files && el('scPick').files[0]; if (!f) return;
+  if (f.size > 2e6) { el('scText').value = ''; scCheck(''); scRes('That file is too big to be a Goats Pinball save.', true); return; }
   f.text().then(function (t) { el('scText').value = t.trim(); scCheck(t); }, function () { scRes('Couldn\u2019t read that file.', true); }); });
 el('scText').addEventListener('paste', function () { setTimeout(function () { if (SCODE.mode === 'load') scCheck(el('scText').value); }, 0); });
 function scUndoGet() { try { var u = JSON.parse(localStorage.getItem(SAVE_UNDO_KEY) || 'null'); return u && u.keys && typeof u.keys === 'object' ? u : null; } catch (e) { return null; } }
 function scReload() { SAVE.frozen = true; setTimeout(function () { if (window.__scNoReload) return; location.reload(); }, 350); }
 function scApply() {
   var r = SCODE.dec; if (!r) return false; var d = r.d, dev = !!(settings.devUnlocked && d.dev && el('scDevIn') && el('scDevIn').checked);
-  var keys = [SAVE_KEY, STORE_KEY, CL_KEY, INN_KEY, BL_CUR_KEY].concat(dev ? SC_DEV_KEYS : []), undo = { at: Date.now(), keys: {} };
+  var keys = [SAVE_KEY, STORE_KEY, CL_KEY, INN_KEY, BL_CUR_KEY, QC_HAND_KEY, QC_MATCH_KEY, QC_TOUR_KEY].concat(dev ? SC_DEV_KEYS : []), undo = { at: Date.now(), keys: {} };
   keys.forEach(function (k) { if (!(k in undo.keys)) undo.keys[k] = scRaw(k); });
   try {
     localStorage.setItem(SAVE_UNDO_KEY, JSON.stringify(undo));
@@ -8770,6 +8836,8 @@ function scApply() {
     localStorage.setItem(STORE_KEY, JSON.stringify(st));
     if (d.classic && d.classic.v === 1) localStorage.setItem(CL_KEY, JSON.stringify(d.classic));
     localStorage.removeItem(INN_KEY); localStorage.removeItem(BL_CUR_KEY);
+    localStorage.removeItem(QC_HAND_KEY); localStorage.removeItem(QC_MATCH_KEY);
+    try { var qt = JSON.parse(scRaw(QC_TOUR_KEY) || 'null'); if (qt && qt.v === 1 && Array.isArray(qt.deck)) { qt.offer = null; qt.last = false; localStorage.setItem(QC_TOUR_KEY, JSON.stringify(qt)); } } catch (e) { }
     if (dev) Object.keys(d.dev.keys || {}).forEach(function (k) { if (SC_DEV_KEYS.indexOf(k) >= 0) localStorage.setItem(k, d.dev.keys[k]); });
     localStorage.setItem(SAVE_KEY, JSON.stringify(d.progress));
   } catch (e) { scRes('Couldn\u2019t write the save on this device (storage full or blocked).', true); return false; }
@@ -8914,7 +8982,7 @@ function tmPillSync() {
   if (b.classList.contains('show') !== show) { b.classList.toggle('show', show); tmPillKey = ''; } if (!show) return;
   function R(e) { if (!e) return null; var cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return null; var r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? r : null; }
   var L = R(ui.launch), A = R(el('apPause')), anc = A || L; if (!anc) return;
-  var hard = ['launch', 'apPause', 'meter', 'meterLbl', 'nudgeBtn', 'ctlBtn', 'gear', 'pauseBtn', 'sstrip', 'keeperPill'].map(function (id) { return R(el(id)); }).filter(Boolean);
+  var hard = ['launch', 'apPause', 'meter', 'meterLbl', 'nudgeBtn', 'ctlBtn', 'gear', 'pauseBtn', 'menuBtn', 'sstrip', 'keeperPill'].map(function (id) { return R(el(id)); }).filter(Boolean);
   var k = [innerWidth, innerHeight].concat(hard.map(function (q) { return Math.round(q.left) + ':' + Math.round(q.top) + ':' + Math.round(q.width) + ':' + Math.round(q.height); })).join(',');
   if (k === tmPillKey) return; tmPillKey = k;
   var w = b.offsetWidth || 74, h = b.offsetHeight || 26, M = 4, best = null, bc = 1e9, cx = anc.left + anc.width / 2, cy = anc.top + anc.height / 2;
@@ -9180,8 +9248,256 @@ function modeOpen() {
   try { el('modeRogue').focus({ preventScroll: true }); } catch (e) { }
 }
 function modeClose() { el('modeCard').classList.remove('open'); cardHold = false; lastT = performance.now(); }
+var QC_CHANCE = 0.47;
+var QC_PITY_INN = 3;
+var QC_PRIZE_W = [['card', 40], ['trinket', 25], ['mp', 25], ['kit', 10]];
+var QC_MP = [3, 5, 8], QC_MP_BET = [5, 8, 12];
+var QC_BET = [3, 5, 8];
+var QC_TRINKET_MIN = [0, 0, 1], QC_TRINKET_RANKS = ['common', 'rare', 'epic', 'legendary'];
+var QC_KIT_MIN = [1, 1, 2];
+var QC_STARTER = ['consopener', 'consopener', 'consopener', 'pinch', 'pinch', 'pinch', 'rock', 'captain', 'swing', 'swing', 'mystery', 'freehit'];
+var QC_DECK_CAP = 16, QC_STREAK_MAX = 3, QC_IDS_KEEP = 20;
+var QC_CARD_NAME = { consopener: 'Conservative Opener', pinch: 'Pinch Hitter', rock: 'Middle-Order Rock', captain: 'Captain', finisher: 'Powerhouse Finisher', swing: 'Swing Bowler', express: 'Express Pace Bowler', mystery: 'Mystery Spinner', allrounder: 'All-Rounder', deathover: 'Death Over Specialist', powerplay: 'Powerplay', review: 'Third Umpire Review', freehit: 'Free Hit' };
+var QC_RIVALS = [
+  { name: 'The Next-Door Kids', diff: 'easy', extra: 0, pool: ['allrounder', 'express', 'finisher'] },
+  { name: 'Club Seconds XI', diff: 'normal', extra: 1, pool: ['allrounder', 'express', 'finisher'] },
+  { name: 'Flash MCG Invitational XI', diff: 'normal', extra: 2, pool: ['finisher', 'express', 'allrounder', 'deathover', 'captain'] }];
+var QC_HAND_KEY = 'icccGoatsPinball.clash.v1', QC_TOUR_KEY = 'icccGoatsPinball.clash.tour', QC_MATCH_KEY = 'qc_match';
+function qcRand() { try { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return (Date.now() % 9973) / 9973; } }
+function qcGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+function qcSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+function qcDel(k) { try { localStorage.removeItem(k); } catch (e) { } }
+function qcTourNo() { return (DRAFT && DRAFT.tour | 0) || 1; }
+function qcFresh() { return { v: 1, tour: qcTourNo(), deck: QC_STARTER.slice(), last: false, seen: [0, 0, 0], since: [0, 0, 0], n: 0, streak: 0, offer: null, played: 0 }; }
+var QT = (function () { var t = qcGet(QC_TOUR_KEY); return t && t.v === 1 && Array.isArray(t.deck) ? t : qcFresh(); })();
+function qcSaveT() { qcSet(QC_TOUR_KEY, QT); }
+function qcTourCheck() {
+  if (QT.tour === qcTourNo()) return false;
+  var h = qcGet(QC_HAND_KEY), refund = 0;
+  if (h && h.tour !== qcTourNo() && (h.state === 'pending' || h.state === 'playing') && h.stake > 0 && !qcPaid(h.id)) { refund = h.stake; progress.mp = (progress.mp || 0) + refund; qcMarkPaid(h.id); saveProgress(); }
+  if (h && h.tour !== qcTourNo() && h.state !== 'done') { qcDel(QC_HAND_KEY); qcDel(QC_MATCH_KEY); }
+  QT = qcFresh(); qcSaveT();
+  if (refund) setTimeout(function () { toast('New Tour: the unfinished Quick Clash was dropped, ' + refund + ' MP bet refunded', 3000); }, 800);
+  return true;
+}
+function qcPaid(id) { return (progress.clashIds || []).indexOf(id) >= 0; }
+function qcMarkPaid(id) { var l = progress.clashIds = Array.isArray(progress.clashIds) ? progress.clashIds : []; if (l.indexOf(id) < 0) l.push(id); while (l.length > QC_IDS_KEEP) l.shift(); }
+function qcActive() { var h = qcGet(QC_HAND_KEY); return h && h.v === 1 && (h.state === 'pending' || h.state === 'playing' || h.state === 'done') ? h : null; }
+function qcAfterInnings(g) {
+  if (CLASSIC) return false;
+  qcTourCheck(); QT.offer = null;
+  g = Math.max(0, Math.min(2, g | 0)); QT.since[g] = (QT.since[g] | 0) + 1;
+  var go = false;
+  if (QT.last || qcActive()) go = false;
+  else if (!(QT.seen[g] | 0) && QT.since[g] >= QC_PITY_INN) go = true;
+  else go = qcRand() < QC_CHANCE;
+  QT.last = go;
+  if (go) { QT.seen[g] = (QT.seen[g] | 0) + 1; QT.since[g] = 0; QT.offer = qcMakeOffer(g); }
+  qcSaveT(); return go;
+}
+function qcTrinketPick(minRank) {
+  var rk = function (t) { return QC_TRINKET_RANKS.indexOf(t.r); }, un = TRINKETS.filter(function (t) { return t.id !== 'kooka' && !trOwned(t.id) && rk(t) >= 0; });
+  if (!un.length) return null;
+  for (var m = Math.min(minRank, 3); m >= 0; m--) { var ok = un.filter(function (t) { return rk(t) >= m; }); if (ok.length) return { list: ok, min: m }; }
+  return null;
+}
+function qcPrize(kind, g, bet) {
+  var mp = (bet ? QC_MP_BET : QC_MP)[g], alt = { kind: 'mp', val: mp, label: mp + ' MP (Maiden Points)' };
+  if (kind === 'card') { if (!draftOn() || !draftLeft().length) return alt; var n = bet ? 2 : 1; return { kind: 'card', val: n, mpAlt: mp, label: n === 1 ? 'a Draft card pick' : '2 Draft card picks' }; }
+  if (kind === 'trinket') { var tp = qcTrinketPick(QC_TRINKET_MIN[g] + (bet ? 1 : 0)); if (!tp) return alt; var nm = QC_TRINKET_RANKS[tp.min]; return { kind: 'trinket', val: tp.min, mpAlt: mp, label: 'a new match ball (' + nm.charAt(0).toUpperCase() + nm.slice(1) + (tp.min < 3 ? ' or better' : '') + ')' }; }
+  if (kind === 'kit') { var k = Math.min(4, QC_KIT_MIN[g] + (bet ? 1 : 0)); return { kind: 'kit', val: k, mpAlt: mp, label: 'a kit drop (' + RARITIES[k].name + (k < 4 ? ' or better' : '') + ')' }; }
+  return alt;
+}
+function qcMakeOffer(g) {
+  var x = qcRand() * 100, kind = 'mp'; for (var i = 0; i < QC_PRIZE_W.length; i++) { if (x < QC_PRIZE_W[i][1]) { kind = QC_PRIZE_W[i][0]; break; } x -= QC_PRIZE_W[i][1]; }
+  var rv = QC_RIVALS[g], ex = [], n = rv.extra + Math.min(QC_STREAK_MAX, QT.streak | 0);
+  for (var j = 0; j < n; j++) ex.push(rv.pool[Math.floor(qcRand() * rv.pool.length)]);
+  return { id: 'qc' + Date.now().toString(36) + Math.floor(qcRand() * 1e9).toString(36), g: g, kind: kind, rival: { name: rv.name, diff: rv.diff, extra: ex }, shown: false };
+}
+var QCUI = { bet: false, ok: 0 };
+function qcCanShow() {
+  return phase === 'tree' && !gcardOpen() && !SC.open && !DRAFTUI.open && !draftDue() && !secretQ.length && !stadiumOpen && !settingsOpen && !gamePaused && !devMid &&
+    !el('blRate').classList.contains('open') && !el('scCard').classList.contains('open') && !el('confirm').classList.contains('open') && !document.body.classList.contains('statsOpen');
+}
+function qcPoll() {
+  if (!QT.offer || CLASSIC) { QCUI.ok = 0; return; }
+  if (el('qcCard').classList.contains('open')) return;
+  if (!qcCanShow()) { QCUI.ok = 0; return; }
+  if (++QCUI.ok >= 2) { QCUI.ok = 0; qcOpen(); }
+}
+setInterval(qcPoll, 400);
+function qcOpen() {
+  var o = QT.offer; if (!o) return false;
+  o.shown = true; qcSaveT(); QCUI.bet = false;
+  var gn = VENUES[o.g] ? VENUES[o.g].name : '';
+  el('qcTxt').innerHTML = '<b>' + esc(o.rival.name) + '</b> want a quick game of Cricket Clash' + (gn ? ' after your innings at ' + esc(gn) : '') + '.<br>' + '3 Wickets, 6 turns each, about 2-3 minutes.';
+  el('qcSm').textContent = 'Lose: nothing lost (unless you bet). DECLINE is free, but this challenge won\u2019t come back.';
+  qcRender(); releaseAllInputs(true);
+  el('qcCard').classList.add('open'); try { el('qcGo').focus({ preventScroll: true }); } catch (e) { }
+  return true;
+}
+function qcRender() {
+  var o = QT.offer; if (!o) return; var p = qcPrize(o.kind, o.g, QCUI.bet), st = QC_BET[o.g], can = (progress.mp || 0) >= st;
+  if (!can) QCUI.bet = false;
+  el('qcPrize').innerHTML = 'Win: <b>' + esc(p.label) + '</b><br>+ pick 1 of 3 Clash cards for your Tour deck (' + QT.deck.length + '/' + QC_DECK_CAP + ')' + (QCUI.bet ? '<br>Bet: ' + st + ' MP (back if you win, lost if you lose)' : '');
+  var b = el('qcBet'); b.disabled = !can; b.classList.toggle('on', QCUI.bet); b.setAttribute('aria-pressed', QCUI.bet ? 'true' : 'false');
+  b.textContent = can ? (QCUI.bet ? '\u2714 BETTING ' + st + ' MP: PRIZE UP A TIER' : 'BET ' + st + ' MP: PRIZE UP A TIER') : 'BET ' + st + ' MP \u00b7 you have ' + (progress.mp || 0) + ' MP';
+}
+function qcClose() { el('qcCard').classList.remove('open'); }
+function qcDecline() { if (!QT.offer) return; QT.offer = null; qcSaveT(); qcClose(); toast('Challenge declined', 1300); if (QCUI.fromBoot) { QCUI.fromBoot = false; qcBootRest(); } }
+function qcPage() { var m = /([\w.\-]+\.html)$/.exec(location.pathname); return m ? m[1] : ''; }
+function qcClashUrl(id) { var tf = window.__testFlags; return ((tf && tf.qcClash) || 'clash/') + '?h=' + encodeURIComponent(id); }
+function qcAccept() {
+  var o = QT.offer; if (!o || qcActive()) { qcClose(); return false; }
+  var g = o.g, bet = QCUI.bet && (progress.mp || 0) >= QC_BET[g], stake = bet ? QC_BET[g] : 0, p = qcPrize(o.kind, g, bet);
+  var seed = Math.floor(qcRand() * 4294967295) >>> 0 || 7;
+  var h = { v: 1, id: o.id, state: 'pending', appVer: VERSION, tour: qcTourNo(), ground: g, inn: progress.innings | 0, seed: seed, first: (QT.n | 0) % 2 ? 'ai' : 'player',
+    rival: o.rival, deck: QT.deck.slice(), prize: p, stake: stake, t0: Date.now(), ret: qcPage() };
+  if (stake) progress.mp -= stake;
+  QT.n = (QT.n | 0) + 1; QT.offer = null;
+  if (!qcSet(QC_HAND_KEY, h)) { if (stake) progress.mp += stake; QT.offer = o; toast('Could not save on this device', 2000); return false; }
+  qcSaveT(); qcDel(QC_MATCH_KEY); saveAll('clash'); SAVE.frozen = true;
+  qcClose(); QCUI.leaving = h.id;
+  if (window.__qcNoNav) return h;
+  location.href = qcClashUrl(h.id); return h;
+}
+function qcLeaveTree() { if (QT.offer) { QT.offer = null; qcSaveT(); } qcClose(); }
+function qcDeckAdd(r) {
+  if (!r || !r.win) return '';
+  var pick = r.cardPicked; if (pick == null && r.offer && r.offer.length) pick = QT.deck.length < QC_DECK_CAP ? r.offer[0] : '';
+  if (!pick || !QC_CARD_NAME[pick]) return '';
+  if (QT.deck.length >= QC_DECK_CAP) { var i = r.swapOut ? QT.deck.indexOf(r.swapOut) : -1; if (i < 0) return ''; QT.deck.splice(i, 1); }
+  QT.deck.push(pick); return QC_CARD_NAME[pick];
+}
+function qcPayPrize(p) {
+  var mpAlt = function () { var v = p.mpAlt | 0 || QC_MP[0]; progress.mp = (progress.mp || 0) + v; return '+' + v + ' MP'; };
+  if (!p) return '';
+  if (p.kind === 'mp') { progress.mp = (progress.mp || 0) + (p.val | 0); return '+' + (p.val | 0) + ' MP'; }
+  if (p.kind === 'card') { if (!draftOn() || !draftLeft().length) return mpAlt(); DRAFT.pend = (DRAFT.pend | 0) + (p.val | 0); draftSave(); return (p.val > 1 ? p.val + ' Draft card picks' : 'a Draft card pick') + ' (after your next innings)'; }
+  if (p.kind === 'trinket') { var tp = qcTrinketPick(p.val | 0); if (!tp) return mpAlt(); var t = tp.list[Math.floor(qcRand() * tp.list.length)]; progress.balls.push(t.id); cabNewAdd(t.id); return 'new ball for the cabinet: ' + t.name; }
+  if (p.kind === 'kit') { var d = rollItemDrop(true, Math.max(0, Math.min(4, p.val | 0))); if (!d) return mpAlt(); return d.salvaged ? 'kit drop (' + RARITY[d.r].name + ') salvaged for ' + d.salvaged + ' Bails, Kit Bag full' : 'kit drop: ' + RARITY[d.r].name + ' ' + itemName(d); }
+  return '';
+}
+function qcClaim() {
+  var h = qcGet(QC_HAND_KEY); if (!h || h.v !== 1 || h.state !== 'done' || !h.result) return null;
+  if (qcPaid(h.id)) { h.state = 'claimed'; qcSet(QC_HAND_KEY, h); qcDel(QC_MATCH_KEY); return null; }
+  var r = h.result, out = { h: h, head: '', lines: [] }, sameTour = h.tour === qcTourNo();
+  qcMarkPaid(h.id);
+  if (r.win) {
+    out.head = 'QUICK CLASH WON!'; out.lines.push('Prize: ' + qcPayPrize(h.prize));
+    if (h.stake) { progress.mp = (progress.mp || 0) + h.stake; out.lines.push('Bet back: +' + h.stake + ' MP'); }
+    if (sameTour) { var c = qcDeckAdd(r); if (c) out.lines.push('Clash deck: +' + c + ' (' + QT.deck.length + '/' + QC_DECK_CAP + ')'); QT.streak = (QT.streak | 0) + 1; }
+  } else if (r.tie) { out.head = 'QUICK CLASH TIED'; out.lines.push('No win, no loss.'); if (h.stake) { progress.mp = (progress.mp || 0) + h.stake; out.lines.push('Bet refunded: +' + h.stake + ' MP'); } }
+  else { out.head = r.forfeit ? 'QUICK CLASH FORFEITED' : 'QUICK CLASH LOST'; out.lines.push(h.stake ? 'The ' + h.stake + ' MP bet is lost. Nothing else.' : 'Nothing lost.'); if (sameTour) QT.streak = 0; }
+  if (!r.forfeit) out.score = 'You ' + r.wktsYou + '/' + r.runsYou + ' \u00b7 ' + (h.rival && h.rival.name || 'Rival') + ' ' + r.wktsThem + '/' + r.runsThem;
+  if (sameTour) { QT.played = (QT.played | 0) + 1; qcSaveT(); }
+  saveProgress();
+  h.state = 'claimed'; h.claimedAt = Date.now(); qcSet(QC_HAND_KEY, h); qcDel(QC_MATCH_KEY);
+  return out;
+}
+function qcForfeit() {
+  var h = qcGet(QC_HAND_KEY); if (!h || (h.state !== 'pending' && h.state !== 'playing')) return null;
+  h.result = { win: false, tie: false, forfeit: true, runsYou: 0, runsThem: 0, wktsYou: 0, wktsThem: 0, reason: 'Forfeited', t: Date.now() }; h.state = 'done';
+  qcSet(QC_HAND_KEY, h); qcDel(QC_MATCH_KEY); return qcClaim();
+}
+function qcCleanUrl() { try { if (/[?&]clash=/.test(location.search)) history.replaceState(null, '', location.pathname); } catch (e) { } }
+function qcShowRes(out) {
+  el('qcResH').textContent = out.head;
+  el('qcResTxt').innerHTML = (out.score ? '<b>' + esc(out.score) + '</b><br>' : '') + out.lines.map(esc).join('<br>');
+  releaseAllInputs(true); dropFlippersNow(); charging = false; power = 0;
+  el('qcRes').classList.add('open'); cardHold = true;
+}
+function qcBoot() {
+  qcCleanUrl(); qcTourCheck();
+  var h = qcGet(QC_HAND_KEY), m = qcGet(QC_MATCH_KEY);
+  if (m && (!h || m.id !== h.id || h.state === 'claimed')) qcDel(QC_MATCH_KEY);
+  if (h && h.v === 1 && h.state === 'done') { var out = qcClaim(); if (out) { qcShowRes(out); return true; } return false; }
+  if (h && h.v === 1 && (h.state === 'pending' || h.state === 'playing')) {
+    el('qcRsTxt').innerHTML = 'Your Quick Clash v <b>' + esc(h.rival && h.rival.name || 'the rival') + '</b> isn\u2019t finished.' + (h.prize ? '<br>Win: ' + esc(h.prize.label) : '');
+    el('qcRsSm').textContent = 'FORFEIT counts as a loss' + (h.stake ? ' (the ' + h.stake + ' MP bet is lost).' : '. Nothing else is lost.');
+    releaseAllInputs(true); dropFlippersNow(); el('qcResume').classList.add('open'); cardHold = true; return true;
+  }
+  if (QT.offer && !CLASSIC && !qcActive()) { QCUI.fromBoot = true; releaseAllInputs(true); dropFlippersNow(); cardHold = true; qcOpen(); return true; }
+  return false;
+}
+function qcBootRest() { cardHold = false; lastT = performance.now(); var tf = window.__testFlags; if (tf && !tf.modeCard) { innResumeCheck(); return; } modeOpen(); }
+el('qcBet').addEventListener('click', function (e) { e.preventDefault(); if (el('qcBet').disabled) return; QCUI.bet = !QCUI.bet; qcRender(); });
+el('qcGo').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); qcAccept(); });
+el('qcNo').addEventListener('click', function (e) { e.preventDefault(); qcDecline(); });
+el('qcResOk').addEventListener('click', function (e) { e.preventDefault(); el('qcRes').classList.remove('open'); cardHold = false; lastT = performance.now(); innResumeCheck(); });
+el('qcRsGo').addEventListener('click', function (e) { e.preventDefault(); var h = qcGet(QC_HAND_KEY); if (!h || (h.state !== 'pending' && h.state !== 'playing')) { el('qcResume').classList.remove('open'); qcBootRest(); return; } saveAll('clash'); SAVE.frozen = true; if (window.__qcNoNav) return; location.href = qcClashUrl(h.id); });
+el('qcRsNo').addEventListener('click', function (e) { e.preventDefault(); el('qcResume').classList.remove('open'); var out = qcForfeit(); if (out) toast(out.head.replace('QUICK CLASH ', 'Quick Clash ').toLowerCase().replace(/^q/, 'Q') + (out.h.stake ? ': ' + out.h.stake + ' MP bet lost' : ''), 2200); qcBootRest(); });
+window.addEventListener('storage', function (e) {
+  if (e.key === QC_TOUR_KEY) { var t = qcGet(QC_TOUR_KEY); if (t && t.v === 1) QT = t; }
+  if (e.key === QC_HAND_KEY) { var h = qcGet(QC_HAND_KEY); if (h && h.state === 'done' && !qcPaid(h.id) && !document.hidden) toast('Quick Clash finished in another tab. Reload this page to collect.', 3200); }
+});
+var PM = { open: false, paused: false };
+function pmSaveNow() {
+  if (SAVE.frozen || SAVE.newer || SAVE.storeOK === false) return false;
+  if (CLASSIC) { clSave(); saveSettings(); return true; }
+  var ok = saveProgress() !== false; saveSettings();
+  if (sqCan()) { try { localStorage.setItem(INN_KEY, JSON.stringify(innSnap())); innAutoSig = ''; } catch (e) { ok = false; } if (typeof blCurSave === 'function') blCurSave(); }
+  if (!ok && saveBlank(progress)) ok = true;
+  return ok;
+}
+function pmOpen() {
+  if (PM.open || gcardOpen() || settingsOpen || el('scCard').classList.contains('open')) return false;
+  PM.paused = false;
+  if (phase === 'play' && !gameOver && !cardHold) { setPause(true, 'simple'); PM.paused = gamePaused; }
+  releaseAllInputs(true); dropFlippersNow(); charging = false; power = 0;
+  document.body.classList.add('pmOpen'); el('pmCard').classList.add('open'); PM.open = true;
+  el('pmInfo').textContent = phase === 'play' && !gameOver ? (sqCan() ? 'Paused. Saves keep this innings too.' : 'Paused.') : 'Saves your runs, kit and skills.';
+  el('pmExit').innerHTML = CLASSIC ? 'EXIT TO START SCREEN' : 'SAVE &amp; EXIT TO MENU';
+  try { el('pmResume').focus({ preventScroll: true }); } catch (e) { }
+  return true;
+}
+function pmClose(resume) {
+  if (!PM.open) return; PM.open = false; el('pmCard').classList.remove('open'); document.body.classList.remove('pmOpen');
+  if (resume !== false && gamePaused) { for (var k in liveTouchIds) staleTouchIds[k] = 1; setPause(false); }
+  PM.paused = false; try { el('menuBtn').blur(); } catch (e) { }
+}
+function pmSave() { var ok = pmSaveNow(); pmClose(true); toast(ok ? 'Saved' : 'Couldn\u2019t save on this device', ok ? 1200 : 2400); return ok; }
+function pmExit() {
+  if (CLASSIC) { pmClose(false); if (gamePaused) setPause(false); clToStart(); return true; }
+  var ok = pmSaveNow(); pmClose(false); if (gamePaused) setPause(false);
+  modeOpen(); toast(ok ? 'Saved' : 'Couldn\u2019t save on this device', ok ? 1200 : 2400); return ok;
+}
+function pmQuit() {
+  var ok = pmSaveNow(); pmClose(false); if (gamePaused) setPause(false);
+  if (!ok) { toast('Couldn\u2019t save on this device', 2400); return false; }
+  SAVE.frozen = true;
+  releaseAllInputs(true); dropFlippersNow(); el('pmDone').classList.add('open'); cardHold = true; return true;
+}
+function pmFileName() { var d = new Date(), z = function (n) { return ('0' + n).slice(-2); }; return 'goats-pinball-save-' + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + '-' + z(d.getHours()) + z(d.getMinutes()) + '.txt'; }
+function pmFile() {
+  pmSaveNow();
+  try { var code = saveExport(false), nm = pmFileName(), a = document.createElement('a'), u = URL.createObjectURL(new Blob([code + '\n'], { type: 'text/plain' }));
+    a.href = u; a.download = nm; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+    el('pmInfo').textContent = 'Saved to ' + nm + ' (load it with LOAD FROM FILE).'; PM.lastFile = nm; return nm; }
+  catch (e) { el('pmInfo').textContent = 'Couldn\u2019t save a file here. Use COPY SAVE in Settings.'; return null; }
+}
+function loadFromFile() { scOpen('load'); var pk = el('scPick'); pk.value = ''; pk.click(); }
+el('menuBtn').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); Sfx.unlock(); if (PM.open) pmClose(true); else pmOpen(); });
+['touchstart', 'pointerdown'].forEach(function (ev) { el('menuBtn').addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); el('pmCard').addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
+el('pmCard').addEventListener('click', function (e) { if (e.target === el('pmCard')) { e.preventDefault(); pmClose(true); } });
+el('pmSave').addEventListener('click', function (e) { e.preventDefault(); pmSave(); });
+el('pmExit').addEventListener('click', function (e) { e.preventDefault(); pmExit(); });
+el('pmQuit').addEventListener('click', function (e) { e.preventDefault(); pmQuit(); });
+el('pmFile').addEventListener('click', function (e) { e.preventDefault(); pmFile(); });
+el('pmResume').addEventListener('click', function (e) { e.preventDefault(); pmClose(true); });
+el('pmBack').addEventListener('click', function (e) { e.preventDefault(); if (window.__pmNoReload) return; location.reload(); });
+el('modeFile').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); loadFromFile(); });
+el('scLoadF').addEventListener('click', function (e) { e.preventDefault(); loadFromFile(); });
+window.addEventListener('keydown', function (e) {
+  if (!PM.open) return; var code = e.code || e.key;
+  if (code === 'Escape' || code === 'KeyP') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) pmClose(true); return; }
+  if (code === 'ArrowUp' || code === 'ArrowDown' || code === 'Tab') { e.preventDefault(); e.stopImmediatePropagation(); var bs = [].slice.call(el('pmCard').querySelectorAll('button')), i = bs.indexOf(document.activeElement), fw = code === 'ArrowDown' || (code === 'Tab' && !e.shiftKey); var n = bs[((i < 0 ? (fw ? -1 : 0) : i) + (fw ? 1 : -1) + bs.length) % bs.length]; if (n) n.focus(); return; }
+  if (code === 'Enter' || code === 'Space' || code === 'NumpadEnter') { e.preventDefault(); e.stopImmediatePropagation(); if (e.repeat) return; var f = document.activeElement; if (f && f.tagName === 'BUTTON' && el('pmCard').contains(f)) f.click(); else el('pmResume').click(); return; }
+  e.preventDefault(); e.stopImmediatePropagation();
+}, true);
 function modeBoot() {
   var tf = window.__testFlags;
+  if (qcBoot()) return;
   if (tf && !tf.modeCard) { innResumeCheck(); return; }
   modeOpen();
 }

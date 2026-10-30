@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Quick Clash - ICCC Goats Pinball</title>
+<style>  *{box-sizing:border-box}
+  html,body{margin:0;background:#1b1b1b;color:#eee;font:14px/1.3 Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%}
+  body{padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}
+  #app{max-width:980px;margin:0 auto}
+  button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+  .top{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;justify-content:space-between;border-bottom:1px solid #555;padding-bottom:4px}
+  .top h1{font-size:16px;margin:0;letter-spacing:.5px} .top .sub{color:#bdbdbd;font-size:12px}
+  .btnS{background:#333;border:1px solid #777;border-radius:5px;padding:5px 9px;min-height:34px}
+  .score{display:flex;gap:8px;margin:6px 0}
+  .score div{flex:1;background:#2a2a2a;border:1px solid #555;border-radius:6px;padding:4px 8px}
+  .score b{font-size:22px;display:block} .score small{color:#bdbdbd}
+  .score .cur{border-color:#fff}
+  .status{background:#262626;border:1px solid #444;border-radius:6px;padding:5px 8px;margin-bottom:6px;min-height:34px}
+  .status b{color:#fff}
+  .lbl{font-size:11px;color:#9e9e9e;letter-spacing:.6px;margin:4px 0 2px}
+  .row{display:flex;gap:6px}
+  .slot{flex:1 1 0;min-width:0;min-height:86px;border:1px dashed #616161;border-radius:7px;padding:5px;background:#222;text-align:left;display:flex;flex-direction:column;gap:2px}
+  .slot.empty{color:#757575;justify-content:center;align-items:center}
+  .slot.tgt{border:2px solid #fff;background:#3a3a3a}
+  .slot.sel{border:2px solid #ffd54f}
+  .slot.cov{background:#262a26}
+  .card{border:1px solid #9e9e9e;border-radius:7px;background:#3a3a3a;padding:5px;text-align:left;display:flex;flex-direction:column;gap:2px}
+  .nm{font-weight:bold;font-size:13px} .st{font-size:13px} .st b{font-size:15px}
+  .tx{font-size:11px;color:#cfcfcf} .tg{font-size:10.5px;color:#bdbdbd}
+  .tg i{font-style:normal;border:1px solid #757575;border-radius:3px;padding:0 3px;margin-right:3px;display:inline-block}
+  .lanes{display:flex;gap:6px;margin:3px 0}
+  .lanes span{flex:1 1 0;text-align:center;font-size:11px;border-radius:4px;padding:2px 0;background:#2a2a2a;color:#9e9e9e}
+  .lanes span.open{background:#3d3d3d;color:#fff;border:1px solid #9e9e9e}
+  .lanes button{flex:1 1 0;font-size:12px;font-weight:bold;border-radius:4px;padding:4px 0;background:#e0e0e0;color:#111;border:0;min-height:32px}
+  .hand{display:flex;flex-wrap:wrap;gap:6px}
+  .hand .card{flex:1 1 150px;min-width:140px;max-width:240px}
+  .hand .card.no{opacity:.55} .hand .card.sel{border:2px solid #ffd54f;background:#4a4a4a}
+  .ctl{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .ctl button{flex:1 1 150px;min-height:44px;border-radius:6px;border:0;background:#e0e0e0;color:#111;font-weight:bold;font-size:15px}
+  .ctl button.alt{background:#424242;color:#eee;border:1px solid #9e9e9e}
+  .ctl button[disabled]{opacity:.4;cursor:default}
+  .log{background:#202020;border:1px solid #3a3a3a;border-radius:6px;padding:5px 8px;font-size:12px;color:#cfcfcf;max-height:150px;overflow-y:auto}
+  .log div{padding:1px 0;border-bottom:1px solid #2a2a2a}
+  .dim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center;padding:8px}
+  .box{background:#2a2a2a;border:2px solid #9e9e9e;border-radius:10px;padding:10px;width:min(640px,100%);max-height:calc(100dvh - 16px);overflow-y:auto}
+  .box h2{margin:0 0 6px;font-size:18px} .box p{margin:4px 0}
+  .pick{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .pick .card{flex:1 1 160px;min-width:150px;cursor:pointer}
+  .big{font-size:26px;font-weight:bold;margin:4px 0}
+  .res{max-width:640px;margin:10px auto;background:#262626;border:1px solid #555;border-radius:10px;padding:12px}
+  .res .ctl button{flex-basis:100%}
+  .note{color:#bdbdbd;font-size:12px}
+  @media (max-width:420px){ .slot{min-height:78px;padding:4px} .nm{font-size:12px} .tx{display:none} .hand .card .tx{display:block} .hand .card{flex-basis:46%;min-width:0} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function () {
+  'use strict';
+  var QC = {
+    WICKETS: 3,
+    TURNS_EACH: 6,
+    OVERS_START: 2,
+    OVERS_STEP: 1,
+    OVERS_CAP: 7,
+    SECOND_T1_BONUS: 0,
+    START_HAND: 4, HAND_LIMIT: 5, SLOTS: 3, DRAW_PER_TURN: 1,
+    DEATH_OVER_TURN: 5,
+    AI_STEP_MS: 450,
+    PHASE_PAUSE_MS: 250,
+    WATCHDOG_MS: 8000,
+    STARTER: ['consopener', 'consopener', 'consopener', 'pinch', 'pinch', 'pinch', 'rock', 'captain', 'swing', 'swing', 'mystery', 'freehit'],
+    REWARD_POOL: ['finisher', 'express', 'allrounder', 'powerplay', 'review', 'deathover', 'captain', 'rock', 'mystery'],
+    PICK_N: 3,
+    DECK_CAP: 16,
+    MAX_COPIES: 3,
+    AI_GUARD_BELOW: 2,
+    EASY_IDLE: 0.10
+  };
+  var HAND_KEY = 'icccGoatsPinball.clash.v1', MATCH_KEY = 'qc_match', SET_KEY = 'qc_settings', APP_VER = 'v1.3.1';
+  var GROUND_NAME = ['Backyard', 'Club Oval', 'Flash MCG'];
+  var LIB = {
+    consopener: { name: 'The Conservative Opener', type: 'batter', cost: 1, runs: 2, def: 5, guard: true, text: 'Guard: covers his own slot and the slots either side.' },
+    pinch: { name: 'The Pinch Hitter', type: 'batter', cost: 2, runs: 5, def: 1, quick: true, text: 'Quick. Can attack the turn it is played.' },
+    rock: { name: 'The Middle-Order Rock', type: 'batter', cost: 3, runs: 4, def: 4, text: 'When played: draw 1 card.' },
+    captain: { name: 'The Captain', type: 'batter', cost: 4, runs: 5, def: 5, text: 'Your other batters get +1 Runs while The Captain is on the pitch.' },
+    finisher: { name: 'The Powerhouse Finisher', type: 'batter', cost: 6, runs: 8, def: 4, text: "Overkill: when it dismisses a card, the overflow is also taken off the opponent's Runs." },
+    swing: { name: 'The Swing Bowler', type: 'bowler', cost: 2, runs: 1, def: 3, ability: 'swing', text: 'Battle Action: an enemy card gets -2 Defend permanently.' },
+    express: { name: 'The Express Pace Bowler', type: 'bowler', cost: 3, runs: 2, def: 2, ability: 'express', text: 'Battle Action: dismiss any enemy card costing 2 Overs or less.' },
+    mystery: { name: 'The Mystery Spinner', type: 'bowler', cost: 3, runs: 1, def: 4, guard: true, ability: 'deliver', text: 'Guard (covers the slots beside it). Any enemy card that attacks it is Locked next turn.' },
+    allrounder: { name: 'The All-Rounder', type: 'allrounder', cost: 4, runs: 4, def: 4, text: "Counts as a Batter and a Bowler: attacks cards or hits the opponent's stumps, and scores runs." },
+    deathover: { name: 'The Death Over Specialist', type: 'bowler', cost: 5, runs: 3, def: 5, ability: 'deliver', text: 'Costs 2 Overs from your turn ' + QC.DEATH_OVER_TURN + ' onwards.' },
+    powerplay: { name: 'Powerplay', type: 'strategy', cost: 2, effect: 'powerplay', text: 'Target one of your batters: double its Runs this turn.' },
+    review: { name: 'Third Umpire Review', type: 'strategy', cost: 2, effect: 'review', text: 'Look at your top 3 cards: keep 1 in hand, discard 2.' },
+    freehit: { name: 'Free Hit', type: 'strategy', cost: 2, effect: 'freehit', text: 'Draw 2 cards.' }
+  };
+  var PACE = ['swing', 'express'], SPIN = ['mystery'];
+  function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { } }
+  function mul32(a) { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return [a, ((t ^ t >>> 14) >>> 0) / 4294967296]; }
+  function R() { var o = mul32(S.rng); S.rng = o[0]; return o[1]; }
+  function rnd(a) { return a[Math.floor(R() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(R() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  var S = null, H = null, sel = null, timers = [], token = 0, simming = false;
+  function makeCard(key) { var L = LIB[key], c = { uid: ++S.uid, key: key }; for (var k in L) if (k !== 'text') c[k] = L[k]; c.defDown = 0; c.pp = false; c.sick = false; c.used = false; c.lockTurn = 0; c.tired = 0; return c; }
+  function resetCard(c) { var L = LIB[c.key]; c.defDown = 0; c.pp = false; c.sick = false; c.used = false; c.lockTurn = 0; c.tired = 0; c.runs = L.runs; c.def = L.def; }
+  function makePlayer(id) { return { id: id, wickets: QC.WICKETS, runs: 0, deck: [], hand: [], pitch: [null, null, null], discard: [], reviewing: [], overs: 0, maxOvers: 0, turnsTaken: 0, binDisc: -1 }; }
+  function P(id) { return S.players[id]; }
+  function other(id) { return id === 'player' ? 'ai' : 'player'; }
+  function myTurn(id) { return S && !S.over && S.current === id; }
+  function NAME(id) { return id === 'player' ? 'You' : S.rivalName; }
+  function WHOSE(id) { return id === 'player' ? 'Your' : S.rivalName + "'s"; }
+  function wkDown(p) { return Math.max(0, Math.min(QC.WICKETS, QC.WICKETS - p.wickets)); }
+  function scoreStr(p) { return wkDown(p) + '/' + p.runs; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function noThe(n) { return String(n).replace(/^The /, ''); }
+  function log(t) { S.log.push(t); if (S.log.length > 60) S.log.shift(); }
+  function isBatter(c) { return !!c && (c.type === 'batter' || c.type === 'allrounder'); }
+  function captainBonus(o, c) { return isBatter(c) && c.key !== 'captain' && o.pitch.some(function (x) { return x && x.key === 'captain'; }) ? 1 : 0; }
+  var SYN = [
+    { key: 'spin', name: 'Spin Twins', test: function (p) { return p.pitch.filter(function (x) { return x && SPIN.indexOf(x.key) >= 0; }).length >= 2; }, on: function (c) { return SPIN.indexOf(c.key) >= 0; }, def: 1 },
+    { key: 'open', name: 'Opening Pair', test: function (p) { return p.pitch.some(function (x) { return x && x.key === 'consopener'; }) && p.pitch.some(function (x) { return x && x.key === 'pinch'; }); }, on: function (c) { return c.key === 'consopener' || c.key === 'pinch'; }, runs: 1 },
+    { key: 'pace', name: 'Pace Battery', test: function (p) { return p.pitch.filter(function (x) { return x && PACE.indexOf(x.key) >= 0; }).length >= 2; }, on: function (c) { return PACE.indexOf(c.key) >= 0; }, def: 1 },
+    { key: 'capt', name: "Captain's Field", test: function (p) { return p.pitch.some(function (x) { return x && x.key === 'captain'; }); }, on: function (c) { return c.type === 'bowler'; }, def: 1 }
+  ];
+  function ownerOf(c) { return S.players.player.pitch.indexOf(c) >= 0 ? S.players.player : S.players.ai.pitch.indexOf(c) >= 0 ? S.players.ai : null; }
+  function synList(o, c) { return o && c && o.pitch.indexOf(c) >= 0 ? SYN.filter(function (s) { return s.on(c) && s.test(o); }) : []; }
+  function runsOf(o, c) { var n = c.runs + captainBonus(o, c) + synList(o, c).reduce(function (a, s) { return a + (s.runs || 0); }, 0); return Math.max(0, n * (c.pp ? 2 : 1)); }
+  function defOf(c) { return Math.max(0, c.def + synList(ownerOf(c), c).reduce(function (a, s) { return a + (s.def || 0); }, 0) - c.defDown - (c.tired || 0)); }
+  function baseCost(o, c) { return c.key === 'deathover' && o.turnsTaken >= QC.DEATH_OVER_TURN ? 2 : c.cost; }
+  function binOff(o) { return o.binDisc != null && o.binDisc === o.turnsTaken && S.current === o.id && (S.phase === 'main' || S.phase === 'draw') && !S.over; }
+  function costOf(o, c) { return Math.max(0, baseCost(o, c) - (binOff(o) ? 1 : 0)); }
+  function guardOn(c) { return !!c && !!c.guard && defOf(c) > 0; }
+  function hasGuard(p) { return p.pitch.some(guardOn); }
+  function openSlots(p) { return p.pitch.map(function (c, i) { return c ? -1 : i; }).filter(function (i) { return i >= 0; }); }
+  function guardCover(p) { var s = {}; p.pitch.forEach(function (c, i) { if (guardOn(c)) { s[i] = 1; if (i > 0) s[i - 1] = 1; if (i < QC.SLOTS - 1) s[i + 1] = 1; } }); return s; }
+  function directLanes(p) { var g = guardCover(p); return openSlots(p).filter(function (i) { return !g[i]; }); }
+  function lockedNow(o, c) { return c.lockTurn > 0 && S.current === o.id && o.turnsTaken === c.lockTurn; }
+  function oversFor(p) { return Math.min(QC.OVERS_CAP, QC.OVERS_START + (p.turnsTaken - 1) * QC.OVERS_STEP); }
+  function schedule(fn, ms) { if (simming) return; var tk = token, id = setTimeout(function () { timers = timers.filter(function (x) { return x !== id; }); if (tk === token && S && !S.over) fn(); }, ms); timers.push(id); }
+  function cancelTimers() { timers.forEach(clearTimeout); timers = []; token++; }
+  function newMatch(h, simOpts) {
+    var seed = (h.seed >>> 0) || 1;
+    S = { v: 1, id: h.id, rng: seed, uid: 0, players: { player: makePlayer('player'), ai: makePlayer('ai') }, current: null, phase: null, turnNo: 0, log: [], over: false, winner: null, reason: '',
+          pending: null, tossPick: null, diff: (h.rival && h.rival.diff) || 'normal', pdiff: simOpts && simOpts.pdiff || null, rivalName: (h.rival && h.rival.name) || 'The Rival XI', aiDone: false, steps: 0, aiSteps: 0, pSteps: 0 };
+    var pDeck = (Array.isArray(h.deck) && h.deck.length ? h.deck : QC.STARTER).filter(function (k) { return LIB[k]; });
+    var aDeck = QC.STARTER.concat(((h.rival && h.rival.extra) || []).filter(function (k) { return LIB[k]; }));
+    P('player').deck = shuffle(pDeck).map(makeCard); P('ai').deck = shuffle(aDeck).map(makeCard);
+    dealHand(P('player')); dealHand(P('ai'));
+    S.first = h.first === 'ai' ? 'ai' : 'player';
+    log('Quick Clash v ' + S.rivalName + ': ' + QC.WICKETS + ' Wickets, ' + QC.TURNS_EACH + ' turns each. Wickets count up - ' + QC.WICKETS + '/' + QC.WICKETS + ' is all out.');
+    var first = h.first === 'ai' ? 'ai' : 'player';
+    log(first === 'player' ? 'You bat first.' : S.rivalName + ' bat first.');
+    beginTurn(first);
+  }
+  function isCheapBatter(c) { return isBatter(c) && c.cost <= 2; }
+  function isTurnOneCard(c) { return c.cost <= QC.OVERS_START - 1; }
+  function ensureInHand(p, want, keep) {
+    if (p.hand.some(want)) return; var pool = p.deck.filter(want); if (!pool.length) return;
+    var inc = pool[Math.floor(R() * pool.length)];
+    var out = p.hand.filter(function (c) { return !(keep(c) && p.hand.filter(keep).length === 1); }).sort(function (x, y) { return y.cost - x.cost; })[0];
+    p.deck.splice(p.deck.indexOf(inc), 1); p.hand.splice(p.hand.indexOf(out), 1, inc); p.deck.splice(Math.floor(R() * (p.deck.length + 1)), 0, out);
+  }
+  function dealHand(p) { for (var i = 0; i < QC.START_HAND && p.deck.length; i++) p.hand.push(p.deck.pop()); ensureInHand(p, isCheapBatter, function () { return false; }); ensureInHand(p, isTurnOneCard, isCheapBatter); }
+  function binReward(p) { if (S.current !== p.id) return; var fresh = p.binDisc !== p.turnsTaken; p.binDisc = p.turnsTaken; if (fresh) log(p.id === 'player' ? 'Binned for room - your next card this Main Phase costs 1 fewer Over.' : S.rivalName + ' binned a card for room - its next card this Main Phase costs 1 fewer Over.'); }
+  function drawCard(p) {
+    if (!p.deck.length) { log(WHOSE(p.id) + ' deck is empty - no card drawn.'); return 'deckout'; }
+    var c = p.deck.pop();
+    if (p.hand.length >= QC.HAND_LIMIT && p.id === 'player' && !simming && !S.pdiff) { (S.tossPick || (S.tossPick = { q: [] })).q.push(c); log('Hand full: you drew ' + c.name + ' - pick one card to bin.'); return 'pending'; }
+    if (p.hand.length >= QC.HAND_LIMIT) { p.discard.push(c); log(WHOSE(p.id) + ' hand is full - the drawn card was binned.'); binReward(p); return 'burned'; }
+    p.hand.push(c); log(p.id === 'player' ? 'You drew ' + c.name + '.' : S.rivalName + ' drew a card.'); return c;
+  }
+  function resolveToss(uidPick) {
+    var st = S.tossPick; if (!st || !st.q.length) { S.tossPick = null; return false; }
+    var pl = P('player'), nw = st.q[0], tossed;
+    if (uidPick == null || uidPick === nw.uid) tossed = nw;
+    else { var i = pl.hand.findIndex(function (c) { return c.uid === uidPick; }); if (i < 0) return false; tossed = pl.hand.splice(i, 1)[0]; pl.hand.push(nw); }
+    st.q.shift(); resetCard(tossed); pl.discard.push(tossed); log('You binned ' + tossed.name + '.'); binReward(pl);
+    if (!st.q.length) { S.tossPick = null; if (S.phase === 'draw' && myTurn('player')) schedule(function () { enterMain('player'); }, QC.PHASE_PAUSE_MS); }
+    save(); render(); return true;
+  }
+  function beginTurn(id) {
+    if (S.over) return;
+    var p = P(id); S.turnNo++; S.current = id; S.phase = 'draw'; S.pending = null; S.aiDone = false; sel = null;
+    p.turnsTaken++; log('-- ' + WHOSE(id) + ' turn ' + p.turnsTaken + ' of ' + QC.TURNS_EACH + ' --');
+    drawPhase(id);
+  }
+  function tiredLegs(p) { var cs = p.pitch.filter(Boolean); if (!cs.length) return; cs.forEach(function (c) { c.tired = (c.tired || 0) + 1; }); log('Tired Legs! ' + WHOSE(p.id) + ' deck is dry - every card on that pitch drops 1 Defend for good.'); }
+  function drawPhase(id) {
+    var p = P(id);
+    if (!p.deck.length) tiredLegs(p);
+    for (var k = 0; k < QC.DRAW_PER_TURN; k++) { if (k > 0 && !p.deck.length) break; drawCard(p); }
+    p.maxOvers = oversFor(p) + (p.turnsTaken === 1 && S.first !== id ? QC.SECOND_T1_BONUS : 0); p.overs = p.maxOvers;
+    [S.players.player, S.players.ai].forEach(function (q) { q.pitch.forEach(function (c) { if (c) c.used = false; }); });
+    log('Overs: ' + p.overs + '/' + p.maxOvers + ' this turn.');
+    save(); render(); kick();
+  }
+  function kick() {
+    if (!S || S.over) return;
+    if (S.current === 'ai') schedule(aiStep, QC.AI_STEP_MS);
+    else if (S.phase === 'draw' && !S.tossPick) schedule(function () { enterMain('player'); }, QC.PHASE_PAUSE_MS);
+    else if (S.phase === 'end') schedule(function () { finishTurn('player'); }, QC.PHASE_PAUSE_MS);
+  }
+  function enterMain(id) { if (!myTurn(id) || S.phase !== 'draw' || S.tossPick) return; S.phase = 'main'; save(); render(); }
+  function strategyTargets(id, card) {
+    var p = P(id);
+    if (card.effect === 'powerplay') return p.pitch.map(function (c, i) { return isBatter(c) && !c.pp ? { side: id, slot: i } : null; }).filter(Boolean);
+    return null;
+  }
+  function canPlay(p, card) {
+    if (!myTurn(p.id) || S.phase !== 'main') return { ok: false, why: 'Main Phase only' };
+    if (S.pending || S.tossPick) return { ok: false, why: 'Finish the current card first' };
+    if (costOf(p, card) > p.overs) return { ok: false, why: 'Needs ' + costOf(p, card) + ' Overs' };
+    if (card.type !== 'strategy' && p.pitch.indexOf(null) < 0) return { ok: false, why: 'Pitch full' };
+    var t = strategyTargets(p.id, card); if (t && !t.length) return { ok: false, why: 'No batter to power up' };
+    if (card.effect === 'review' && !p.deck.length) return { ok: false, why: 'Deck is empty' };
+    return { ok: true, why: '' };
+  }
+  function pickSlot(id, card, diff) {
+    var p = P(id), empty = openSlots(p);
+    if (empty.length <= 1 || diff === 'easy') return empty.length ? (diff === 'easy' ? rnd(empty) : empty[0]) : -1;
+    var best = empty[0], bestV = Infinity;
+    empty.forEach(function (i) { p.pitch[i] = card; var n = directLanes(p).length; p.pitch[i] = null; var v = n * 10 + (card.guard ? (i === 1 ? 0 : 1) : (i === 1 ? 1 : 0)); if (v < bestV) { bestV = v; best = i; } });
+    return best;
+  }
+  function playCard(id, uid, target, slotChoice) {
+    var p = P(id), card = p.hand.find(function (c) { return c.uid === uid; }), ov = p.overs, hi = p.hand.indexOf(card);
+    try { return playCardInner(id, uid, target, slotChoice); }
+    catch (e) { console.error('playCard failed', e); if (card && p.hand.indexOf(card) < 0 && p.pitch.indexOf(card) < 0 && p.discard.indexOf(card) < 0) { p.hand.splice(Math.max(0, hi), 0, card); p.overs = ov; } S.pending = null; return false; }
+  }
+  function playCardInner(id, uid, target, slotChoice) {
+    var p = P(id), idx = p.hand.findIndex(function (c) { return c.uid === uid; }); if (idx < 0) return false;
+    var card = p.hand[idx]; if (!canPlay(p, card).ok) return false;
+    var tl = strategyTargets(id, card); if (tl && !(target && tl.some(function (t) { return t.side === target.side && t.slot === target.slot; }))) return false;
+    var cost = costOf(p, card), binUsed = binOff(p);
+    p.hand.splice(idx, 1); p.overs -= cost; if (binUsed) p.binDisc = -1;
+    var paid = ' (' + cost + ' Over' + (cost === 1 ? '' : 's') + ', ' + p.overs + '/' + p.maxOvers + ' left)';
+    if (card.type !== 'strategy') {
+      var slot = slotChoice != null && slotChoice >= 0 && slotChoice < QC.SLOTS && p.pitch[slotChoice] === null ? slotChoice : id === 'ai' ? pickSlot(id, card, S.diff) : p.pitch.indexOf(null);
+      resetCard(card); card.sick = !card.quick; card.playedTurn = p.turnsTaken; p.pitch[slot] = card;
+      log(NAME(id) + ' played ' + card.name + ' into slot ' + (slot + 1) + paid + (card.quick ? ' - Quick, it can act now.' : ' - setting up, acts next turn.'));
+      if (card.key === 'rock') { var r = drawCard(p); log(noThe(card.name) + ' digs in: ' + (r && typeof r === 'object' ? '+1 card' : r === 'pending' ? 'hand full, pick a card to bin' : r === 'burned' ? 'hand full, card binned' : 'deck empty') + '.'); }
+    } else {
+      p.discard.push(card);
+      if (card.effect === 'powerplay') { var c = p.pitch[target.slot], b = runsOf(p, c); c.pp = true; log(NAME(id) + ' played Powerplay on ' + noThe(c.name) + paid + ': Runs ' + b + ' -> ' + runsOf(p, c) + ' this turn.'); }
+      else if (card.effect === 'review') { var n = Math.min(3, p.deck.length); for (var i = 0; i < n; i++) p.reviewing.push(p.deck.pop()); log(NAME(id) + ' played Third Umpire Review' + paid + '.'); if (id === 'player' && !S.pdiff) S.pending = { kind: 'review' }; else resolveReview(id, id === 'ai' ? aiPickReview(id) : aiPickReview(id)); }
+      else if (card.effect === 'freehit') { log(NAME(id) + ' played Free Hit' + paid + ' - draws 2.'); drawCard(p); drawCard(p); }
+    }
+    return true;
+  }
+  function resolveReview(id, pick) {
+    var p = P(id); if (!p.reviewing.length) return false;
+    var i = Math.max(0, Math.min(pick, p.reviewing.length - 1)), keep = p.reviewing.splice(i, 1)[0];
+    p.hand.push(keep); p.discard.push.apply(p.discard, p.reviewing); p.reviewing = [];
+    if (p.hand.length > QC.HAND_LIMIT) { var x = p.hand.shift(); p.discard.push(x); }
+    log(id === 'player' ? 'Review: you kept ' + keep.name + '.' : 'Review: ' + S.rivalName + ' kept a card.');
+    if (id === 'player') S.pending = null; return true;
+  }
+  function enterAction(id) { if (!myTurn(id) || S.phase !== 'main' || S.pending || S.tossPick) return; S.phase = 'action'; P(id).binDisc = -1; sel = null; save(); render(); }
+  function canAct(o, c) { return !!c && !c.used && (!c.sick || c.quick) && !lockedNow(o, c); }
+  function targetsFor(id, card) {
+    var p = P(id), e = P(other(id));
+    if (!canAct(p, card)) return { slots: [], direct: false, lanes: [] };
+    var all = e.pitch.map(function (c, i) { return c ? i : -1; }).filter(function (i) { return i >= 0; });
+    if (isBatter(card)) { var lanes = directLanes(e); return { slots: all, direct: lanes.length > 0, lanes: lanes }; }
+    if (card.ability === 'express') return { slots: all.filter(function (i) { return e.pitch[i].cost <= 2; }), direct: false, lanes: [] };
+    return { slots: all, direct: false, lanes: [] };
+  }
+  function hasAction(id, c) { var t = targetsFor(id, c); return t.direct || t.slots.length > 0; }
+  function dismiss(o, slot, how) {
+    var c = o.pitch[slot]; o.pitch[slot] = null; resetCard(c); o.discard.push(c);
+    if (isBatter(c)) { o.wickets--; log('Wicket! ' + WHOSE(o.id) + ' ' + noThe(c.name) + ' ' + how + ' - ' + wkDown(o) + '/' + QC.WICKETS + ' down.'); }
+    else log(WHOSE(o.id) + ' ' + noThe(c.name) + ' ' + how + ' - a bowler, so no Wicket.');
+  }
+  function act(id, auid, target, via) {
+    if (!myTurn(id) || S.phase !== 'action') return false;
+    var p = P(id), e = P(other(id)), a = p.pitch.find(function (c) { return c && c.uid === auid; }); if (!a) return false;
+    var t = targetsFor(id, a);
+    if (target === 'direct' ? !t.direct : t.slots.indexOf(target) < 0) return false;
+    if (target === 'direct' && via != null && t.lanes.indexOf(via) < 0) return false;
+    a.used = true;
+    if (target === 'direct') {
+      var r = runsOf(p, a), lane = t.lanes.indexOf(via) >= 0 ? via : t.lanes[0];
+      e.wickets--; p.runs += r;
+      log('BOWLED! ' + WHOSE(id) + ' ' + noThe(a.name) + ' went through slot ' + (lane + 1) + ' at the stumps: +' + r + ' Runs. ' + NAME(other(id)) + ' ' + wkDown(e) + '/' + QC.WICKETS + ' down.');
+    } else {
+      var v = e.pitch[target], spinner = v.key === 'mystery';
+      if (a.ability === 'swing') { var b = defOf(v); v.defDown += 2; log(WHOSE(id) + ' ' + noThe(a.name) + ' swung one at ' + noThe(v.name) + ': Defend ' + b + ' -> ' + defOf(v) + ' for good.'); }
+      else if (a.ability === 'express') { log(WHOSE(id) + ' ' + noThe(a.name) + ' fired one at ' + noThe(v.name) + '.'); dismiss(e, target, 'was blown away by Express Pace'); }
+      else {
+        var r2 = runsOf(p, a), d = defOf(v);
+        if (r2 > d) {
+          if (isBatter(a)) { var over = r2 - d; p.runs += over; log(WHOSE(id) + ' ' + noThe(a.name) + ' (' + r2 + ') beat ' + noThe(v.name) + ' (Defend ' + d + '): +' + over + ' overflow Runs.');
+            if (a.key === 'finisher' && over > 0) { var loss = Math.min(e.runs, over); e.runs -= loss; log('Overkill! ' + NAME(other(id)) + ' lose ' + loss + ' Run' + (loss === 1 ? '' : 's') + '.'); } }
+          else log(WHOSE(id) + ' ' + noThe(a.name) + ' (' + r2 + ') beat ' + noThe(v.name) + ' (Defend ' + d + ').');
+          dismiss(e, target, isBatter(a) ? 'was beaten' : 'was bowled');
+        } else log(WHOSE(id) + ' ' + noThe(a.name) + ' (' + r2 + ') went at ' + noThe(v.name) + ' (Defend ' + d + '): blocked.');
+      }
+      if (spinner) { a.lockTurn = p.turnsTaken + 1; log('The Mystery Spinner locks ' + noThe(a.name) + ' for its next turn.'); }
+    }
+    sel = null; checkWickets(); return true;
+  }
+  function enterEnd(id) {
+    if (!myTurn(id) || S.phase !== 'action') return;
+    var p = P(id); S.phase = 'end'; sel = null;
+    p.pitch.forEach(function (c) { if (c && c.pp) c.pp = false; if (c && c.sick) c.sick = false; if (c && c.lockTurn && c.lockTurn <= p.turnsTaken) c.lockTurn = 0; });
+    save(); render();
+    if (id === 'player') schedule(function () { finishTurn('player'); }, QC.PHASE_PAUSE_MS);
+  }
+  function finishTurn(id) {
+    if (!myTurn(id) || S.phase !== 'end') return;
+    if (P('player').turnsTaken >= QC.TURNS_EACH && P('ai').turnsTaken >= QC.TURNS_EACH) { endByRuns('All ' + QC.TURNS_EACH + ' turns played'); return; }
+    beginTurn(other(id));
+  }
+  function checkWickets() {
+    if (S.over) return true;
+    var pw = P('player').wickets, aw = P('ai').wickets;
+    if (aw <= 0 && pw <= 0) { endGame(null, 'Both sides were bowled out'); return true; }
+    if (aw <= 0) { endGame('player', 'All out! ' + S.rivalName + ' are ' + QC.WICKETS + '/' + QC.WICKETS + ' down.'); return true; }
+    if (pw <= 0) { endGame('ai', 'All out! You are ' + QC.WICKETS + '/' + QC.WICKETS + ' down.'); return true; }
+    return false;
+  }
+  function endByRuns(why) {
+    var a = P('player'), b = P('ai');
+    if (a.runs !== b.runs) endGame(a.runs > b.runs ? 'player' : 'ai', why + ': ' + (a.runs > b.runs ? 'you' : S.rivalName) + ' scored more Runs (' + a.runs + ' v ' + b.runs + ').');
+    else if (a.wickets !== b.wickets) endGame(a.wickets > b.wickets ? 'player' : 'ai', why + ': Runs level on ' + a.runs + ', decided on fewest Wickets down (' + wkDown(a) + ' v ' + wkDown(b) + ').');
+    else endGame(null, why + ': Runs and Wickets level - a tie.');
+  }
+  function endGame(winner, reason) {
+    S.over = true; S.winner = winner; S.reason = reason; S.current = null; cancelTimers(); log(reason);
+    if (simming) return;
+    writeResult({ win: winner === 'player', tie: winner === null, forfeit: false, runsYou: P('player').runs, runsThem: P('ai').runs, wktsYou: wkDown(P('player')), wktsThem: wkDown(P('ai')), reason: reason });
+    render();
+  }
+  function stratPlan(id, c) {
+    var p = P(id), v = costOf(p, c), target = null;
+    if (c.effect === 'review' || c.effect === 'freehit') v = p.hand.length <= 2 ? 8 : 0.5;
+    if (c.effect === 'powerplay') {
+      var opts = strategyTargets(id, c).filter(function (t) { return canAct(p, p.pitch[t.slot]) && hasAction(id, p.pitch[t.slot]); });
+      if (!opts.length) v = -1; else { target = opts.reduce(function (x, y) { return runsOf(p, p.pitch[y.slot]) > runsOf(p, p.pitch[x.slot]) ? y : x; }); v = 3; }
+    }
+    return { target: target, v: v };
+  }
+  function planMain(id, diff) {
+    var p = P(id), aff = p.hand.filter(function (c) { return canPlay(p, c).ok; }); if (!aff.length) return null;
+    if (diff === 'easy') { if (R() < QC.EASY_IDLE) return null; var c = rnd(aff), tl = strategyTargets(id, c); return { uid: c.uid, target: tl ? rnd(tl) : null }; }
+    var cand = aff.map(function (c) { var s = stratPlan(id, c); return { c: c, target: s.target, v: s.v }; }).filter(function (o) { return o.c.type !== 'strategy' || o.v > 0; });
+    if (!cand.length) return null;
+    var guards = p.wickets < QC.AI_GUARD_BELOW ? cand.filter(function (o) { return o.c.guard; }) : [], pool = guards.length ? guards : cand;
+    var best = pool.reduce(function (x, y) { var cx = costOf(p, x.c), cy = costOf(p, y.c); return cy > cx || (cy === cx && y.v > x.v) ? y : x; });
+    return { uid: best.c.uid, target: best.target };
+  }
+  function planAction(id, diff) {
+    var p = P(id), e = P(other(id)), ready = p.pitch.filter(function (c) { return canAct(p, c) && hasAction(id, c); }); if (!ready.length) return null;
+    if (diff === 'easy') { if (R() < QC.EASY_IDLE) return null; var mv = []; ready.forEach(function (a) { var t = targetsFor(id, a); t.slots.forEach(function (i) { mv.push([a.uid, i]); }); if (t.direct) mv.push([a.uid, 'direct']); }); return mv.length ? rnd(mv) : null; }
+    var val = function (c) { return (isBatter(c) ? 10 : 0) + runsOf(e, c); }, i, a, t;
+    var sw = ready.filter(function (c) { return c.ability === 'swing'; });
+    for (i = 0; i < sw.length; i++) { t = targetsFor(id, sw[i]).slots.filter(function (j) { return defOf(e.pitch[j]) > 0 && e.pitch[j].key !== 'mystery'; }); if (t.length) return [sw[i].uid, t.reduce(function (x, y) { return defOf(e.pitch[y]) > defOf(e.pitch[x]) ? y : x; })]; }
+    var ex = ready.filter(function (c) { return c.ability === 'express'; });
+    for (i = 0; i < ex.length; i++) { t = targetsFor(id, ex[i]).slots; if (t.length) return [ex[i].uid, t.reduce(function (x, y) { return val(e.pitch[y]) > val(e.pitch[x]) ? y : x; })]; }
+    var dl = ready.filter(function (c) { return !isBatter(c) && c.ability === 'deliver'; });
+    for (i = 0; i < dl.length; i++) { var r = runsOf(p, dl[i]); t = targetsFor(id, dl[i]).slots.filter(function (j) { return r > defOf(e.pitch[j]); }); if (t.length) return [dl[i].uid, t.reduce(function (x, y) { return val(e.pitch[y]) > val(e.pitch[x]) ? y : x; })]; }
+    var bats = ready.filter(isBatter);
+    for (i = 0; i < bats.length; i++) {
+      a = bats[i]; t = targetsFor(id, a); if (t.direct) return [a.uid, 'direct'];
+      var r2 = runsOf(p, a), beat = t.slots.filter(function (j) { return r2 > defOf(e.pitch[j]); });
+      if (beat.length) return [a.uid, beat.reduce(function (x, y) { return (isBatter(e.pitch[y]) ? 3 : 0) + r2 - defOf(e.pitch[y]) > (isBatter(e.pitch[x]) ? 3 : 0) + r2 - defOf(e.pitch[x]) ? y : x; })];
+    }
+    return null;
+  }
+  function aiPickReview(id) {
+    var p = P(id), bi = 0, sc = function (c) { var k = costOf(p, c); return (isBatter(c) ? 2 : 0) + k - (k > p.maxOvers + 1 ? 4 : 0); };
+    p.reviewing.forEach(function (c, i) { if (sc(c) > sc(p.reviewing[bi])) bi = i; }); return bi;
+  }
+  function stepSide(id, diff) {
+    if (S.phase === 'draw') { if (S.tossPick) resolveToss(null); enterMain(id); return true; }
+    if (S.phase === 'main') { var pl = S.aiDone ? null : planMain(id, diff); if (pl && playCard(id, pl.uid, pl.target)) return true; S.aiDone = false; enterAction(id); return true; }
+    if (S.phase === 'action') { var ch = planAction(id, diff); if (ch && act(id, ch[0], ch[1])) return true; enterEnd(id); return true; }
+    if (S.phase === 'end') { finishTurn(id); return false; }
+    return false;
+  }
+  function aiStep() { try { aiStepInner(); } catch (e) { console.error('AI step failed', e); aiRecover('a rules hiccup'); } }
+  function aiStepInner() {
+    if (!myTurn('ai')) return;
+    S.aiSteps++; var more = stepSide('ai', S.diff); save(); render();
+    if (more && myTurn('ai')) schedule(aiStep, QC.AI_STEP_MS);
+  }
+  function aiRecover(why) {
+    if (!S || S.over || S.current !== 'ai') return;
+    log(S.rivalName + ' got its bootlaces tied (' + why + ') - the strike comes back to you.');
+    S.pending = null; S.aiDone = false;
+    try { if (S.phase === 'draw') S.phase = 'main'; if (S.phase === 'main') enterAction('ai'); if (S.phase === 'action') enterEnd('ai'); } catch (e) { console.error(e); }
+    S.phase = 'end';
+    try { finishTurn('ai'); } catch (e) { console.error(e); beginTurn('player'); }
+    save(); render();
+  }
+  var aiWatch = { sig: '', at: 0 };
+  setInterval(function () {
+    if (!S || S.over || S.current !== 'ai' || simming) { aiWatch.sig = ''; return; }
+    var sig = token + '|' + S.turnNo + '|' + S.phase + '|' + S.log.length + '|' + timers.length, now = Date.now();
+    if (sig !== aiWatch.sig) { aiWatch = { sig: sig, at: now }; return; }
+    if (now - aiWatch.at > QC.WATCHDOG_MS) { aiWatch.sig = ''; console.warn('AI watchdog: turn stalled, recovering'); aiRecover('stalled'); }
+  }, 1000);
+  function save() { if (simming || !S || !H || S.over || H.state === 'done' || H.state === 'claimed') return; lsSet(MATCH_KEY, { v: 1, id: H.id, S: S }); }
+  function writeResult(res) {
+    var h = lsGet(HAND_KEY); if (!h || h.id !== H.id) h = H;
+    if (h.state === 'done' || h.state === 'claimed') { H = h; return; }
+    res.offer = res.win ? pickOffer(h) : null; res.cardPicked = null; res.swapOut = null; res.t = Date.now();
+    h.result = res; h.state = 'done'; H = h; lsSet(HAND_KEY, h); lsDel(MATCH_KEY);
+  }
+  function pickOffer(h) {
+    var a = mul32((h.seed >>> 0) ^ 0x5bd1e995), st = a[0], deck = h.deck || QC.STARTER;
+    var pool = QC.REWARD_POOL.filter(function (k) { return LIB[k] && deck.filter(function (x) { return x === k; }).length < QC.MAX_COPIES; }), out = [];
+    while (pool.length && out.length < QC.PICK_N) { var o = mul32(st); st = o[0]; out.push(pool.splice(Math.floor(o[1] * pool.length), 1)[0]); }
+    return out;
+  }
+  function forfeit() {
+    if (!H || H.state === 'done' || H.state === 'claimed') return;
+    cancelTimers(); if (S) { S.over = true; S.winner = 'ai'; }
+    writeResult({ win: false, tie: false, forfeit: true, runsYou: S ? P('player').runs : 0, runsThem: S ? P('ai').runs : 0, wktsYou: S ? wkDown(P('player')) : 0, wktsThem: S ? wkDown(P('ai')) : 0, reason: 'Forfeited' });
+    render();
+  }
+  function backUrl() { var r = H && typeof H.ret === 'string' && /^[\w.\-]*$/.test(H.ret) ? H.ret : ''; return '../' + r + (H ? '?clash=' + encodeURIComponent(H.id) : ''); }
+  var app = document.getElementById('app'), ui = { confirmQuit: false };
+  function cardHTML(c, owner, extra) {
+    var L = LIB[c.key], tags = [];
+    if (owner) {
+      if (guardOn(c)) tags.push('GUARD'); if (c.quick) tags.push('QUICK');
+      if (c.sick && !c.quick) tags.push('SETTING UP'); if (lockedNow(owner, c) || (c.lockTurn && c.lockTurn > owner.turnsTaken)) tags.push('LOCKED');
+      if (c.used) tags.push('USED'); if (c.pp) tags.push('POWERPLAY x2');
+      synList(owner, c).forEach(function (s) { tags.push(s.name.toUpperCase()); });
+    }
+    var st = c.type === 'strategy' ? '<span class="st">Strategy</span>' : '<span class="st"><b>' + (owner ? runsOf(owner, c) : c.runs) + '</b> Runs / <b>' + (owner ? defOf(c) : c.def) + '</b> Def</span>';
+    return '<span class="nm">' + esc(noThe(L.name)) + '</span><span class="st">' + (extra || '') + '</span>' + st + '<span class="tx">' + esc(L.text) + '</span>' + (tags.length ? '<span class="tg">' + tags.map(function (t) { return '<i>' + t + '</i>'; }).join('') + '</span>' : '');
+  }
+  function noMatchHTML(msg) { return '<div class="res"><h2>Quick Clash</h2><p class="big">No challenge waiting</p><p class="note">' + esc(msg || 'Challenges come up after an innings on the Tour.') + '</p><div class="ctl"><button data-a="back">BACK TO THE TOUR</button></div></div>'; }
+  function resultHTML() {
+    var r = H.result, w = r.win, p = H.prize || {}, deck = H.deck || QC.STARTER;
+    var head = r.forfeit ? 'FORFEITED' : w ? 'YOU WIN' : r.tie ? 'TIE' : 'YOU LOSE';
+    var s = '<div class="res"><h2>Quick Clash v ' + esc((H.rival && H.rival.name) || 'The Rival XI') + '</h2><p class="big">' + head + '</p>';
+    if (!r.forfeit) s += '<p>You <b>' + r.wktsYou + '/' + r.runsYou + '</b> &middot; ' + esc((H.rival && H.rival.name) || 'Rival') + ' <b>' + r.wktsThem + '/' + r.runsThem + '</b></p><p class="note">' + esc(r.reason || '') + '</p>';
+    if (w) s += '<p>Prize: <b>' + esc(p.label || 'a prize') + '</b> - paid when you get back to the Tour.' + (H.stake ? ' Your ' + H.stake + ' MP bet comes back too.' : '') + '</p>';
+    else if (r.tie) s += '<p>No win, no loss.' + (H.stake ? ' Your ' + H.stake + ' MP bet is refunded.' : '') + '</p>';
+    else s += '<p>' + (H.stake ? 'The ' + H.stake + ' MP bet is lost. Nothing else is lost.' : 'Nothing is lost.') + '</p>';
+    if (w && r.offer && r.offer.length && H.state === 'done') {
+      if (r.cardPicked == null) {
+        var full = deck.length >= QC.DECK_CAP;
+        if (!ui.pickKey) {
+          s += '<p><b>Pick 1 Clash card</b> for your Tour deck (' + deck.length + '/' + QC.DECK_CAP + ' cards)' + (full ? ' - the deck is full, so it swaps out a starter card' : '') + ':</p><div class="pick">' + r.offer.map(function (k) { return '<div class="card" role="button" tabindex="0" data-a="pick" data-k="' + k + '">' + cardHTML({ key: k, type: LIB[k].type, runs: LIB[k].runs, def: LIB[k].def }, null, LIB[k].cost + ' Over' + (LIB[k].cost === 1 ? '' : 's')) + '</div>'; }).join('') + '</div>';
+          if (full) s += '<div class="ctl"><button class="alt" data-a="nopick">KEEP MY DECK AS IT IS</button></div>';
+        } else {
+          var outs = QC.STARTER.filter(function (k, i, a) { return a.indexOf(k) === i && deck.indexOf(k) >= 0; });
+          s += '<p>Swap <b>' + esc(noThe(LIB[ui.pickKey].name)) + '</b> in for which starter card?</p><div class="pick">' + outs.map(function (k) { return '<div class="card" role="button" tabindex="0" data-a="swap" data-k="' + k + '">' + cardHTML({ key: k, type: LIB[k].type, runs: LIB[k].runs, def: LIB[k].def }, null, '') + '</div>'; }).join('') + '</div><div class="ctl"><button class="alt" data-a="unpick">BACK</button></div>';
+        }
+        return s + '</div>';
+      }
+      s += '<p>' + (r.cardPicked ? 'Added to your Tour deck: <b>' + esc(noThe(LIB[r.cardPicked].name)) + '</b>' + (r.swapOut ? ' (out: ' + esc(noThe(LIB[r.swapOut].name)) + ')' : '') : 'Deck kept as it is.') + '</p>';
+    }
+    if (H.state === 'claimed') s += '<p class="note">Already paid on the Tour.</p>';
+    return s + '<div class="ctl"><button data-a="back">BACK TO THE TOUR</button></div></div>';
+  }
+  function render() {
+    if (simming) return;
+    if (!H) { app.innerHTML = noMatchHTML(ui.why); return; }
+    if (H.state === 'done' || H.state === 'claimed') { app.innerHTML = resultHTML(); return; }
+    if (!S) { app.innerHTML = noMatchHTML(); return; }
+    var me = P('player'), ai = P('ai'), mine = myTurn('player'), ph = S.phase;
+    var selC = sel != null ? (me.hand.find(function (c) { return c.uid === sel; }) || me.pitch.find(function (c) { return c && c.uid === sel; })) : null;
+    var selHand = selC && me.hand.indexOf(selC) >= 0, selPitch = selC && !selHand;
+    var tg = selPitch && mine && ph === 'action' ? targetsFor('player', selC) : null;
+    var ppT = selHand && selC.effect === 'powerplay' ? strategyTargets('player', selC) : null;
+    var h = '<div class="top"><div><h1>QUICK CLASH v ' + esc(S.rivalName) + '</h1><div class="sub">' + esc(GROUND_NAME[H.ground] || '') + ' &middot; prize: ' + esc((H.prize && H.prize.label) || '-') + (H.stake ? ' &middot; bet ' + H.stake + ' MP' : '') + '</div></div><button class="btnS" data-a="quit">FORFEIT</button></div>';
+    h += '<div class="score"><div class="' + (S.current === 'player' ? 'cur' : '') + '"><small>YOU &middot; turn ' + me.turnsTaken + '/' + QC.TURNS_EACH + '</small><b>' + scoreStr(me) + '</b><small>Wickets ' + wkDown(me) + '/' + QC.WICKETS + ' &middot; deck ' + me.deck.length + '</small></div><div class="' + (S.current === 'ai' ? 'cur' : '') + '"><small>' + esc(S.rivalName.toUpperCase()) + ' &middot; turn ' + ai.turnsTaken + '/' + QC.TURNS_EACH + '</small><b>' + scoreStr(ai) + '</b><small>Wickets ' + wkDown(ai) + '/' + QC.WICKETS + ' &middot; hand ' + ai.hand.length + '</small></div></div>';
+    var stx = S.current === 'ai' ? '<b>' + esc(S.rivalName) + '</b> is playing (' + ph + ')...' : ph === 'main' ? '<b>Your Main Phase</b> &middot; Overs ' + me.overs + '/' + me.maxOvers + (binOff(me) ? ' &middot; next card -1 Over' : '') + ' &middot; tap a hand card, then a slot' : ph === 'action' ? '<b>Your Action Phase</b> &middot; tap a ready card on your pitch, then a target' : '<b>Your turn</b> (' + ph + ')';
+    if (selHand) { var cp = canPlay(me, selC); stx += '<br>' + esc(noThe(selC.name)) + ': ' + (cp.ok ? (selC.type === 'strategy' ? (ppT ? 'tap one of your batters' : 'tap PLAY') : 'tap an empty slot on your pitch') : cp.why); }
+    if (tg) stx += '<br>' + esc(noThe(selC.name)) + ': ' + (tg.slots.length || tg.direct ? 'tap a lit target' : 'nothing to hit');
+    h += '<div class="status">' + stx + '</div>';
+    h += '<div class="lbl">' + esc(S.rivalName.toUpperCase()) + ' PITCH</div><div class="row">' + ai.pitch.map(function (c, i) {
+      var t = tg && tg.slots.indexOf(i) >= 0; return c ? '<div class="slot card' + (t ? ' tgt' : '') + '"' + (t ? ' role="button" data-a="hit" data-i="' + i + '"' : '') + '>' + cardHTML(c, ai) + '</div>' : '<div class="slot empty">empty</div>'; }).join('') + '</div>';
+    var lanes = directLanes(ai), cov = guardCover(ai);
+    h += '<div class="lanes">' + [0, 1, 2].map(function (i) { if (tg && tg.direct && tg.lanes.indexOf(i) >= 0) return '<button data-a="direct" data-i="' + i + '">STUMPS via ' + (i + 1) + '</button>'; return '<span class="' + (lanes.indexOf(i) >= 0 ? 'open' : '') + '">' + (ai.pitch[i] ? 'slot ' + (i + 1) : lanes.indexOf(i) >= 0 ? 'stumps open' : cov[i] ? 'guarded' : '-') + '</span>'; }).join('') + '</div>';
+    h += '<div class="lbl">YOUR PITCH</div><div class="row">' + me.pitch.map(function (c, i) {
+      if (!c) { var can = selHand && selC.type !== 'strategy' && canPlay(me, selC).ok; return '<div class="slot empty' + (can ? ' tgt' : '') + '"' + (can ? ' role="button" data-a="place" data-i="' + i + '"' : '') + '>' + (can ? 'PLAY HERE' : 'empty') + '</div>'; }
+      var pp = ppT && ppT.some(function (t) { return t.slot === i; }), ready = mine && ph === 'action' && canAct(me, c) && hasAction('player', c);
+      return '<div class="slot card' + (selC === c ? ' sel' : pp || ready ? ' tgt' : '') + '" role="button" data-a="' + (pp ? 'pp' : 'mine') + '" data-i="' + i + '" data-u="' + c.uid + '">' + cardHTML(c, me) + '</div>'; }).join('') + '</div>';
+    h += '<div class="lbl">YOUR HAND (' + me.hand.length + '/' + QC.HAND_LIMIT + ')</div><div class="hand">' + me.hand.map(function (c) {
+      var ok = mine && ph === 'main' && canPlay(me, c).ok; return '<div class="card' + (ok ? '' : ' no') + (sel === c.uid ? ' sel' : '') + '" role="button" tabindex="0" data-a="hand" data-u="' + c.uid + '">' + cardHTML(c, null, costOf(me, c) + ' Over' + (costOf(me, c) === 1 ? '' : 's')) + '</div>'; }).join('') + '</div>';
+    h += '<div class="ctl">';
+    if (selHand && selC.type === 'strategy' && !ppT && canPlay(me, selC).ok) h += '<button data-a="playS">PLAY ' + esc(noThe(selC.name).toUpperCase()) + '</button>';
+    h += '<button data-a="toAction"' + (mine && ph === 'main' && !S.pending && !S.tossPick ? '' : ' disabled') + '>TO ACTION &#9654;</button><button data-a="endTurn"' + (mine && ph === 'action' ? '' : ' disabled') + '>END TURN &#9654;</button></div>';
+    h += '<div class="lbl">LOG</div><div class="log" id="log">' + S.log.slice(-14).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('') + '</div>';
+    if (S.pending && S.pending.kind === 'review') h += '<div class="dim"><div class="box"><h2>Third Umpire Review</h2><p>Keep 1, the rest are binned:</p><div class="pick">' + me.reviewing.map(function (c, i) { return '<div class="card" role="button" tabindex="0" data-a="review" data-i="' + i + '">' + cardHTML(c, null, c.cost + ' Overs') + '</div>'; }).join('') + '</div></div></div>';
+    else if (S.tossPick && S.tossPick.q.length) { var nw = S.tossPick.q[0]; h += '<div class="dim"><div class="box"><h2>Hand full</h2><p>You drew <b>' + esc(noThe(nw.name)) + '</b>. Pick one card to bin (your next card this Main Phase costs 1 fewer Over):</p><div class="pick">' + [nw].concat(me.hand).map(function (c) { return '<div class="card" role="button" tabindex="0" data-a="toss" data-u="' + c.uid + '">' + cardHTML(c, null, (c === nw ? 'NEW &middot; ' : '') + c.cost + ' Overs') + '</div>'; }).join('') + '</div></div></div>'; }
+    if (ui.confirmQuit) h += '<div class="dim"><div class="box"><h2>Forfeit this Clash?</h2><p>It counts as a loss.' + (H.stake ? ' The ' + H.stake + ' MP bet is lost.' : ' Nothing else is lost.') + '</p><div class="ctl"><button data-a="quitYes">FORFEIT</button><button class="alt" data-a="quitNo">KEEP PLAYING</button></div></div></div>';
+    app.innerHTML = h; var lg = document.getElementById('log'); if (lg) lg.scrollTop = lg.scrollHeight;
+  }
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-a]'); if (!b) return;
+    var a = b.getAttribute('data-a'), i = +b.getAttribute('data-i'), u = +b.getAttribute('data-u'), k = b.getAttribute('data-k');
+    if (a === 'back') { location.href = backUrl(); return; }
+    if (a === 'pick' || a === 'swap' || a === 'nopick' || a === 'unpick') { pickAction(a, k); return; }
+    if (!S || S.over) return;
+    if (a === 'quit') { ui.confirmQuit = true; render(); return; }
+    if (a === 'quitNo') { ui.confirmQuit = false; render(); return; }
+    if (a === 'quitYes') { ui.confirmQuit = false; forfeit(); return; }
+    var me = P('player');
+    if (a === 'review') { resolveReview('player', i); save(); render(); return; }
+    if (a === 'toss') { resolveToss(u); return; }
+    if (!myTurn('player')) return;
+    if (a === 'hand') { if (S.phase !== 'main') return; sel = sel === u ? null : u; render(); return; }
+    if (a === 'place') { if (sel != null && playCard('player', sel, null, i)) { sel = null; S.pSteps++; save(); } render(); return; }
+    if (a === 'pp') { if (sel != null && playCard('player', sel, { side: 'player', slot: i })) { sel = null; S.pSteps++; save(); } render(); return; }
+    if (a === 'playS') { if (sel != null && playCard('player', sel, null)) { sel = null; S.pSteps++; save(); } render(); return; }
+    if (a === 'mine') { if (S.phase !== 'action') return; var c = me.pitch[i]; sel = c && canAct(me, c) && hasAction('player', c) && sel !== c.uid ? c.uid : null; render(); return; }
+    if (a === 'hit' || a === 'direct') { if (sel != null) { if (a === 'hit') act('player', sel, i); else act('player', sel, 'direct', i); S.pSteps++; sel = null; if (!S.over) save(); } render(); return; }
+    if (a === 'toAction') { enterAction('player'); return; }
+    if (a === 'endTurn') { enterEnd('player'); return; }
+  });
+  app.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('data-a')) { e.preventDefault(); e.target.click(); } });
+  function pickAction(a, k) {
+    if (!H || H.state !== 'done' || !H.result || !H.result.win || H.result.cardPicked != null) return;
+    var r = H.result, deck = H.deck || QC.STARTER;
+    if (a === 'unpick') { ui.pickKey = null; render(); return; }
+    if (a === 'nopick') { r.cardPicked = ''; }
+    else if (a === 'pick') { if (r.offer.indexOf(k) < 0) return; if (deck.length >= QC.DECK_CAP) { ui.pickKey = k; render(); return; } r.cardPicked = k; }
+    else if (a === 'swap') { if (!ui.pickKey || deck.indexOf(k) < 0) return; r.cardPicked = ui.pickKey; r.swapOut = k; }
+    var h = lsGet(HAND_KEY); if (h && h.id === H.id && h.state === 'done') { h.result.cardPicked = r.cardPicked; h.result.swapOut = r.swapOut || null; lsSet(HAND_KEY, h); H = h; }
+    ui.pickKey = null; render();
+  }
+  function boot() {
+    var q = new URLSearchParams(location.search).get('h'), h = lsGet(HAND_KEY);
+    if (!h || h.v !== 1 || !h.id || ['pending', 'playing', 'done', 'claimed'].indexOf(h.state) < 0) { H = null; render(); return; }
+    if (q && q !== h.id) { H = null; ui.why = 'That challenge has gone. Challenges come up after an innings on the Tour.'; render(); return; }
+    H = h;
+    if (h.state === 'done' || h.state === 'claimed') { lsDel(MATCH_KEY); render(); return; }
+    var m = lsGet(MATCH_KEY);
+    if (h.state === 'playing' && m && m.v === 1 && m.id === h.id && m.S && m.S.v === 1) { S = m.S; render(); kick(); return; }
+    if (h.state === 'pending') { h.state = 'playing'; h.t1 = Date.now(); lsSet(HAND_KEY, h); }
+    newMatch(h);
+  }
+  window.addEventListener('storage', function (e) {
+    if (e.key !== HAND_KEY || !H) return; var h = lsGet(HAND_KEY);
+    if (!h || h.id !== H.id) { cancelTimers(); S = null; H = null; ui.why = 'That challenge has gone.'; render(); return; }
+    if ((h.state === 'done' || h.state === 'claimed') && H.state !== h.state) { cancelTimers(); H = h; render(); }
+  });
+   boot();
+})();
+</script>
+</body>
+</html>
