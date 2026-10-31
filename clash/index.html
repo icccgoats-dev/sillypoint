@@ -52,6 +52,8 @@
   .res{max-width:640px;margin:10px auto;background:#262626;border:1px solid #555;border-radius:10px;padding:12px}
   .res .ctl button{flex-basis:100%}
   .note{color:#bdbdbd;font-size:12px}
+  .tip{background:#2b2a1f;border:2px solid #ffd54f;border-radius:6px;padding:6px 8px;margin:0 0 6px} .tip .tn{display:block;font-size:11px;color:#ffd54f;letter-spacing:.6px;margin-bottom:2px}
+  .tip .ctl{margin:6px 0 0} .tip .ctl button{min-height:40px;font-size:14px}
   @media (max-width:420px){ .slot{min-height:78px;padding:4px} .nm{font-size:12px} .tx{display:none} .hand .card .tx{display:block} .hand .card{flex-basis:46%;min-width:0} }
 </style>
 </head>
@@ -82,6 +84,14 @@
   };
   var HAND_KEY = 'icccGoatsPinball.clash.v1', MATCH_KEY = 'qc_match', SET_KEY = 'qc_settings', APP_VER = 'v1.3.1';
   var GROUND_NAME = ['Backyard', 'Club Oval', 'Flash MCG'];
+  var TIPS_KEY = 'qc_tips', TIPS = [
+    'Play a card: tap a card in YOUR HAND, then tap an empty slot on YOUR PITCH. Each card costs Overs (shown on the card). You get 2 Overs on turn 1 and 1 more each turn, up to 7.',
+    'GUARD cards cover their own slot and the slots either side, so the rival can\u2019t bowl at your stumps through them. QUICK cards can attack on the turn you play them. Other cards wait until your next turn.',
+    'Played your cards? Tap TO ACTION. Then tap a ready card on your pitch and a lit target: a rival card, or STUMPS through an open slot.',
+    'Finished attacking? Tap END TURN. Then the rival has its turn.',
+    'Scores read wickets/runs, like 2/31. Wickets count up: you lose one when one of your batters is beaten or your stumps are hit. 3/3 is all out.',
+    'To win: bowl the rival all out (3/3), or have more runs when you have both had 6 turns. If runs are level, fewer wickets down wins.'
+  ], tip = { on: false, step: 0 };
   var LIB = {
     consopener: { name: 'The Conservative Opener', type: 'batter', cost: 1, runs: 2, def: 5, guard: true, text: 'Guard: covers his own slot and the slots either side.' },
     pinch: { name: 'The Pinch Hitter', type: 'batter', cost: 2, runs: 5, def: 1, quick: true, text: 'Quick. Can attack the turn it is played.' },
@@ -333,6 +343,7 @@
   function endGame(winner, reason) {
     S.over = true; S.winner = winner; S.reason = reason; S.current = null; cancelTimers(); log(reason);
     if (simming) return;
+    tipOff('end');
     writeResult({ win: winner === 'player', tie: winner === null, forfeit: false, runsYou: P('player').runs, runsThem: P('ai').runs, wktsYou: wkDown(P('player')), wktsThem: wkDown(P('ai')), reason: reason });
     render();
   }
@@ -425,6 +436,13 @@
     render();
   }
   function backUrl() { var r = H && typeof H.ret === 'string' && /^[\w.\-]*$/.test(H.ret) ? H.ret : ''; return '../' + r + (H ? '?clash=' + encodeURIComponent(H.id) : ''); }
+  function tipInit() { var t = lsGet(TIPS_KEY); tip.on = !!(H && H.tips === true && !(t && t.done)); tip.step = 0; }
+  function tipOff(how) { if (!tip.on) return; tip.on = false; lsSet(TIPS_KEY, { v: 1, done: 1, how: how, t: Date.now() }); }
+  function tipEv(k) { if (tip.on && tip.step === k) tip.step++; }
+  function tipHTML() {
+    var n = tip.step, last = n >= TIPS.length - 1;
+    return '<div class="tip" id="qcTip"><span class="tn">TIP ' + (n + 1) + '/' + TIPS.length + '</span>' + esc(TIPS[n]) + '<div class="ctl"><button data-a="' + (last ? 'tipDone' : 'tipNext') + '">' + (last ? 'GOT IT' : 'NEXT') + '</button><button class="alt" data-a="tipSkip">SKIP TIPS</button></div></div>';
+  }
   var app = document.getElementById('app'), ui = { confirmQuit: false };
   function cardHTML(c, owner, extra) {
     var L = LIB[c.key], tags = [];
@@ -479,6 +497,8 @@
     if (selHand) { var cp = canPlay(me, selC); stx += '<br>' + esc(noThe(selC.name)) + ': ' + (cp.ok ? (selC.type === 'strategy' ? (ppT ? 'tap one of your batters' : 'tap PLAY') : 'tap an empty slot on your pitch') : cp.why); }
     if (tg) stx += '<br>' + esc(noThe(selC.name)) + ': ' + (tg.slots.length || tg.direct ? 'tap a lit target' : 'nothing to hit');
     h += '<div class="status">' + stx + '</div>';
+    if (tip.on && tip.step === 3 && S.current === 'ai') tip.step = 4;
+    if (tip.on) h += tipHTML();
     h += '<div class="lbl">' + esc(S.rivalName.toUpperCase()) + ' PITCH</div><div class="row">' + ai.pitch.map(function (c, i) {
       var t = tg && tg.slots.indexOf(i) >= 0; return c ? '<div class="slot card' + (t ? ' tgt' : '') + '"' + (t ? ' role="button" data-a="hit" data-i="' + i + '"' : '') + '>' + cardHTML(c, ai) + '</div>' : '<div class="slot empty">empty</div>'; }).join('') + '</div>';
     var lanes = directLanes(ai), cov = guardCover(ai);
@@ -507,18 +527,21 @@
     if (a === 'quit') { ui.confirmQuit = true; render(); return; }
     if (a === 'quitNo') { ui.confirmQuit = false; render(); return; }
     if (a === 'quitYes') { ui.confirmQuit = false; forfeit(); return; }
+    if (a === 'tipNext') { if (tip.on && tip.step < TIPS.length - 1) tip.step++; render(); return; }
+    if (a === 'tipDone') { tipOff('done'); render(); return; }
+    if (a === 'tipSkip') { tipOff('skip'); render(); return; }
     var me = P('player');
     if (a === 'review') { resolveReview('player', i); save(); render(); return; }
     if (a === 'toss') { resolveToss(u); return; }
     if (!myTurn('player')) return;
     if (a === 'hand') { if (S.phase !== 'main') return; sel = sel === u ? null : u; render(); return; }
-    if (a === 'place') { if (sel != null && playCard('player', sel, null, i)) { sel = null; S.pSteps++; save(); } render(); return; }
-    if (a === 'pp') { if (sel != null && playCard('player', sel, { side: 'player', slot: i })) { sel = null; S.pSteps++; save(); } render(); return; }
-    if (a === 'playS') { if (sel != null && playCard('player', sel, null)) { sel = null; S.pSteps++; save(); } render(); return; }
+    if (a === 'place') { if (sel != null && playCard('player', sel, null, i)) { sel = null; S.pSteps++; tipEv(0); save(); } render(); return; }
+    if (a === 'pp') { if (sel != null && playCard('player', sel, { side: 'player', slot: i })) { sel = null; S.pSteps++; tipEv(0); save(); } render(); return; }
+    if (a === 'playS') { if (sel != null && playCard('player', sel, null)) { sel = null; S.pSteps++; tipEv(0); save(); } render(); return; }
     if (a === 'mine') { if (S.phase !== 'action') return; var c = me.pitch[i]; sel = c && canAct(me, c) && hasAction('player', c) && sel !== c.uid ? c.uid : null; render(); return; }
-    if (a === 'hit' || a === 'direct') { if (sel != null) { if (a === 'hit') act('player', sel, i); else act('player', sel, 'direct', i); S.pSteps++; sel = null; if (!S.over) save(); } render(); return; }
+    if (a === 'hit' || a === 'direct') { if (sel != null) { if (a === 'hit') act('player', sel, i); else act('player', sel, 'direct', i); S.pSteps++; sel = null; tipEv(2); if (!S.over) save(); } render(); return; }
     if (a === 'toAction') { enterAction('player'); return; }
-    if (a === 'endTurn') { enterEnd('player'); return; }
+    if (a === 'endTurn') { tipEv(2); tipEv(3); enterEnd('player'); return; }
   });
   app.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute && e.target.getAttribute('data-a')) { e.preventDefault(); e.target.click(); } });
   function pickAction(a, k) {
@@ -535,7 +558,7 @@
     var q = new URLSearchParams(location.search).get('h'), h = lsGet(HAND_KEY);
     if (!h || h.v !== 1 || !h.id || ['pending', 'playing', 'done', 'claimed'].indexOf(h.state) < 0) { H = null; render(); return; }
     if (q && q !== h.id) { H = null; ui.why = 'That challenge has gone. Challenges come up after an innings on the Tour.'; render(); return; }
-    H = h;
+    H = h; tipInit();
     if (h.state === 'done' || h.state === 'claimed') { lsDel(MATCH_KEY); render(); return; }
     var m = lsGet(MATCH_KEY);
     if (h.state === 'playing' && m && m.v === 1 && m.id === h.id && m.S && m.S.v === 1) { S = m.S; render(); kick(); return; }
