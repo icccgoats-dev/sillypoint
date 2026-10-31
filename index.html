@@ -1093,7 +1093,7 @@
 <script>
 (function(){
 'use strict';
-var VERSION = 'v1.3.2';
+var VERSION = 'v1.3.3';
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
 var DRAFT_CARDS = [
   { id: 'pp', name: 'Power Play', fx: 'Stump bumper hits always pay the SIX (6 + Wicket Value level), never the four.', tags: ['WICKET', 'BATTING'] },
@@ -6711,7 +6711,7 @@ function substep() {
   }
   for (i = 0; i < balls.length; i++) { updateGateFor(balls[i]); var bv = balls[i].body.velocity; if (!balls[i].preV) balls[i].preV = { x: 0, z: 0 }; balls[i].preV.x = bv.x; balls[i].preV.z = bv.z; var bp = balls[i].body.position; if (!balls[i].prePos) balls[i].prePos = { x: 0, z: 0 }; balls[i].prePos.x = bp.x; balls[i].prePos.z = bp.z; }
   world.step(DT);
-  if (!RUBBER) sideMark(); spinDrill();
+  if (RUBBER) spinDrill();
   for (i = 0; i < flippers.length; i++) {
     var fl = flippers[i];
     fl.body.quaternion.setFromAxisAngle(Y, fl.angle);
