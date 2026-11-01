@@ -468,6 +468,8 @@ button { font-family:inherit; }
   #app:has(> .qc-field):has(> #qcTip) > .qc-field { grid-row:5; }
   #app:has(> .qc-field):has(> #qcTip) > .qc-dock { grid-column:2; grid-row:4 / span 2; }
 }
+#app .qc-bcard{outline:2px dashed #9e9e9e;outline-offset:-4px}
+#app .qc-bgem{font-size:16px}
 </style>
 </head>
 <body>
@@ -993,20 +995,21 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   function head(sub, btn) {
     return '<header class="top qc-top"><img class="qc-logo" src="' + LOGO + '" alt="ICCC Goats"><div class="qc-tt"><h1><span class="title">QUICK CLASH</span>' + (S ? ' <span class="qc-v">v ' + esc(S.rivalName) + '</span>' : '') + '</h1><div class="sub qc-sub">' + sub + '</div></div>' + (btn || '') + '</header>';
   }
-  function noMatchHTML(msg) { return head('ICCC Goats Pinball') + '<div class="res qc-res panel"><h2 class="banner">Quick Clash</h2><p class="big go-title go-draw">No challenge waiting</p><p class="note qc-note">' + esc(msg || 'Challenges come up after an innings on the Tour.') + '</p><div class="ctl qc-ctl"><button class="btn-gold" data-a="back">BACK TO THE TOUR</button></div></div>'; }
+  function noMatchHTML(msg) { return head('ICCC Goats Pinball') + '<div class="res qc-res panel"><h2 class="banner">Quick Clash</h2><p class="big go-title go-draw">No challenge waiting</p><p class="note qc-note">' + esc(msg || 'Challenges come up after an innings in your Season.') + '</p><div class="ctl qc-ctl"><button class="btn-gold" data-a="back">BACK TO THE SEASON</button></div></div>'; }
   function resultHTML() {
     var r = H.result, w = r.win, p = H.prize || {}, deck = H.deck || QC.STARTER, rn = (H.rival && H.rival.name) || 'The Rival XI';
     var head1 = r.forfeit ? 'FORFEITED' : w ? 'YOU WIN' : r.tie ? 'TIE' : 'YOU LOSE', cls = w ? 'go-win' : r.tie ? 'go-draw' : 'go-loss';
     var s = head(esc(GROUND_NAME[H.ground] || 'ICCC Goats Pinball')) + '<div class="res qc-res panel go-panel ' + (w ? 'go-win-p' : r.tie ? '' : 'go-loss-p') + '"><h2 class="banner">Quick Clash v ' + esc(rn) + '</h2><p class="big go-title ' + cls + '">' + head1 + '</p>';
     if (!r.forfeit) s += '<table class="scorecard"><tr><th></th><th>Wkts / Runs</th></tr><tr class="big"><td>You</td><td class="' + (w ? 'lead' : '') + '">' + r.wktsYou + '/' + r.runsYou + '</td></tr><tr class="big"><td>' + esc((H.rival && H.rival.name) || 'Rival') + '</td><td class="' + (!w && !r.tie ? 'lead' : '') + '">' + r.wktsThem + '/' + r.runsThem + '</td></tr></table><p class="note qc-note">' + esc(r.reason || '') + '</p>';
-    if (w) s += '<p class="qc-prize">Prize: <b>' + esc(p.label || 'a prize') + '</b> - paid when you get back to the Tour.' + (H.stake ? ' Your ' + H.stake + ' MP bet comes back too.' : '') + '</p>';
+    if (w) s += '<p class="qc-prize">Prize: <b>' + esc(p.label || 'a prize') + '</b> - paid when you get back to the Season.' + (H.stake ? ' Your ' + H.stake + ' MP bet comes back too.' : '') + '</p>';
     else if (r.tie) s += '<p class="qc-prize">No win, no loss.' + (H.stake ? ' Your ' + H.stake + ' MP bet is refunded.' : '') + '</p>';
     else s += '<p class="qc-prize">' + (H.stake ? 'The ' + H.stake + ' MP bet is lost. Nothing else is lost.' : 'Nothing is lost.') + '</p>';
-    if (w && r.offer && r.offer.length && H.state === 'done') {
+    var bon = qcBonus(), offs = qcOffs(r);
+    if (w && (offs.length || bon) && H.state === 'done') {
       if (r.cardPicked == null) {
         var full = deck.length >= QC.DECK_CAP;
         if (!ui.pickKey) {
-          s += '<p class="banner qc-pickh">Pick 1 Clash card</p><p class="qc-note">for your Tour deck (' + deck.length + '/' + QC.DECK_CAP + ' cards)' + (full ? ' - the deck is full, so it swaps out a starter card' : '') + ':</p><div class="hand pick qc-pick">' + r.offer.map(function (k) { return pickCard({ key: k }, 'data-a="pick" data-k="' + k + '"'); }).join('') + '</div>';
+          s += '<p class="banner qc-pickh">Pick 1' + (bon ? '' : ' Clash card') + '</p><p class="qc-note">' + (bon ? 'a Clash card ' : '') + 'for your Season deck (' + deck.length + '/' + QC.DECK_CAP + ' cards)' + (full ? ' - the deck is full, so it swaps out a starter card' : '') + (bon ? ', or a pinball bonus card (one use, tap it on the table)' : '') + ':</p><div class="hand pick qc-pick">' + offs.map(function (k) { return pickCard({ key: k }, 'data-a="pick" data-k="' + k + '"'); }).join('') + (bon ? bonusCard(bon) : '') + '</div>';
           if (full) s += '<div class="ctl qc-ctl"><button class="btn-dark alt" data-a="nopick">KEEP MY DECK AS IT IS</button></div>';
         } else {
           var outs = QC.STARTER.filter(function (k, i, a) { return a.indexOf(k) === i && deck.indexOf(k) >= 0; });
@@ -1014,10 +1017,17 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
         }
         return s + '</div>';
       }
-      s += '<p>' + (r.cardPicked ? 'Added to your Tour deck: <b>' + esc(noThe(LIB[r.cardPicked].name)) + '</b>' + (r.swapOut ? ' (out: ' + esc(noThe(LIB[r.swapOut].name)) + ')' : '') : 'Deck kept as it is.') + '</p>';
+      if (bon && r.bonusPicked === bon.id) s += '<p>Pinball bonus card: <b>' + esc(bon.name) + '</b> - it waits on the table, tap it to use it.</p>'; else
+      s += '<p>' + (r.cardPicked ? 'Added to your Season deck: <b>' + esc(noThe(LIB[r.cardPicked].name)) + '</b>' + (r.swapOut ? ' (out: ' + esc(noThe(LIB[r.swapOut].name)) + ')' : '') : 'Deck kept as it is.') + '</p>';
     }
-    if (H.state === 'claimed') s += '<p class="note qc-note">Already paid on the Tour.</p>';
-    return s + '<div class="ctl qc-ctl"><button class="btn-gold" data-a="back">BACK TO THE TOUR</button></div></div>';
+    if (H.state === 'claimed') s += '<p class="note qc-note">Already paid in your Season.</p>';
+    return s + '<div class="ctl qc-ctl"><button class="btn-gold" data-a="back">BACK TO THE SEASON</button></div></div>';
+  }
+  function qcBonus() { var b = H && H.bonus; return b && typeof b === 'object' && typeof b.id === 'string' && typeof b.name === 'string' ? b : null; }
+  function qcOffs(r) { var o = r && Array.isArray(r.offer) ? r.offer : []; return qcBonus() ? o.slice(0, 2) : o; }
+  function bonusCard(b) {
+    var c = C.handCard({ key: 'qcb', name: b.name, type: 'strategy', cost: 0, text: String(b.text || ''), flavour: 'One use. Tap it on the pinball table.' }, { attrs: 'data-a="bonus" data-k="qcb"' });
+    return c.replace('class="hc gcard', 'class="hc gcard qc-bcard').replace(/<div class="gem[^>]*>[\s\S]*?<\/div>/, '<div class="gem qc-bgem">\uD83C\uDFAF<small>PINBALL</small></div>').replace('>Strategy<', '>Pinball bonus<');
   }
   function scoreBox(p, isMe) {
     return '<div class="sbar panel qc-bar' + (S.current === p.id ? ' cur qc-cur' : '') + '"><span class="qc-nm">' + (isMe ? 'YOU' : esc(S.rivalName.toUpperCase())) + ' <small>turn ' + p.turnsTaken + '/' + QC.TURNS_EACH + '</small></span>' +
@@ -1089,7 +1099,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     var b = e.target.closest && e.target.closest('[data-a]'); if (!b) return;
     var a = b.getAttribute('data-a'), i = +b.getAttribute('data-i'), u = +b.getAttribute('data-u'), k = b.getAttribute('data-k');
     if (a === 'back') { location.href = backUrl(); return; }
-    if (a === 'pick' || a === 'swap' || a === 'nopick' || a === 'unpick') { pickAction(a, k); return; }
+    if (a === 'pick' || a === 'swap' || a === 'nopick' || a === 'unpick' || a === 'bonus') { pickAction(a, k); return; }
     if (!S || S.over) return;
     if (a === 'quit') { ui.confirmQuit = true; render(); return; }
     if (a === 'quitNo') { ui.confirmQuit = false; render(); return; }
@@ -1116,15 +1126,16 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     var r = H.result, deck = H.deck || QC.STARTER;
     if (a === 'unpick') { ui.pickKey = null; render(); return; }
     if (a === 'nopick') { r.cardPicked = ''; }
-    else if (a === 'pick') { if (r.offer.indexOf(k) < 0) return; if (deck.length >= QC.DECK_CAP) { ui.pickKey = k; render(); return; } r.cardPicked = k; }
+    else if (a === 'bonus') { var bn = qcBonus(); if (!bn) return; r.cardPicked = ''; r.bonusPicked = bn.id; }
+    else if (a === 'pick') { if (qcOffs(r).indexOf(k) < 0) return; if (deck.length >= QC.DECK_CAP) { ui.pickKey = k; render(); return; } r.cardPicked = k; }
     else if (a === 'swap') { if (!ui.pickKey || deck.indexOf(k) < 0) return; r.cardPicked = ui.pickKey; r.swapOut = k; }
-    var h = lsGet(HAND_KEY); if (h && h.id === H.id && h.state === 'done') { h.result.cardPicked = r.cardPicked; h.result.swapOut = r.swapOut || null; lsSet(HAND_KEY, h); H = h; }
+    var h = lsGet(HAND_KEY); if (h && h.id === H.id && h.state === 'done') { h.result.cardPicked = r.cardPicked; h.result.swapOut = r.swapOut || null; h.result.bonusPicked = r.bonusPicked || null; lsSet(HAND_KEY, h); H = h; }
     ui.pickKey = null; render();
   }
   function boot() {
     var q = new URLSearchParams(location.search).get('h'), h = lsGet(HAND_KEY);
     if (!h || h.v !== 1 || !h.id || ['pending', 'playing', 'done', 'claimed'].indexOf(h.state) < 0) { H = null; render(); return; }
-    if (q && q !== h.id) { H = null; ui.why = 'That challenge has gone. Challenges come up after an innings on the Tour.'; render(); return; }
+    if (q && q !== h.id) { H = null; ui.why = 'That challenge has gone. Challenges come up after an innings in your Season.'; render(); return; }
     H = h; tipInit();
     if (h.state === 'done' || h.state === 'claimed') { lsDel(MATCH_KEY); render(); return; }
     var m = lsGet(MATCH_KEY);

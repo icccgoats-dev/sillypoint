@@ -958,6 +958,41 @@
   #ngYes{background:#b71c1c !important;border-color:#ff8a65 !important;color:#fff !important;font-weight:bold}
   body.classic #devNewGame{display:none!important}
   #modeFile{margin-top:10px;font-size:13px;min-height:38px}
+  #snLine{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:space-between;font-size:11.5px;line-height:1.25;color:#e0d2b4;margin:2px 0 3px;text-align:left}
+  #snLine:empty{display:none}
+  #snLine .snT{flex:1 1 auto;min-width:0}
+  #snLine .snT b{color:#ffd54f;letter-spacing:.5px} #snLine .snT b.gf{color:#69f0ae}
+  #snLine .sbtn{min-height:26px;padding:1px 8px;font-size:11.5px;margin:0;flex:none;width:auto}
+  @media (orientation:landscape) and (max-height:520px){#snLine{flex-wrap:nowrap;margin:1px 0 2px} #snLine .snT{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #snLine .sbtn{min-height:24px}}
+  #snCard .box,#snInfo .box,#snNew .box{box-sizing:border-box;max-height:94vh;max-height:94dvh;overflow:auto;-webkit-overflow-scrolling:touch}
+  #snCard .box{width:min(480px,94vw)}
+  .gcard p.snSub{font-size:13px;margin:0 0 8px;color:#e0d2b4}
+  .snNums{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;text-align:left;margin:4px 0 8px}
+  .snNums span{color:#bcaaa4;font-size:11px;letter-spacing:1px;font-weight:bold;align-self:center;text-transform:uppercase;white-space:nowrap}
+  .snNums b{color:#fff;font-size:15px}
+  .snNums b small{font-size:11px;color:#e0d2b4;font-weight:normal}
+  .snHd{font-size:11px;letter-spacing:1px;color:#ffd54f;font-weight:bold;margin:6px 0 4px;text-transform:uppercase;text-align:left}
+  .snList{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+  .snList .sbtn{margin:0;width:100%;min-height:44px;text-align:left;padding:5px 10px;display:block}
+  .snList .sbtn b{display:block;font-size:14px} .snList .sbtn small{display:block;font-size:12px;opacity:.85;font-weight:normal}
+  .snList .sbtn.sel{border-color:#69f0ae;box-shadow:0 0 0 2px #69f0ae inset;background:rgba(105,240,174,.14)}
+  .snList .sbtn.out{border-color:#ff8a80;box-shadow:0 0 0 2px #ff8a80 inset;background:rgba(255,138,128,.12)}
+  .snList.snRow{flex-direction:row;flex-wrap:wrap} .snList.snRow .sbtn{flex:1 1 28%;text-align:center;min-height:40px}
+  .snNote{font-size:12px;color:#e0d2b4;text-align:left;margin:0 0 8px}
+  #snGo:disabled,#snCard .sbtn:disabled,#snInfo .sbtn:disabled{opacity:.55;filter:grayscale(1);cursor:default}
+  .snHon{text-align:left;font-size:13px;line-height:1.5;margin:0 0 8px;padding:0;list-style:none}
+  .snHon li{border-bottom:1px solid rgba(255,213,79,.18)} .snHon li b{color:#ffd54f}
+  @media (orientation:landscape) and (max-height:520px){#snCard .box{width:min(820px,96vw);padding:10px 14px} #snCard .snCols{display:grid;grid-template-columns:1fr 1.3fr;gap:14px;text-align:left} #snCard h2{font-size:20px;text-align:left}
+    #snCard .snList .sbtn{min-height:38px;padding:3px 8px} #snCard .pmBtns .sbtn{min-height:40px}}
+  #modeNewSn{margin-top:10px;font-size:14px;font-weight:bold;min-height:40px;width:100%}
+  #modeNewSn small{display:block;font-size:11px;font-weight:600;opacity:.8}
+  #snBonus{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 56px);transform:translateX(-50%);z-index:20;display:none;min-height:44px;padding:5px 16px;border:2px solid #ffd54f;border-radius:12px;background:rgba(43,26,12,.92);color:#ffd54f;font:bold 15px Trebuchet MS,Arial,sans-serif;letter-spacing:1px;cursor:pointer;touch-action:manipulation}
+  #snBonus small{display:block;font-size:11px;font-weight:600;letter-spacing:0;color:#f5ead2}
+  #snBonus.on{border-color:#69f0ae;color:#69f0ae;cursor:default}
+  #qcbBar{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 106px);transform:translateX(-50%);z-index:20;display:none;flex-wrap:wrap;justify-content:center;gap:6px;max-width:calc(100vw - 16px);box-sizing:border-box}
+  #qcbBar button,#qcbBar .qcbOn{min-height:40px;padding:4px 10px;border:2px dashed #9e9e9e;border-radius:10px;background:rgba(30,30,30,.9);color:#eee;font:bold 13px Trebuchet MS,Arial,sans-serif;letter-spacing:1px;cursor:pointer;touch-action:manipulation;text-align:center}
+  #qcbBar small{display:block;font-size:10px;font-weight:600;letter-spacing:0;color:#bbb}
+  #qcbBar .qcbOn{border-style:solid;border-color:#69f0ae;color:#69f0ae;cursor:default}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
@@ -980,12 +1015,21 @@
   <p class="ngTip">Might want it back? COPY SAVE first and keep the code somewhere safe. You can load it later with LOAD SAVE in Settings.</p>
   <p id="ngRes"></p>
   <div class="pmBtns"><button class="sbtn" id="ngCopy">COPY SAVE</button><button class="sbtn go" id="ngNo" data-def="1">CANCEL</button><button class="sbtn" id="ngYes">WIPE &amp; START NEW</button></div></div></div>
+<div id="snCard" class="gcard" role="dialog" aria-label="Season result"><div class="box"><div class="snCols"><div><h2 id="snH">SEASON OVER</h2><p id="snSub" class="snSub"></p><div id="snNums" class="snNums"></div></div>
+  <div><div id="snPickH" class="snHd"></div><div id="snOffer" class="snList"></div><div id="snSwap"></div><div id="snHome"></div>
+  <div class="pmBtns"><button class="sbtn go" id="snGo" data-def="1">START NEXT SEASON &#9654;</button><button class="sbtn" id="snStart">START SCREEN</button></div></div></div></div></div>
+<div id="snInfo" class="gcard" role="dialog" aria-label="Season"><div class="box"><h2 id="snIH">SEASON 1</h2><div id="snIBody"></div><div class="pmBtns"><button class="sbtn go" id="snIClose" data-def="1">CLOSE</button></div></div></div>
+<div id="snNew" class="gcard" role="alertdialog" aria-label="Start a new Season?"><div class="box"><h2>START A NEW SEASON?</h2><p id="snNewTxt"></p>
+  <p class="snNote">Back to the Backyard with an empty bank and the skill tree reset. You keep TOTAL RUNS, best scores, MP, Bails, the Kit Bag, your balls, the 12th, your pinball bonus cards and your Legacy shelf.</p>
+  <div class="pmBtns"><button class="sbtn go" id="snNewNo" data-def="1">CANCEL</button><button class="sbtn" id="snNewYes">START NEW SEASON</button></div></div></div>
+<button type="button" id="snBonus" aria-label="Bonus card">BONUS CARD</button>
+<div id="qcbBar" role="group" aria-label="Pinball bonus cards"></div>
 <div id="pmDone" class="gcard" role="dialog" aria-label="Saved"><div class="box"><h2>SAVED!</h2><p>Safe to close this tab.</p><p style="font-size:13px;color:#d7c7a5">Browsers don&rsquo;t let a game close its own tab.</p><div class="row2"><button class="sbtn go" id="pmBack" data-def="1">KEEP PLAYING</button></div></div></div>
 <button id="pauseBtn" aria-label="Pause" title="Pause (P)">&#10074;&#10074;</button>
 <div id="pauseOv" role="dialog" aria-label="Paused"><i id="pauseTitle">PAUSE</i><b>PAUSED</b><span>tap to resume</span><div id="pauseInfo"></div><button id="saveQuit" class="sbtn">SAVE &amp; QUIT</button></div>
 <div id="tuCard" class="gcard" role="dialog" aria-label="Time's up"><div class="box"><h2>TIME'S UP!</h2><p id="tuTxt"></p><label><input type="checkbox" id="tuShow" checked> Show this every time</label><button class="sbtn go" id="tuNext" data-def="1">NEXT BALL &#9654;</button></div></div>
 <div id="tuPop" aria-hidden="true">TIME'S UP!<small>Runs safe in the bank · next ball coming up</small></div>
-<div id="modeCard" class="gcard" role="dialog" aria-label="Choose a game"><div class="box"><h2>ICCC GOATS PINBALL</h2><p>Pick a game</p><p id="newHome" class="nh" style="display:none">New home for Goats Pinball! Got a save code from an old link? Settings → LOAD SAVE.</p><div class="modeBtns"><button class="sbtn go" id="modeRogue" data-def="1">ROGUE GOATS CRICKET<small>runs, kit, skill tree &amp; new grounds</small></button><button class="sbtn mbC" id="modeClassic">CLASSIC 1979<small>Flash MCG &middot; 3 balls &middot; original factory rules</small></button></div><button class="sbtn" id="modeFile">LOAD FROM FILE</button><div id="modeVer" aria-hidden="true"></div></div></div>
+<div id="modeCard" class="gcard" role="dialog" aria-label="Choose a game"><div class="box"><h2>ICCC GOATS PINBALL</h2><p>Pick a game</p><p id="newHome" class="nh" style="display:none">New home for Goats Pinball! Got a save code from an old link? Settings → LOAD SAVE.</p><div class="modeBtns"><button class="sbtn go" id="modeRogue" data-def="1">ROGUE GOATS CRICKET<small>runs, kit, skill tree &amp; new grounds</small></button><button class="sbtn mbC" id="modeClassic">CLASSIC 1979<small>Flash MCG &middot; 3 balls &middot; original factory rules</small></button></div><button class="sbtn" id="modeNewSn" style="display:none">NEW SEASON<small>end this Season, start again at the Backyard</small></button><button class="sbtn" id="modeFile">LOAD FROM FILE</button><div id="modeVer" aria-hidden="true"></div></div></div>
 <div id="clOver" class="gcard" role="dialog" aria-label="Game over"><div class="box"><h2>GAME OVER</h2><p id="clOverTxt"></p><div class="row2"><button class="sbtn go" id="clAgain" data-def="1">PLAY AGAIN</button><button class="sbtn" id="clQuit">START SCREEN</button></div></div></div>
 <div id="clStrip" aria-label="Classic score"><div class="c cs"><i>PLAYER 1</i><b id="clScore">0</b></div><div class="c"><i>BALL</i><b id="clBall">1/3</b></div><div class="c"><i>CREDITS</i><b id="clCred">0</b></div><div class="c"><i>HIGH SCORE</i><b id="clHsV">550000</b></div></div><div id="clMsg" aria-live="polite"></div>
 <div id="tmSigned" class="gcard" role="dialog" aria-label="12th signed"><div class="box"><h2>12TH SIGNED!</h2><p>He plays at the MCG for you.</p><p>Want to bat solo? Tap the <b>12th</b> pill (or Settings &rarr; Game) to bench him any time. No refund needed, flip him back whenever.</p><div class="row2"><button class="sbtn go" id="tmSignedOk" data-def="1">GOT IT</button></div></div></div>
@@ -1022,6 +1066,7 @@
   <div id="eoiScore"><div class="eoiBig"><div class="eoiLab" id="eoiLab">THIS INNINGS</div><div class="eoiNumRow"><span id="eoiNum">0</span> <span class="eoiAdd">runs added</span></div><div id="eoiMult"></div></div>
    <div class="eoiStats"><div class="eoiSt" id="eoiPrevW"><span>PREV INN SCORE</span><b id="eoiPrev">&ndash;</b></div><div class="eoiSt"><span>BEST</span><b id="eoiBest">0</b></div><div class="eoiSt"><span>LEFT TO SPEND</span><b id="eoiLeft">0</b></div></div></div>
   <div id="eoiDrop" aria-live="polite"></div>
+  <div id="snLine"></div>
   <div class="eoiHdr">GROUNDS</div>
   <div id="venueRow" aria-label="Venue"></div>
   <div id="tabRow" role="tablist"><button class="sbtn tabBtn cur" data-tab="tree" role="tab">Skill Tree</button><button class="sbtn tabBtn" data-tab="kit" role="tab">Kit Bag <span id="bailsLbl"></span></button><button class="sbtn tabBtn" data-tab="balls" role="tab">Balls</button></div>
@@ -1033,7 +1078,7 @@
  </div>
  <button id="nextInnings">NEXT INNINGS &#9654;</button>
 </div>
-<div id="draftDim"></div><div id="draftCard" role="dialog" aria-label="Draft: pick 1 of 3"><div class="dH"><b>DRAFT</b> <span id="draftSub"></span></div><div class="dHint" id="draftHint"></div><div id="draftOffer"></div><div class="dHold" id="draftHold"></div><div class="dRule">Offers are 3 cards at random from the START cards you don't hold yet. Cards last until a New Tour.</div><button type="button" id="draftOk" style="display:none">OK</button></div>
+<div id="draftDim"></div><div id="draftCard" role="dialog" aria-label="Draft: pick 1 of 3"><div class="dH"><b>DRAFT</b> <span id="draftSub"></span></div><div class="dHint" id="draftHint"></div><div id="draftOffer"></div><div class="dHold" id="draftHold"></div><div class="dRule">Offers are 3 cards at random from the START cards you don't hold yet. Cards last until a new Season.</div><button type="button" id="draftOk" style="display:none">OK</button></div>
 <div id="mpanel" role="dialog" aria-label="Skill Tree, Kit Bag and Ball Cabinet">
   <div id="mpHead" role="tablist"><button class="mpTab cur" data-mtab="tree" role="tab">SKILL TREE</button><button class="mpTab" data-mtab="kit" role="tab">KIT BAG</button><button class="mpTab" data-mtab="balls" role="tab">BALLS</button></div>
   <div id="mpBank"></div>
@@ -1088,8 +1133,9 @@
       <div class="drow"><span class="seg grow"><button class="sbtn devBtn grow" id="devGround">DEV &middot; Ground: Backyard</button><button class="sbtn devBtn" id="devGroundGo">Go &#9654;</button></span><span class="devNote" id="devGroundNote"></span></div>
       <div class="dgrid"><button class="sbtn devBtn" id="devPanels">DEV &middot; Skill Tree / Kit / Balls now (F8)</button><button class="sbtn devBtn" id="devSpawn">DEV &middot; Spawn ball (F9)</button></div>
       <div class="dgrid devKit"><button class="sbtn devBtn" id="devApSkill" aria-pressed="true">DEV &middot; Auto Plunger skill: ON</button><button class="sbtn devBtn" id="devTreeLocks" aria-pressed="false">DEV &middot; TREE LOCKS: OFF</button></div>
-      <div class="dgrid devKit"><button class="sbtn devBtn off" id="devDraft" aria-pressed="false">DEV &middot; Draft Lite: OFF</button><button class="sbtn devBtn" id="devNewTour">DEV &middot; NEW TOUR (wipe cards)</button></div>
+      <div class="dgrid devKit"><button class="sbtn devBtn off" id="devDraft" aria-pressed="false">DEV &middot; Draft Lite: OFF</button><button class="sbtn devBtn" id="devNewTour">DEV &middot; WIPE DRAFT CARDS</button></div>
       <div class="devNote" id="devDraftNote"></div>
+      <div class="dgrid devKit"><button class="sbtn devBtn" id="devSnReady">DEV &middot; SEASON: GRAND FINAL READY</button><button class="sbtn devBtn" id="devSnWin">DEV &middot; WIN THE GRAND FINAL NOW</button></div>
       <div class="dgrid devKit"><button class="sbtn devBtn" id="devNewGame">DEV &middot; NEW GAME &amp; CLEAR DATA</button></div>
       <div class="drow devSkills"><span class="seg grow"><select class="sbtn devBtn grow" id="devSkillSel" aria-label="Skill to reset"></select><button class="sbtn devBtn" id="devSkillReset">Reset skill</button></span><button class="sbtn devBtn" id="devSkillAll">RESET ALL SKILLS</button><span class="devNote" id="devSkillNote">refunds the runs (and Bails) spent</span></div>
       <div class="drow devSetLv"><span class="seg"><button class="sbtn devBtn" id="devLvMinus" aria-label="Skill level down">&minus;</button><span class="devNote gapLbl" id="devLvLbl">Lv 0 / 0</span><button class="sbtn devBtn" id="devLvPlus" aria-label="Skill level up">+</button></span><button class="sbtn devBtn" id="devLvMax">MAX ALL</button><button class="sbtn devBtn" id="devLvZero">RESET ALL &middot; Lv 0</button><span class="devNote" id="devLvNote">set levels: no runs spent or refunded &middot; MAX ALL = current caps (unlock grounds first)</span></div>
@@ -1118,8 +1164,9 @@
 <script>
 (function(){
 'use strict';
-var VERSION = 'v1.3.6';
+var VERSION = 'v1.3.7';
 (function () { var e = document.getElementById('modeVer'); if (e) e.textContent = VERSION; })();
+var SN = { finInn: false, won: false, finB: null, justFin: false, row: null, endWhy: null, devGo: false, bonusUsed: false, bonusUntil: 0, tin: false, gold: false, bst: null, bsec: 0, ok: null, dummy: null };
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
 var DRAFT_CARDS = [
   { id: 'pp', name: 'Power Play', fx: 'Stump bumper hits always pay the SIX (6 + Wicket Value level), never the four.', tags: ['WICKET', 'BATTING'] },
@@ -1592,9 +1639,10 @@ function buyUpgrade(id) {
 }
 function nextUpgradeTarget(total, life) {
   if (life === undefined) life = progress.lifetime + (total - progress.bank);
+  life = snLife(life);
   var cands = UPGRADES.map(upgradeInfo).filter(function (i) { return !i.maxed && !i.locked && !i.capped; }).map(function (i) { i.cur = total; return i; });
   var nv = progress.venuesUnlocked + 1;
-  if (nv < VENUES.length) cands.push({ venue: true, id: VENUES[nv].id, name: VENUES[nv].name, level: null, cost: VENUES[nv].need, cur: life,
+  if (nv < VENUES.length) cands.push({ venue: true, id: VENUES[nv].id, name: VENUES[nv].name, level: null, cost: snNeed(nv), cur: life,
                                        now: 'x' + venue().mult, next: 'x' + VENUES[nv].mult });
   if (!cands.length) return { done: true, label: 'Tree complete!', progress: 1, current: total, need: null, ready: 0 };
   var ready = cands.filter(function (i) { return i.cost <= i.cur; });
@@ -3863,7 +3911,7 @@ var settingsOpen = false, capture = null, restartArmedT = -99;
 var phase = 'play';
 var KICKOFF_SAVER = 5.0;
 var autoPlungeT = 0, autoPlunges = 0, kickoffSaves = 0;
-var shCatches = 0, tmHalf = { runs: 0, lost: 0, hits: 0 }, scoreBall = null, TM_PAY = 0.30;
+var shCatches = 0, tmHalf = { runs: 0, lost: 0, hits: 0 }, scoreBall = null, TM_PAY = 0.30, tmFrac = 0;
 var lifeRuns = 0, noBallUsed = false, noBalls = 0, saves = 0, saverUntil = 0, saverArmed = true;
 var lifeBats = 0, plungeT = null, noBallStats = { lastBalls: 0, bats: 0, quick: 0, both: 0, oldRule: 0 };
 var tilt = 0, tiltWarnings = 0, tilted = false, tilts = 0, lastNudgeT = -9, nudges = 0;
@@ -3877,7 +3925,7 @@ function spellLen() { return SPELL_SEC + SPELL_PER_LVL * lvl('time') + itemFx('t
 function finalLen() { return FINAL_OVER_SEC + FINAL_PER_LVL * lvl('final'); }
 function spellLeft() { return tuDrain ? 0 : spellStart === null ? spellLenNow : Math.max(0, spellLenNow - (gt - spellStart)); }
 function finalOver() { return spellStart !== null && !gameOver && balls.length > 0 && spellLeft() > 0 && spellLeft() <= finalLen(); }
-function scoreMult() { return (1 + itemFx('pct') / 100) * (finalOver() ? FINAL_OVER_MULT : 1) * trinketMult() * (frenzyOn() ? FRENZY_MULT : 1); }
+function scoreMult() { return (1 + itemFx('pct') / 100) * (finalOver() ? FINAL_OVER_MULT : 1) * trinketMult() * (frenzyOn() ? FRENZY_MULT : 1) * snMult(); }
 function bondOn() { var it = equipped('bat'); return !!(it && it.b === 'bat_007'); }
 function addBails(n, x, z) {
   if (!n || tilted || gameOver || CLASSIC || tuDrain) return 0;
@@ -4039,16 +4087,24 @@ function resetTargets() {
   targetResets++;
   v1Serve();
 }
+function runLabel(lb, n, m) {
+  if (/^\d+ runs?$/.test(lb)) return m + (m === 1 ? ' run' : ' runs');
+  var t = String(n), at = -1, i = lb.indexOf(t);
+  while (i >= 0) { var a = lb.charAt(i - 1), z = lb.charAt(i + t.length); if (!/[\d.]/.test(a) && !/\d/.test(z)) at = i; i = lb.indexOf(t, i + 1); }
+  return at < 0 ? lb : lb.slice(0, at) + m + lb.slice(at + t.length);
+}
 function addScore(n, pos, label, color) {
-  if (tilted || gameOver || CLASSIC || tuDrain) return;
+  if (tilted || gameOver || CLASSIC || tuDrain || SN.won) return;
   var k = scoreMult(), fo = finalOver();
-  if (scoreBall && scoreBall.byTM && n > 0) { var h0 = n; k *= TM_PAY; tmHalf.hits++; tmHalf.runs += Math.round(h0 * scoreMult() * TM_PAY); tmHalf.lost += Math.round(h0 * scoreMult()) - Math.round(h0 * scoreMult() * TM_PAY); }
-  if (k !== 1) { var n2 = Math.round(n * k); if (label && n2 !== n) label = label === '1 run' ? n2 + ' runs' : label.replace(String(n), String(n2)); n = n2; }
-  if (n > 0 && matchId() === 'golden') { if (label) label = label.replace(String(n), String(n + 1)); n += 1; }
+  var tmHit = !!(scoreBall && scoreBall.byTM && n > 0);
+  if (tmHit) { var full = Math.round(n * k); tmFrac += n * k * TM_PAY; var pay = Math.floor(tmFrac + 1e-9); tmFrac = Math.max(0, tmFrac - pay); tmHalf.hits++; tmHalf.runs += pay; tmHalf.lost += full - pay; if (label) label = runLabel(label, n, pay); n = pay; }
+  else if (k !== 1) { var n2 = Math.round(n * k); if (label && n2 !== n) label = runLabel(label, n, n2); n = n2; }
+  if (n > 0 && matchId() === 'golden') { var gb = snGold(); if (label) label = runLabel(label, n, n + gb); n += gb; }
   if (fo) { finalRuns += n; if (label) label += ' x2'; }
   if (n > 0) comboHits.push(gt);
   var before = targetIndex(score);
-  score += n; lifeRuns += n; if (pos) { popN = n; popBinB = !!pos.bin; var pd = popup(label || ('+' + n), pos.x, pos.z, color, pos.y); popBinB = false; if (pos.bin && pd) { pd.classList.add('bin'); pd.style.setProperty('--bx', ((binPopI++ % 3) - 1) * 18 + 'px'); } popN = 0; }
+  score += n; lifeRuns += n; if (pos && !(tmHit && n <= 0)) { popN = n; popBinB = !!pos.bin; var pd = popup(label || ('+' + n), pos.x, pos.z, color, pos.y); popBinB = false; if (pos.bin && pd) { pd.classList.add('bin'); pd.style.setProperty('--bx', ((binPopI++ % 3) - 1) * 18 + 'px'); } popN = 0; }
+  snFinalCheck();
   var after = targetIndex(score);
   if (after > before) {
     var t = TARGETS[after - 1];
@@ -4186,18 +4242,18 @@ var BIGTURN_SEC = 15, bigTurnUntil = 0;
 function bigTurnOn() { return bigTurnUntil > gt && !gameOver && matchId() === 'century'; }
 function bigTurnCheck(ball) {
   if (centuryUsed || CLASSIC || tilted || gameOver || !ball || ball.tid !== 'century' || ball.bonus || matchId() !== 'century') return;
-  centuryUsed = true; bigTurnUntil = gt + BIGTURN_SEC; trStats.bigTurns = (trStats.bigTurns || 0) + 1; var p = ball.body.position;
-  showCard('infoCard', 'BIG TURN!', 'It rips! All runs \u00d72 for ' + BIGTURN_SEC + ' s', p.x, p.z);
-  stripTake('BIG TURN!', '\u00d72 runs for ' + BIGTURN_SEC + ' s', 3); burst(p.x, 0.6, p.z, 0xffd54f, 40, 7, 6); Sfx.chime();
+  var btS = BIGTURN_SEC * snLk(); centuryUsed = true; bigTurnUntil = gt + btS;    trStats.bigTurns = (trStats.bigTurns || 0) + 1; var p = ball.body.position;
+  showCard('infoCard', 'BIG TURN!', 'It rips! All runs \u00d72 for ' + btS + ' s', p.x, p.z);
+  stripTake('BIG TURN!', '\u00d72 runs for ' + btS + ' s', 3); burst(p.x, 0.6, p.z, 0xffd54f, 40, 7, 6); Sfx.chime();
 }
 function bankRuns(n) {
   var b = bankedFor(n);
-  progress.bank += b; progress.lifetime += b; progress.best = Math.max(progress.best, n); progress.innings++; saveProgress();
+  progress.bank += b; progress.lifetime += b; progress.best = Math.max(progress.best, n); progress.innings++; snOnBank(n, b); saveProgress();
   return b;
 }
 function checkVenueUnlock() {
   var got = null;
-  while (progress.venuesUnlocked + 1 < VENUES.length && progress.lifetime >= VENUES[progress.venuesUnlocked + 1].need) { progress.venuesUnlocked++; got = progress.venuesUnlocked; }
+  while (progress.venuesUnlocked + 1 < VENUES.length && snRuns() >= snNeed(progress.venuesUnlocked + 1)) { progress.venuesUnlocked++;    got = progress.venuesUnlocked; }
   if (got !== null) saveProgress();
   return got;
 }
@@ -4206,22 +4262,23 @@ function endInnings() {
   gameOver = true; charging = false; power = 0; innClear();
   statsPrev = { best: progress.best, bank: progress.bank, lifetime: progress.lifetime };
   var mult = venueMult(), vi = progress.venue, banked = bankRuns(score); saveBackup(); savePersist();
+  snAfterBank(vi, banked);
   lastInnings = { runs: score, banked: banked, mult: mult, venue: vi, bank: progress.bank, best: progress.best, drop: null, unlocked: null, bails: inningsBails, timeouts: spellTimeouts, finalRuns: finalRuns };
   lastInnings.prev = progress.lastB != null ? progress.lastB : null; progress.lastB = banked; saveProgress();
   var minR = inningsBoss ? 2 : inningsRob ? 1 : null;
   lastInnings.drop = rollItemDrop(dbg.forceDrop, minR); lastInnings.guaranteed = minR;
   lastInnings.unlocked = checkVenueUnlock();
-  lastInnings.extra = rollBonusItems(score, vi, lastInnings.drop ? 1 : 0);
+  lastInnings.extra = rollBonusItems(score, vi, lastInnings.drop ? 1 : 0); snKitMan(vi);
   lastInnings.ball = rollTrinketDrop(dbg.forceBall);
   lastInnings.extraBalls = rollBonusBalls(score, vi, lastInnings.ball ? 1 : 0);
   [lastInnings.ball].concat(lastInnings.extraBalls || []).forEach(function (b) { if (b && TRINKET[b]) cabNewAdd(b); });
   lastInnings.mpBig = mpMilestones(score, vi); if (lastInnings.mpBig) { progress.mp = (progress.mp || 0) + lastInnings.mpBig; saveProgress(); var mpB = lastInnings.mpBig; setTimeout(function bigT() { if (document.body.classList.contains('statsOpen')) return setTimeout(bigT, 300); toast('BIG INNINGS: +' + mpB + ' MP', 2600); }, 2400); }
   lastInnings.mpGot = Math.max(0, (progress.mp || 0) - mpInn0);
   stripTake('INNINGS OVER', score.toLocaleString() + ' runs', 5); lastInnings.stats = statsSnapshot();
-  var blr = blLogInnings(blLastTU ? 'time up' : lives > 0 ? 'ended early (dev)' : 'all out', { mult: mult, banked: banked, bank0: statsPrev.bank, bank1: progress.bank, tot0: statsPrev.lifetime, tot1: progress.lifetime });
+  var blr = blLogInnings(SN.endWhy ? SN.endWhy : blLastTU ? 'time up' : lives > 0 ? 'ended early (dev)' : 'all out', { mult: mult, banked: banked, bank0: statsPrev.bank, bank1: progress.bank, tot0: statsPrev.lifetime, tot1: progress.lifetime });
   if (draftOn()) { DRAFT.rowId = blr ? blr.id : null; DRAFT.picked = []; draftSave(); }
-  enterTree(); qcAfterInnings(vi);
-  var scShown = showStatsCard(); blRateOffer(blr);
+  enterTree(); if (!SN.justFin) qcAfterInnings(vi);
+  var scShown = showStatsCard(); blRateOffer(blr); snAfterEnd(blr, scShown);
   if (draftDue()) { if (scShown) el('statsGo').textContent = 'DRAFT \u25b6'; else setTimeout(function () { if (!SC.open) draftOpen(); }, 300); }
   var newBalls = [lastInnings.ball].concat(lastInnings.extraBalls || []).filter(function (b) { return b && TRINKET[b]; });
   if (newBalls.length) setTimeout(function () { toast((newBalls.length > 1 ? 'NEW BALLS FOR THE CABINET: ' : 'NEW BALL FOR THE CABINET: ') + newBalls.map(function (b) { return TRINKET[b].name; }).join(' + ') + '!', 3200); }, 900);
@@ -4229,6 +4286,7 @@ function endInnings() {
 }
 var endGame = endInnings;
 function restart(noBank) {
+  if (snBlockRestart(noBank)) return false;
   blOnRestart(noBank);
   innClear(); cardsClose(); tuWait = false; tuDrain = null; tuFrozen = false; tuCardDone = false;
   if (typeof draftClose === 'function') draftClose(true);
@@ -4249,6 +4307,7 @@ function restart(noBank) {
   input.dbgL = input.dbgR = false; dropFlippersNow();
   gate.ang = 0; gate.w = 0;
   clearParticles();
+  snInnStart();
   leaveTree();
   apStartArm();
   serveBall();
@@ -4365,6 +4424,7 @@ function caughtBehind() {
   var sc = slipsMid(), s0 = slips[0] || { nx: 1, nz: 0 };
   addScore(50, { x: sc.x + s0.nx * 1.7, z: sc.z + s0.nz * 1.7 - 1.0 }, 'CAUGHT! +50', '#ffeb3b');
   addBails(BAILS.caught + itemFx('bails'), sc.x + s0.nx * 1.7, sc.z + s0.nz * 1.7 - 0.2);
+  snTin(sc.x + s0.nx * 1.7, sc.z + s0.nz * 1.7 + 0.4);
   if (!CLASSIC) showCard('caught', null, null, sc.x + s0.nx * 0.6, sc.z + s0.nz * 0.6);
   keeperLight('caught');
   Sfx.cheer();
@@ -4413,7 +4473,7 @@ function processHits() {
       if (cooled) {
         inn.wickets++;
         var six = draftHas('pp') || Math.random() < 0.5, wl = lvl('wicket'), wr = (six ? 6 : 4) + wl + itemFx('wicket');
-        if (matchId() === 'white') wr = Math.round(wr * 1.5);
+        if (matchId() === 'white') wr = Math.round(wr * (1 + 0.5 * snLk()));
         addScore(wr, o.lid ? { x: o.x, z: o.z, y: 1.13, bin: true } : { x: o.x, z: o.z - 0.6 }, six ? 'SIX! +' + wr : 'FOUR +' + wr, six ? '#ffeb3b' : '#69f0ae');
         burst(o.x - dx / d * 0.5, 0.45, o.z - dz / d * 0.5, six ? 0xffd54f : 0x69f0ae, 22, 5, 4);
         flashHitLight(o.x, o.z, six ? 0xffc24d : 0x69f0ae, 3.5); Sfx.pop();
@@ -5776,9 +5836,9 @@ function setBallLook(ball, id) {
 }
 function trinketMult() {
   var id = matchId();
-  if (id === 'pink') return spellStart !== null && spellLeft() <= 20 ? 1.25 : 1;
-  if (id === 'scuffed') return 1 + Math.min(0.3, Math.max(0, gt - inningsT0) / 300);
-  if (id === 'tennis') return TBL.vi === 0 ? 1.3 : 1;
+  if (id === 'pink') return spellStart !== null && spellLeft() <= 20 ? 1 + 0.25 * snLk() : 1;
+  if (id === 'scuffed') return 1 + snLk() * Math.min(0.3, Math.max(0, gt - inningsT0) / 300);
+  if (id === 'tennis') return TBL.vi === 0 ? 1 + 0.3 * snLk() : 1;
   if (id === 'century') return bigTurnOn() && !finalOver() && !frenzyOn() ? 2 : 1;
   return 1;
 }
@@ -7221,11 +7281,12 @@ function drawScoreboard(v) {
   if (v.tilt === 'WARN') { mid = (mid ? mid + '  \u00b7  ' : '') + 'WARNING ' + v.warn; mc = '#ffb300'; }
   if (v.mode && (v.modeHot ? v.tilt !== 'TILT' : !mid)) { mid = v.mode; mc = v.modeHot ? '#00e5ff' : '#80deea'; g.font = 'bold 26px Trebuchet MS, Arial'; }
   if (v.fin && v.tilt !== 'TILT') { mid = 'FINAL OVER x2 \u00b7 ' + v.spell + 's'; mc = '#ff5252'; g.font = 'bold 30px Trebuchet MS, Arial'; }
+  if (v.gf === 'PREMIERS!') { mid = v.gf; mc = '#ffd54f'; g.font = 'bold 36px Trebuchet MS, Arial'; } else if (v.gf && !mid) { mid = v.gf; mc = '#ffd54f'; g.font = 'bold 28px Trebuchet MS, Arial'; }
   if (mid) { g.fillStyle = mc; g.fillText(mid, W / 2 + 10, sy); }
   g.textAlign = 'right'; g.fillStyle = T.bank; g.font = 'bold 28px Trebuchet MS, Arial'; g.fillText('BANK ' + v.bank, W - 40, sy);
   var nt = v.next, ty = 448;
   g.textBaseline = 'alphabetic'; g.textAlign = 'left'; g.font = 'bold 34px Trebuchet MS, Arial'; g.fillStyle = T.next;
-  g.fillText(nt.label.toUpperCase() + (nt.done ? '' : '  ' + nt.now + ' \u2192 ' + nt.next), 40, ty);
+  g.fillText(nt.label.toUpperCase() + (nt.done || nt.gf ? '' : '  ' + nt.now + ' \u2192 ' + nt.next), 40, ty);
   g.textAlign = 'right'; g.fillStyle = '#ffd54f';
   g.fillText(nt.done ? String(v.bank) : (nt.current + ' / ' + nt.need), W - 40, ty);
   if (!nt.done && nt.ready > 0) { g.font = 'bold 22px Arial'; g.fillStyle = '#69f0ae'; g.fillText('+' + nt.ready + ' READY', W - 40, ty - 34); }
@@ -7873,7 +7934,8 @@ function updateScoreboard(force) {
     v = { runs: score, inPlay: balls.length, ballsRemaining: lives, slips: down, slipsNeed: slipsNeeded(), multiball: balls.length > 1,
           next: nextUpgradeTarget(progress.bank + bankedFor(score), progress.lifetime + bankedFor(score)), bank: progress.bank, venue: progress.venue, lanes: topLanes.map(function (l) { return l.lit; }),
           noBall: nb, saver: sv, tilt: tilted ? 'TILT' : tiltWarnings > 0 ? 'WARN' : '', warn: tiltWarnings + '/' + TILT_WARNINGS, mode: modeText(), modeHot: !!(boss && boss.open),
-          spell: (tuFrozen || tuWait) ? 0 : Math.ceil(spellLeft()), fin: finalOver(), clock: spellStart !== null, inPlayN: balls.length, maiden: v1Parts.maidens ? maidensDown() : -1, mp: progress.mp || 0 };
+          spell: (tuFrozen || tuWait) ? 0 : Math.ceil(spellLeft()), fin: finalOver(), clock: spellStart !== null, inPlayN: balls.length, maiden: v1Parts.maidens ? maidensDown() : -1, mp: progress.mp || 0, gf: snBoxTxt() };
+    if (SN.finInn && !gameOver) v.next = snNext();
   }
   if (!v.tree) stripTick(v);
   var key = JSON.stringify(v);
@@ -7984,7 +8046,7 @@ var BL = { cur: null, rateId: null, pendingRate: null, clearArm: 0, cfg: (functi
 var BL_COLS = ['id', 'date', 'ver', 'mode', 'ground', 'inn_no', 'end', 'play_s', 'paused_s', 'game_s', 'resumed', 'runs', 'mult', 'banked_R', 'mp_earned', 'bank_before', 'bank_after', 'total_runs_before', 'total_runs_after',
   'balls_start', 'balls_used', 'balls_left', 'extra_balls', 'no_balls', 'ball_saves', 'multiballs', 'max_balls', 'new_ball_taken', 'saucer', 'keeper_saves', 'spinner', 'stumps', 'slips', 'caught_behind', 'lanes', 'maidens', 'ladder', 'headbutts', 'bails', 'tilts', 'spell_time_ups',
   'runs_per_min', 'peak_10s_runs', 'peak_rate_per_s', 'skills', 'kit', 'match_ball', 'cabinet_balls', 'tree_locks', 'r_difficulty', 'r_score', 'r_earn', 'r_length', 'r_multiball', 'r_fun',
-  'f4_hits', 'f4_swats', 'spinner_r', 'note_difficulty', 'note_score', 'note_earn', 'note_length', 'note_multiball', 'note_fun', 'note_innings', 'dev_flags', 'sanity', 'bat_phys', 'r_general', 'note_general', 'draft_tokens', 'draft_picked', 'draft_cards', 'tm_mode', 'tm_flips'];
+  'f4_hits', 'f4_swats', 'spinner_r', 'note_difficulty', 'note_score', 'note_earn', 'note_length', 'note_multiball', 'note_fun', 'note_innings', 'dev_flags', 'sanity', 'bat_phys', 'r_general', 'note_general', 'draft_tokens', 'draft_picked', 'draft_cards', 'tm_mode', 'tm_flips', 'season_no', 'season_result', 'final_target', 'final_runs', 'legacy_pick', 'grade'];
 function blPhys() { return BL.cur && BL.cur.physMixed ? 'mixed' : (settings.flipPhys === 'old' ? 'old' : 'new'); }
 var BL_RATE_ROWS = [
   { k: 'r_difficulty', t: 'Difficulty', lo: 'too easy', hi: 'too hard' },
@@ -8048,6 +8110,7 @@ function blRow(end, money) {
     tm_mode: CLASSIC ? '' : tmBenched() ? 'off (benched)' : twelfthMode() + ' perk ' + tmEffPerk() + (TBL.vi === 2 ? ' mcg' : ' not mcg'), tm_flips: CLASSIC ? '' : d('tmf'),
     f4_hits: F4.f ? d('f4h') : '', f4_swats: F4.f ? d('f4s') : '', spinner_r: v1Parts.spinner2 && v1Parts.spinner2.k === 'r' ? d('spr') : '',
     sanity: (score > 1e9 || (money && money.banked > 1e9)) ? 'RUNS>1e9' : (isFinite(score) ? '' : 'NaN') };
+  snBL(o);
   BL.cfg.since = (BL.cfg.since | 0) + 1; blCfgSave();
   var L = blLoad(); L.n = (L.n | 0) + 1; o.id = L.n; L.rows.push(o); while (L.rows.length > BL_MAX) L.rows.shift(); blSave(L); blAutoSave();
   BL.cur = null; try { localStorage.removeItem(BL_CUR_KEY); } catch (e) { }
@@ -8257,8 +8320,8 @@ function blIdb(mode, v) {
     } catch (e) { res(null); }
   });
 }
-function blFileKey(o) { return BL_COLS.filter(function (k) { return k !== 'id' && !/^(r|note)_|^draft_picked$/.test(k); }).map(function (k) { return o[k] == null ? '' : String(o[k]); }).join('\u0001'); }
-function blRateFill(a, b) { BL_COLS.forEach(function (k) { if (/^(r|note)_|^draft_picked$/.test(k) && (a[k] == null || a[k] === '') && b[k] != null && b[k] !== '') a[k] = b[k]; }); }
+function blFileKey(o) { return BL_COLS.filter(function (k) { return k !== 'id' && !/^(r|note)_|^draft_picked$|^legacy_pick$/.test(k); }).map(function (k) { return o[k] == null ? '' : String(o[k]); }).join('\u0001'); }
+function blRateFill(a, b) { BL_COLS.forEach(function (k) { if (/^(r|note)_|^draft_picked$|^legacy_pick$/.test(k) && (a[k] == null || a[k] === '') && b[k] != null && b[k] !== '') a[k] = b[k]; }); }
 function blMergeText(old) {
   var R = old ? blParseCSV(String(old).replace(/^\ufeff/, '').trim()) : [], H = R.length ? R[0].map(function (h) { return h.trim(); }) : [];
   if (H.indexOf('date') < 0 || H.indexOf('runs') < 0) { R = []; H = []; }
@@ -8362,10 +8425,10 @@ function ssEl(id) { return document.getElementById(id); }
 function ssShort(n) { n = Math.round(n); var a = Math.abs(n); if (a < 1e5) return String(n); if (a < 1e6) return (n / 1e3).toFixed(a < 1e6 ? 1 : 0).replace(/\.0$/, '') + 'K'; if (a < 1e9) return (n / 1e6).toFixed(2).replace(/0$/, '').replace(/\.0$/, '') + 'M'; return (n / 1e9).toFixed(2) + 'B'; }
 function ssNextN() {
   var vu = progress.venuesUnlocked, nx = VENUES[vu + 1]; if (!nx || progress.venue >= 2 || gameOver) return 0;
-  var m = venueMult() || 1, n = Math.ceil((nx.need - progress.lifetime) / m) - score; return n > 0 ? n : -1;
+  var m = venueMult() || 1, n = Math.ceil((snNeed(vu + 1) - snRuns()) / m) - score; return n > 0 ? n : -1;
 }
 function ssAllOpen() { return !CLASSIC && progress.venuesUnlocked >= VENUES.length - 1; }
-function ssNextTxt(sh) { if (ssAllOpen()) { var tr = (progress.lifetime || 0) + (gameOver ? 0 : bankedFor(score)); return 'TOTAL RUNS ' + (sh ? ssShortRuns(tr) : fmtAU(tr)); }
+function ssNextTxt(sh) { var snt = snStripTxt(sh); if (snt) return snt; if (ssAllOpen()) { var tr = (progress.lifetime || 0) + (gameOver ? 0 : bankedFor(score)); return 'TOTAL RUNS ' + (sh ? ssShortRuns(tr) : fmtAU(tr)); }
   var n = ssNextN(); if (!n) return ''; var nm = progress.venuesUnlocked + 1 === 1 ? 'Club' : 'MCG'; if (n < 0) return '(' + nm + ' at stumps)';
   return '(' + (sh && n >= 1000 ? (n / 1000).toFixed(n < 1e4 ? 1 : 0).replace(/\.0$/, '') + 'K' : n.toLocaleString()) + ' to ' + nm + ')'; }
 function ssShortRuns(n) {
@@ -8727,9 +8790,9 @@ function renderCard() {
     var open = i <= progress.venuesUnlocked;
     var fresh = open && !((progress.vPlayed | 0) & (1 << i));
     html += '<button class="sbtn venueBtn' + (i === progress.venue ? ' cur' : '') + (open ? '' : ' locked') + (fresh ? ' fresh' : '') + '" data-v="' + i + '">' + v.name + (fresh ? ' <b class="vNew">NEW</b>' : '') +
-      (open ? '<small>runs x' + v.mult + (i === progress.venue ? ' \u2713' : '') : '<small class="vNeed" data-s="\uD83D\uDD12 TOTAL RUNS ' + ssShortRuns(progress.lifetime || 0) + ' / ' + ssShortRuns(v.need) + '">\uD83D\uDD12 TOTAL RUNS ' + fmtAU(progress.lifetime || 0) + ' / ' + fmtAU(v.need)) + '</small></button>';
+      (open ? '<small>runs x' + v.mult + (i === progress.venue ? ' \u2713' : '') : '<small class="vNeed" data-s="\uD83D\uDD12 ' + snLab() + ' ' + ssShortRuns(snRuns()) + ' / ' + ssShortRuns(snNeed(i)) + '">\uD83D\uDD12 ' + snLab() + ' ' + fmtAU(snRuns()) + ' / ' + fmtAU(snNeed(i))) + '</small></button>';
   });
-  row.innerHTML = html;
+  row.innerHTML = html; snLineRender();
   Array.prototype.forEach.call(row.querySelectorAll('small.vNeed'), function (sm) { var lh = parseFloat(getComputedStyle(sm).lineHeight) || 14; if (sm.scrollWidth > sm.clientWidth + 1 || sm.offsetHeight > lh * 2.2) sm.textContent = sm.getAttribute('data-s'); });
   var kit = el('kitRow'), kh = '';
   if (treeTab === 'kit') {
@@ -9144,7 +9207,7 @@ el('mpanel').addEventListener('click', function (e) { if (e.target.closest && e.
 window.addEventListener('resize', function () { if (phase === 'tree') { syncPanelMode(); renderPanel(); } });
 function setVenue(i, quiet) {
   i = i | 0; if (i < 0 || i >= VENUES.length) return false;
-  if (i > progress.venuesUnlocked) { if (!quiet) toast('\uD83D\uDD12 ' + VENUES[i].name + ' unlocks at ' + fmtAU(VENUES[i].need) + ' TOTAL RUNS (you have ' + fmtAU(progress.lifetime || 0) + ')', 2200); return false; }
+  if (i > progress.venuesUnlocked) { if (!quiet) toast('\uD83D\uDD12 ' + VENUES[i].name + ' unlocks at ' + fmtAU(snNeed(i)) + ' ' + snLab() + ' (you have ' + fmtAU(snRuns()) + ')', 2200); return false; }
   progress.venue = i; saveProgress(); applyVenue(i);
   if (!quiet) { toast('Next innings at ' + VENUES[i].name + ' (runs x' + VENUES[i].mult + ')'); Sfx.tick(); }
   renderCard(); updateScoreboard(true); return true;
@@ -9420,7 +9483,7 @@ function draftSlipsClear() {
   if (DRAFT_AT.indexOf(inn.dClr) >= 0) { var m = slipsMid(); draftEarn('slips clear ' + inn.dClr, m.x, m.z); }
 }
 function draftLeft() { return DRAFT_CARDS.filter(function (c) { return DRAFT.cards.indexOf(c.id) < 0; }).map(function (c) { return c.id; }); }
-function draftDue() { return draftOn() && DRAFT.pend > 0 && phase === 'tree'; }
+function draftDue() { return draftOn() && DRAFT.pend > 0 && phase === 'tree' && !snHold(); }
 function draftDraw() { var a = draftLeft(), o = []; while (a.length && o.length < 3) o.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]); return o; }
 function draftRender() {
   var D = DRAFT, off = D.offer || [];
@@ -9428,7 +9491,7 @@ function draftRender() {
   el('draftHint').textContent = off.length ? (panelMode() ? 'Tap a card to keep it.' : 'Click a card to keep it (or press 1-' + off.length + ').') : 'You already hold all ' + DRAFT_CARDS.length + ' START cards. Spare tokens: ' + D.pend + ' \u2192 +' + (D.pend * DRAFT_SPARE_BAILS) + ' Bails (' + DRAFT_SPARE_BAILS + ' each) when you press OK.';
   el('draftOffer').innerHTML = off.map(function (id, i) { var c = DRAFT_BY[id];
     return '<button type="button" data-card="' + id + '"><span class="cN">' + c.name + '</span><span class="cF">' + c.fx + '</span><span class="cT">' + c.tags.map(function (t) { return '<i>' + t + '</i>'; }).join('') + '</span><span class="cK">' + (panelMode() ? '' : 'key ' + (i + 1)) + '</span></button>'; }).join('');
-  el('draftHold').innerHTML = '<b>Your cards (Tour ' + D.tour + '):</b> ' + (D.cards.length ? draftCardNames(D.cards).replace(/; /g, ' \u00b7 ') : 'none yet');
+  el('draftHold').innerHTML = '<b>Your cards (this Season):</b> ' + (D.cards.length ? draftCardNames(D.cards).replace(/; /g, ' \u00b7 ') : 'none yet');
   el('draftOk').style.display = off.length ? 'none' : '';
 }
 function draftOpen() {
@@ -9467,15 +9530,15 @@ window.addEventListener('keydown', function (e) { if (!DRAFTUI.open) return; e.p
 function renderDraftDev() {
   var b = el('devDraft'); if (!b) return; var on = DRAFT.on === true;
   b.textContent = 'DEV \u00b7 Draft Lite: ' + (on ? 'ON' : 'OFF'); b.classList.toggle('off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
-  if (!(DRAFTUI.tourArm > performance.now())) el('devNewTour').textContent = 'DEV \u00b7 NEW TOUR (wipe cards)';
-  el('devDraftNote').textContent = 'Draft Lite (roguelite Phase 1): Tour ' + DRAFT.tour + ' \u00b7 cards: ' + (DRAFT.cards.length ? draftCardNames(DRAFT.cards).replace(/; /g, ', ') : 'none') + ' \u00b7 tokens waiting: ' + DRAFT.pend + (on ? '' : ' \u00b7 OFF = the cards do nothing');
+  if (!(DRAFTUI.tourArm > performance.now())) el('devNewTour').textContent = 'DEV \u00b7 WIPE DRAFT CARDS';
+  el('devDraftNote').textContent = 'Draft Lite (roguelite Phase 1): card set ' + DRAFT.tour + ' \u00b7 cards: ' + (DRAFT.cards.length ? draftCardNames(DRAFT.cards).replace(/; /g, ', ') : 'none') + ' \u00b7 tokens waiting: ' + DRAFT.pend + (on ? '' : ' \u00b7 OFF = the cards do nothing');
 }
 function setDraftOn(on) { DRAFT.on = !!on; draftSave(); renderDraftDev(); if (window.devBadgeSync) setTimeout(window.devBadgeSync, 0); return DRAFT.on; }
 function draftNewTour() { DRAFT.tour = (DRAFT.tour | 0) + 1; DRAFT.cards = []; DRAFT.pend = 0; DRAFT.offer = null; DRAFT.picked = []; DRAFT.rowId = null; if (inn) inn.dTok = 0; draftSave(); draftClose(true); renderDraftDev(); qcTourCheck(); return DRAFT.tour; }
 el('devDraft').addEventListener('click', function () { var on = setDraftOn(!DRAFT.on); toast('Draft Lite ' + (on ? 'ON' : 'OFF'), 1400); });
 el('devNewTour').addEventListener('click', function (e) { e.preventDefault(); var b = el('devNewTour');
   if (!(DRAFTUI.tourArm > performance.now())) { DRAFTUI.tourArm = performance.now() + 3500; b.textContent = 'TAP AGAIN: wipe ' + DRAFT.cards.length + ' card(s)'; setTimeout(renderDraftDev, 3600); return; }
-  DRAFTUI.tourArm = 0; var t = draftNewTour(); toast('NEW TOUR ' + t + ': cards wiped', 1800); });
+  DRAFTUI.tourArm = 0; var t = draftNewTour(); toast('Draft cards wiped (set ' + t + ')', 1800); });
 renderDraftDev();
 el('mpNext').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); el('nextInnings').click(); });
 el('nextInnings').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (devMid) { devCloseTree(); return; } restart(); });
@@ -9611,6 +9674,7 @@ function scApply() {
     localStorage.setItem(SAVE_UNDO_KEY, JSON.stringify(undo));
     var st = {}; try { st = JSON.parse(scRaw(STORE_KEY) || '{}') || {}; } catch (e) { st = {}; }
     SC_PLAYER_SET.forEach(function (k) { if (d.settings && d.settings[k] !== undefined) st[k] = d.settings[k]; });
+    if (d.build !== VERSION) st.timeUpCard = true;
     if (d.settings && typeof d.settings.v === 'number') st.v = Math.min(SETTINGS_VERSION, d.settings.v);
     if (dev) SC_DEV_SET.forEach(function (k) { if (d.dev.settings && d.dev.settings[k] !== undefined) st[k] = d.dev.settings[k]; });
     localStorage.setItem(STORE_KEY, JSON.stringify(st));
@@ -9877,7 +9941,7 @@ function devPickGround(i) {
   if (phase === 'tree') devApplyGround(devGroundPick);
   renderDevGround(); return devGroundPick;
 }
-function devGroundGo() { var i = devGroundPick === null ? progress.venue : devGroundPick; devApplyGround(i); if (settingsOpen) closeSettings(); restart(); return progress.venue; }
+function devGroundGo() { var i = devGroundPick === null ? progress.venue : devGroundPick; devApplyGround(i); if (settingsOpen) closeSettings(); SN.devGo = true; try { restart(); } finally { SN.devGo = false; } return progress.venue; }
 el('devGround').addEventListener('click', function () { devPickGround((devGroundPick === null ? progress.venue : devGroundPick) + 1); });
 el('devGroundGo').addEventListener('click', function () { blGuarded(devGroundGo); });
 renderDevGround();
@@ -10023,7 +10087,7 @@ function clToStart() {
 function newHomeSync() { var on = NEW_HOME && !(progress.innings > 0 || progress.lifetime > 0 || progress.bank > 0);
   ['newHome', 'newHome2'].forEach(function (k) { var e = el(k); if (e) e.style.display = on ? 'block' : 'none'; }); }
 function modeOpen() {
-  newHomeSync();
+  newHomeSync(); snModeSync();
   releaseAllInputs(true); dropFlippersNow(); charging = false; power = 0;
   el('modeCard').classList.add('open'); cardHold = true;
   try { el('modeRogue').focus({ preventScroll: true }); } catch (e) { }
@@ -10058,7 +10122,7 @@ function qcTourCheck() {
   if (h && h.tour !== qcTourNo() && (h.state === 'pending' || h.state === 'playing') && h.stake > 0 && !qcPaid(h.id)) { refund = h.stake; progress.mp = (progress.mp || 0) + refund; qcMarkPaid(h.id); saveProgress(); }
   if (h && h.tour !== qcTourNo() && h.state !== 'done') { qcDel(QC_HAND_KEY); qcDel(QC_MATCH_KEY); }
   QT = qcFresh(); qcSaveT();
-  if (refund) setTimeout(function () { toast('New Tour: the unfinished Quick Clash was dropped, ' + refund + ' MP bet refunded', 3000); }, 800);
+  if (refund) setTimeout(function () { toast('New Season: the unfinished Quick Clash was dropped, ' + refund + ' MP bet refunded', 3000); }, 800);
   return true;
 }
 function qcPaid(id) { return Array.isArray(progress.clashIds) && progress.clashIds.indexOf(id) >= 0; }
@@ -10120,7 +10184,7 @@ function qcOpen() {
 function qcRender() {
   var o = QT.offer; if (!o) return; var p = qcPrize(o.kind, o.g, QCUI.bet), st = QC_BET[o.g], can = (progress.mp || 0) >= st;
   if (!can) QCUI.bet = false;
-  el('qcPrize').innerHTML = 'Win: <b>' + esc(p.label) + '</b><br>+ pick 1 of 3 Clash cards for your Tour deck (' + QT.deck.length + '/' + QC_DECK_CAP + ')' + (QCUI.bet ? '<br>Bet: ' + st + ' MP (back if you win, lost if you lose)' : '');
+  el('qcPrize').innerHTML = 'Win: <b>' + esc(p.label) + '</b><br>+ pick 1 of 3: ' + (qcbPool().length ? '2 Clash cards for your Season deck (' + QT.deck.length + '/' + QC_DECK_CAP + ') or a pinball bonus card' : 'Clash cards for your Season deck (' + QT.deck.length + '/' + QC_DECK_CAP + ')') + (QCUI.bet ? '<br>Bet: ' + st + ' MP (back if you win, lost if you lose)' : '');
   var b = el('qcBet'); b.disabled = !can; b.classList.toggle('on', QCUI.bet); b.setAttribute('aria-pressed', QCUI.bet ? 'true' : 'false');
   b.textContent = can ? (QCUI.bet ? '\u2714 BETTING ' + st + ' MP: PRIZE UP A TIER' : 'BET ' + st + ' MP: PRIZE UP A TIER') : 'BET ' + st + ' MP \u00b7 you have ' + (progress.mp || 0) + ' MP';
 }
@@ -10133,7 +10197,7 @@ function qcAccept() {
   var g = o.g, bet = QCUI.bet && (progress.mp || 0) >= QC_BET[g], stake = bet ? QC_BET[g] : 0, p = qcPrize(o.kind, g, bet);
   var seed = Math.floor(qcRand() * 4294967295) >>> 0 || 7;
   var h = { v: 1, id: o.id, state: 'pending', appVer: VERSION, tour: qcTourNo(), ground: g, inn: progress.innings | 0, seed: seed, first: (QT.n | 0) % 2 ? 'ai' : 'player',
-    rival: o.rival, deck: QT.deck.slice(), prize: p, stake: stake, t0: Date.now(), ret: qcPage(), tips: !(Array.isArray(progress.clashIds) && progress.clashIds.length) };
+    rival: o.rival, deck: QT.deck.slice(), prize: p, stake: stake, t0: Date.now(), ret: qcPage(), tips: !(Array.isArray(progress.clashIds) && progress.clashIds.length), bonus: qcbOffer() };
   if (stake) progress.mp -= stake;
   QT.n = (QT.n | 0) + 1; QT.offer = null;
   if (!qcSet(QC_HAND_KEY, h)) { if (stake) progress.mp += stake; QT.offer = o; toast('Could not save on this device', 2000); return false; }
@@ -10167,7 +10231,7 @@ function qcClaim() {
   if (r.win) {
     out.head = 'QUICK CLASH WON!'; out.lines.push('Prize: ' + qcPayPrize(h.prize));
     if (h.stake) { progress.mp = (progress.mp || 0) + h.stake; out.lines.push('Bet back: +' + h.stake + ' MP'); }
-    if (sameTour) { var c = qcDeckAdd(r); if (c) out.lines.push('Clash deck: +' + c + ' (' + QT.deck.length + '/' + QC_DECK_CAP + ')'); QT.streak = (QT.streak | 0) + 1; }
+    if (sameTour) { var qb = qcbClaim(h, r); if (qb) out.lines.push(qb); else { var c = qcDeckAdd(r); if (c) out.lines.push('Clash deck: +' + c + ' (' + QT.deck.length + '/' + QC_DECK_CAP + ')'); } QT.streak = (QT.streak | 0) + 1; }
   } else if (r.tie) { out.head = 'QUICK CLASH TIED'; out.lines.push('No win, no loss.'); if (h.stake) { progress.mp = (progress.mp || 0) + h.stake; out.lines.push('Bet refunded: +' + h.stake + ' MP'); } }
   else { out.head = r.forfeit ? 'QUICK CLASH FORFEITED' : 'QUICK CLASH LOST'; out.lines.push(h.stake ? 'The ' + h.stake + ' MP bet is lost. Nothing else.' : 'Nothing lost.'); if (sameTour) QT.streak = 0; }
   if (!r.forfeit) out.score = 'You ' + r.wktsYou + '/' + r.runsYou + ' \u00b7 ' + (h.rival && h.rival.name || 'Rival') + ' ' + r.wktsThem + '/' + r.runsThem;
@@ -10308,6 +10372,16 @@ window.addEventListener('keydown', function (e) {
 }, true);
 var NV_KEY = 'icccGoatsPinball.lastBuild', NV = { open: false, then: null, t: null };
 function nvSeen() { try { localStorage.setItem(NV_KEY, VERSION); } catch (e) { } }
+var TU_BUILD_KEY = 'icccGoatsPinball.tuBuild';
+function tuNewBuild() {
+  var tf = window.__testFlags; if (tf && !tf.tuBuild) return false;
+  if (SAVE.storeOK === false || SAVE.frozen) return false;
+  var seen = null, last = null; try { seen = localStorage.getItem(TU_BUILD_KEY); last = localStorage.getItem(NV_KEY); } catch (e) { return false; }
+  if (seen === VERSION) return false;
+  try { localStorage.setItem(TU_BUILD_KEY, VERSION); } catch (e) { return false; }
+  if (last === VERSION || settings.timeUpCard !== false) return false;
+  settings.timeUpCard = true; saveSettings(); renderTimeUpOpt(); return true;
+}
 function nvNeed() {
   var tf = window.__testFlags; if (tf && !tf.nvCard) return false;
   if (SAVE.storeOK === false || SAVE.newer) return false;
@@ -10331,17 +10405,424 @@ window.addEventListener('keydown', function (e) {
   if (code === 'Enter' || code === 'Space' || code === 'NumpadEnter') { e.preventDefault(); e.stopImmediatePropagation(); if (e.repeat) return; var f = document.activeElement; if (f && f.tagName === 'BUTTON' && el('nvCard').contains(f)) f.click(); else nvKeep(); return; }
   e.preventDefault(); e.stopImmediatePropagation();
 }, true);
+var QCB = [
+  { id: 'x2', name: 'Double Runs', text: '\u00d72 runs for 15 s. Not on top of another \u00d72.' },
+  { id: 'saver', name: 'Ball Saver', text: '12 s of Ball Saver from the tap (ball in play).' },
+  { id: 'multi', name: 'Multiball', text: 'One more ball up the lane, now.' },
+  { id: 'kitball', name: 'Kit Ball', text: 'A kit perk ball (Corky, Nets Ball, Fizzer or Four-Piece) at a random level, into your Kit Bag.' }
+], QCB_SEC = 15, QCB_SAVER = 12, QCB_HAND = 4, QCB_BALLS = ['ball_tennis', 'ball_faded', 'ball_pink', 'ball_kooka'], QCB_KIT_W = [40, 30, 18, 9, 3];
+var QCBR = { until: 0, sig: null };
+function qcbOf(id) { for (var i = 0; i < QCB.length; i++) if (QCB[i].id === id) return QCB[i]; return null; }
+function qcbS() {
+  var s = snS(), q = s.qcb; if (!q || typeof q !== 'object' || Array.isArray(q)) q = s.qcb = { seen: [], hand: [] };
+  if (!Array.isArray(q.seen)) q.seen = []; if (!Array.isArray(q.hand)) q.hand = [];
+  q.hand = q.hand.filter(function (id) { return !!qcbOf(id); }); return q;
+}
+function qcbPool() { if (CLASSIC) return []; var q = qcbS(); if (q.hand.length >= QCB_HAND) return []; return QCB.filter(function (b) { return q.seen.indexOf(b.id) < 0; }); }
+function qcbOffer() { var p = qcbPool(); if (!p.length) return null; var b = p[Math.min(p.length - 1, Math.floor(qcRand() * p.length))]; return { id: b.id, name: b.name, text: b.text }; }
+function qcbClaim(h, r) {
+  if (CLASSIC || !h || !h.bonus || !qcbOf(h.bonus.id)) return '';
+  var q = qcbS(), id = h.bonus.id; if (q.seen.indexOf(id) < 0) q.seen.push(id);
+  if (!r || r.bonusPicked !== id) return '';
+  q.hand.push(id); qcbSync(); return 'Pinball bonus card: ' + qcbOf(id).name + ' (tap it on the table)';
+}
+function qcbX2On() { return QCBR.until > gt && !gameOver && !finalOver() && !frenzyOn() && !bigTurnOn() && !snBonusOn(); }
+function qcbKitBall() {
+  var id = QCB_BALLS[Math.min(QCB_BALLS.length - 1, Math.floor(qcRand() * QCB_BALLS.length))], tot = 0, x, ri = 0;
+  QCB_KIT_W.forEach(function (w) { tot += w; }); x = qcRand() * tot;
+  for (var i = 0; i < QCB_KIT_W.length; i++) { if (x < QCB_KIT_W[i]) { ri = i; break; } x -= QCB_KIT_W[i]; ri = i; }
+  var it = newItem(id, RARITIES[ri].id); progress.drops++;
+  if (progress.items.length >= KIT_CAP) { var sv = RARITY[it.r].salvage; progress.bails += sv; return { u: it.u, b: it.b, r: it.r, salvaged: sv }; }
+  progress.items.push(it); if (!progress.kit.ball) progress.kit.ball = it.u;
+  return { u: it.u, b: it.b, r: it.r };
+}
+function qcbUse(i) {
+  var q = qcbS(), id = q.hand[i], b = qcbOf(id), msg = '';
+  if (!b || CLASSIC || phase !== 'play' || gameOver || tuDrain || tilted || cardHold) return false;
+  if (id === 'x2') {
+    if (QCBR.until > gt || finalOver() || frenzyOn() || bigTurnOn() || snBonusOn()) { toast('Save it: Double Runs doesn\u2019t stack on another \u00d72', 1800); return false; }
+    QCBR.until = gt + QCB_SEC; msg = '\u00d72 runs for ' + QCB_SEC + ' s';
+  } else if (id === 'saver') {
+    if (saverArmed || !balls.length) { toast('Bowl the ball first', 1400); return false; }
+    saverUntil = Math.max(saverUntil, gt + QCB_SAVER); msg = QCB_SAVER + ' s of Ball Saver';
+  } else if (id === 'multi') {
+    if (saverArmed || !balls.length || balls.length + laneQ.length >= MAX_BALLS) { toast(saverArmed || !balls.length ? 'Bowl the ball first' : 'Max balls in play', 1400); return false; }
+    laneSpawn(); msg = 'one more ball';
+  } else if (id === 'kitball') {
+    var d = qcbKitBall(); msg = d.salvaged ? RARITY[d.r].name + ' ' + itemName(d) + ': Kit Bag full, +' + d.salvaged + ' Bails' : RARITY[d.r].name + ' ' + itemName(d) + ' in your Kit Bag';
+  }
+  q.hand.splice(i, 1); saveProgress();
+  stripTake(b.name.toUpperCase() + '!', msg, 4); toast(b.name + ': ' + msg, 2200); try { Sfx.chime(); } catch (e) { }
+  QCBR.sig = null; qcbSync(); return true;
+}
+function qcbSync() {
+  var bar = el('qcbBar'); if (!bar) return;
+  var s = progress && progress.season, hand = !CLASSIC && s && s.qcb && Array.isArray(s.qcb.hand) ? s.qcb.hand : [];
+  var show = !CLASSIC && phase === 'play' && !gameOver && !tuDrain && !cardHold && !gamePaused && !settingsOpen && !gcardOpen();
+  var act = QCBR.until > gt, sec = act ? Math.ceil(QCBR.until - gt) : 0, sig = show ? hand.join(',') + '|' + (act ? sec + (qcbX2On() ? 'a' : 'p') : '') : '';
+  if (sig === QCBR.sig) return; QCBR.sig = sig;
+  if (!show || (!hand.length && !act)) { bar.style.display = 'none'; bar.innerHTML = ''; return; }
+  var h = act ? '<span class="qcbOn">DOUBLE RUNS<small>' + (qcbX2On() ? '\u00d72 runs \u00b7 ' : 'paused for the other \u00d72 \u00b7 ') + sec + ' s</small></span>' : '';
+  hand.forEach(function (id, i) { var b = qcbOf(id); h += '<button type="button" data-i="' + i + '" aria-label="Bonus card: ' + esc(b.name) + '">' + esc(b.name.toUpperCase()) + '<small>tap to use</small></button>'; });
+  bar.innerHTML = h; bar.style.display = 'flex';
+}
+el('qcbBar').addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('button[data-i]'); if (!b) return; e.preventDefault(); e.stopPropagation(); Sfx.unlock(); qcbUse(+b.getAttribute('data-i')); });
+['touchstart', 'pointerdown', 'mousedown'].forEach(function (ev) { el('qcbBar').addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
+var SN_FINAL_BASE = 400000, SN_GRADE_STEP = 0.25, SN_PAY = { P: 40, R: 15 }, SN_LEFT_PER = 20000, SN_LEFT_MAX = 10;
+var SN_MCG_INN = 2, SN_SHELF = 3, SN_SLOT_COST = [150, 300], SN_CLUB_NEED = 2000, SN_BONUS_SEC = 15, SN_SPONSOR_R = 600;
+var SN_OLDPRO_PER = 0.01, SN_OLDPRO_MAX = 0.05, SN_HOME_PCT = 0.15, SN_SCOUT = 0.9, SN_LUCKY = 1.5, SN_HON_SHOW = 10;
+var SN_PERKS = [
+  { id: 'bat', name: 'Head Start: Bat Power', d: 'Start each Season with Bat Power Lv 2' },
+  { id: 'nets', name: 'Nets Session', d: 'Start each Season with Ball Saver Lv 1 and Keeper Lv 1' },
+  { id: 'sponsor', name: 'Sponsor\u2019s Cheque', d: 'Start each Season with 600 runs in the bank' },
+  { id: 'club', name: 'Club Membership', d: 'The Club Oval opens at 2,000 Season runs (not 3,000)' },
+  { id: 'tin', name: 'Groundsman\u2019s Tin', d: '+1 Bail on your first CAUGHT BEHIND of each innings' },
+  { id: 'kitman', name: 'Kit Man', d: 'One extra kit roll at the end of your first Club innings each Season' },
+  { id: 'eye', name: 'Selector\u2019s Eye', d: 'See the Grand Final total early, and call the Final after 1 MCG innings' },
+  { id: 'bonus', name: 'Bonus Card', d: 'Each MCG innings: one tap-to-use card, \u00d72 runs for 15 s (not on top of another \u00d72)' },
+  { id: 'capt', name: 'Captain\u2019s Pick', d: 'Start each Season with one Draft card pick', draft: true },
+  { id: 'lucky', name: 'Lucky Ball', d: 'Your match ball\u2019s runs perk is 50% stronger' },
+  { id: 'oldpro', name: 'Old Pro', d: '+1% all runs per Premiership flag (max +5%)', s2: true },
+  { id: 'home', name: 'Home Ground', d: '+15% runs at one ground you choose', s2: true },
+  { id: 'scout', name: 'Rival Scout', d: 'The Grand Final total is 10% lower', s2: true }];
+var SN_PERK = {}; SN_PERKS.forEach(function (p) { SN_PERK[p.id] = p; });
+var SN_GO0 = (el('statsGo') && el('statsGo').textContent) || 'NEXT';
+var SNC = { open: false, t: null, sel: null, out: null, hg: null, keep: false }, SNN = { open: false, t: null };
+function snFresh() { return { v: 1, no: 1, grade: 0, runs: 0, inn: 0, mcg: 0, called: false, best: 0, shelf: [], slots: SN_SHELF, flags: [], streak: 0, bestStreak: 0, bestFinal: 0, bestSeason: 0, kitDone: false, pend: null }; }
+function snS() {
+  if (CLASSIC) return SN.dummy || (SN.dummy = snFresh());
+  var p = progress, s = p.season;
+  if (!s || typeof s !== 'object' || Array.isArray(s)) { s = p.season = snFresh(); s.runs = +p.lifetime || 0; s.inn = +p.innings || 0; s.best = +p.best || 0; }
+  if (SN.ok !== s) {
+    ['no', 'grade', 'runs', 'inn', 'mcg', 'best', 'slots', 'streak', 'bestStreak', 'bestFinal', 'bestSeason'].forEach(function (k) { var v = +s[k]; s[k] = isFinite(v) && v > 0 ? v : 0; });
+    s.no = Math.max(1, Math.floor(s.no)); s.grade = Math.floor(s.grade); s.slots = Math.max(SN_SHELF, Math.min(SN_SHELF + SN_SLOT_COST.length, Math.floor(s.slots) || SN_SHELF));
+    if (!Array.isArray(s.shelf)) s.shelf = []; s.shelf = s.shelf.filter(function (e) { return e && SN_PERK[e.id]; });
+    if (!Array.isArray(s.flags)) s.flags = [];
+    if (s.pend && (typeof s.pend !== 'object' || !Array.isArray(s.pend.offer))) s.pend = null;
+    SN.ok = s;
+  }
+  return s;
+}
+function snHas(id) { var s = progress && progress.season; if (CLASSIC || !s || !s.shelf) return false; for (var i = 0; i < s.shelf.length; i++) if (s.shelf[i] && s.shelf[i].id === id) return true; return false; }
+function snPrem(s) { var n = 0; (s.flags || []).forEach(function (f) { if (f && f.res === 'P') n++; }); return n; }
+function snRuns() { var s = snS(); return s.no > 1 ? s.runs : (progress.lifetime || 0); }
+function snLab() { return snS().no > 1 ? 'SEASON RUNS' : 'TOTAL RUNS'; }
+function snNeed(i) { var v = VENUES[i]; if (!v) return Infinity; return i === 1 && snHas('club') ? Math.min(v.need, SN_CLUB_NEED) : v.need; }
+function snLife(life) { return CLASSIC ? life : life - (progress.lifetime || 0) + snRuns(); }
+function snMcgNeed() { var s = snS(); return snHas('eye') && s.called ? 1 : SN_MCG_INN; }
+function snReady() { var s = snS(); return !CLASSIC && !s.pend && s.mcg >= snMcgNeed(); }
+function snTarget(g) { var s = snS(); if (g == null) g = s.grade; return Math.round(SN_FINAL_BASE * (1 + SN_GRADE_STEP * g) * (snHas('scout') ? SN_SCOUT : 1)); }
+function snPay(res, g) { return Math.round(SN_PAY[res] * (1 + SN_GRADE_STEP * g)); }
+function snLeft() { return Math.min(SN_LEFT_MAX, Math.floor(Math.max(0, progress.bank || 0) / SN_LEFT_PER)); }
+function snCabFull() { return TRINKETS.every(function (t) { return trOwned(t.id); }); }
+function snHold() { var s = progress && progress.season; return !CLASSIC && !!(s && s.pend); }
+function snInProg() { var s = snS(); return s.no > 1 || s.inn > 0 || s.runs > 0 || (progress.lifetime || 0) > 0 || (progress.bank || 0) > 0; }
+function snLk() { return snHas('lucky') ? SN_LUCKY : 1; }
+function snGold() { if (!snHas('lucky')) return 1; SN.gold = !SN.gold; return SN.gold ? 2 : 1; }
+function snMult() {
+  var s = progress.season; if (CLASSIC || !s) return 1;
+  var k = qcbX2On() ? 2 : 1;
+  var sh = s.shelf || [];
+  for (var i = 0; i < sh.length; i++) { var e = sh[i]; if (!e) continue;
+    if (e.id === 'oldpro') k *= 1 + Math.min(SN_OLDPRO_MAX, SN_OLDPRO_PER * snPrem(s));
+    else if (e.id === 'home' && e.g === progress.venue) k *= 1 + SN_HOME_PCT; }
+  if (snBonusOn()) k *= 2;
+  return k;
+}
+function snBonusOn() { return SN.bonusUntil > gt && !gameOver && !finalOver() && !frenzyOn() && !bigTurnOn(); }
+function snTin(x, z) { if (CLASSIC || SN.tin || !snHas('tin')) return; SN.tin = true; addBails(1, x, z == null ? null : z - 0.6); }
+function snKitMan(vi) {
+  if (CLASSIC || vi !== 1 || !snHas('kitman')) return; var s = snS(); if (s.kitDone) return;
+  s.kitDone = true; var it = grantItem(rollRarityNudged(0)); if (it) lastInnings.extra = (lastInnings.extra || []).concat([it]);
+  saveProgress(); setTimeout(function () { toast('KIT MAN: one extra kit roll', 2200); }, 1600);
+}
+function snInnStart() {
+  SN.finInn = !CLASSIC && progress.venue === 2 && snReady(); SN.won = false; SN.bonusUsed = false; SN.bonusUntil = 0; SN.tin = false; SN.bst = null; QCBR.until = 0; QCBR.sig = null; tmFrac = 0;
+  snBonusSync();
+  if (SN.finInn && !innKeep) setTimeout(function () { if (SN.finInn && !gameOver) stripTake('GRAND FINAL', 'Rival XI ' + fmtAU(snTarget()) + ' banked runs', 5); }, 700);
+}
+function snBlockRestart(noBank) {
+  if (noBank || gameOver || CLASSIC || SN.devGo || !SN.finInn || phase !== 'play') return false;
+  toast('Grand Final: no restarts. Play it out, or SAVE & QUIT from the pause menu', 2800); return true;
+}
+function snOnBank(n, b) {
+  if (CLASSIC) return; var s = snS(); if (s.pend) return;
+  if (SN.finInn && !SN.devGo) SN.finB = b; else if (progress.venue === 2 && !SN.devGo) s.mcg++;
+  s.runs += b; s.inn++; if (n > s.best) s.best = n;
+}
+function snFinalCheck() {
+  if (!SN.finInn || SN.won || CLASSIC || gameOver) return;
+  if (bankedFor(score) < snTarget()) return;
+  SN.won = true; SN.endWhy = 'premiers';
+  stripTake('PREMIERS!', 'Rival XI total passed', 6); popup('PREMIERS!', FCX, 1.5, '#ffd54f'); Sfx.cheer(); flashT = Math.max(flashT, 1.4);
+  schedule(1.2, snEndNow);
+}
+function snEndNow() {
+  if (gameOver || CLASSIC) return;
+  if (settingsOpen) closeSettings(); if (gamePaused) setPause(false); cardsClose(); tuWait = false; tuFrozen = false; tuCardDone = false; tuDrain = null;
+  while (balls.length) removeBall(balls[0]); serving = false; lives = 0; endInnings();
+}
+function snAfterBank(vi, banked) {
+  SN.justFin = false; if (CLASSIC || SN.finB == null) return;
+  SN.finB = null; SN.justFin = true; snResolve(banked); SN.finInn = false;
+}
+function snResolve(banked) {
+  var s = snS(), g = s.grade, tgt = snTarget(g), win = SN.won || banked >= tgt, res = win ? 'P' : 'R';
+  var mp = snPay(res, g), left = snLeft();
+  progress.mp = (progress.mp || 0) + mp + left;
+  s.flags.push({ no: s.no, grade: g, res: res, fr: banked, tgt: tgt, tot: s.runs, d: Date.now() });
+  if (win) { s.grade++; s.streak++; s.bestStreak = Math.max(s.bestStreak, s.streak); } else s.streak = 0;
+  s.bestFinal = Math.max(s.bestFinal, banked); s.bestSeason = Math.max(s.bestSeason, s.runs);
+  s.pend = { res: res, no: s.no, grade: g, fr: banked, tgt: tgt, tot: s.runs, best: s.best, mp: mp, left: left, offer: [], rowId: null };
+  s.pend.offer = snOffer(win ? 3 : 2);
+  SN.row = { season_no: s.no, season_result: win ? 'premiers' : 'runners-up', final_target: tgt, final_runs: banked, grade: g };
+  saveProgress(); return s.pend;
+}
+function snPool() { var s = snS(), prem = snPrem(s) > 0; return SN_PERKS.filter(function (p) { return !snHas(p.id) && (!p.draft || draftOn()) && (!p.s2 || prem); }).map(function (p) { return p.id; }); }
+function snOffer(n) { var a = snPool(), o = []; while (a.length && o.length < n) o.push(a.splice(Math.min(a.length - 1, Math.floor(qcRand() * a.length)), 1)[0]); return o; }
+function snBL(o) {
+  if (CLASSIC) { o.season_no = o.season_result = o.final_target = o.final_runs = o.legacy_pick = o.grade = ''; return; }
+  var s = snS(), r = SN.row;
+  o.season_no = r ? r.season_no : s.no; o.season_result = r ? r.season_result : ''; o.final_target = r ? r.final_target : '';
+  o.final_runs = r ? r.final_runs : ''; o.legacy_pick = ''; o.grade = r ? r.grade : s.grade;
+}
+function snAfterEnd(blr, scShown) {
+  SN.endWhy = null; SN.row = null; snBonusSync();
+  if (!SN.justFin) return;
+  var s = snS(), P = s.pend; if (!P) return;
+  P.rowId = blr ? blr.id : null; saveProgress();
+  var win = P.res === 'P';
+  stripTake(win ? 'PREMIERS!' : 'RUNNERS-UP', fmtAU(P.fr) + ' v ' + fmtAU(P.tgt), 6);
+  if (!win) { try { Sfx.chime(); } catch (e) { } }
+  if (scShown) { var g = el('statsGround'); if (g) g.textContent = g.textContent + ' \u00b7 GRAND FINAL'; el('statsGo').textContent = 'SEASON RESULT \u25b6'; }
+  setTimeout(function () { snWhenFree(snCardOpen); }, 450);
+}
+function snWhenFree(fn, n) {
+  n = n || 0; if (n > 600 || CLASSIC || !snHold()) return;
+  if (SC.open || gcardOpen() || stadiumOpen || (DRAFTUI && DRAFTUI.open) || secretQ.length) { setTimeout(function () { snWhenFree(fn, n + 1); }, 300); return; }
+  fn();
+}
+function snPendCheck() { if (snHold()) setTimeout(function () { snWhenFree(snCardOpen); }, 300); }
+function snStripTxt(sh) {
+  if (CLASSIC) return '';
+  var s = snS(), f = function (n) { return sh ? ssShortRuns(n) : fmtAU(n); };
+  if (SN.won) return 'PREMIERS!';
+  if (SN.finInn && !gameOver) return 'FINAL ' + f(bankedFor(score)) + ' / ' + f(snTarget());
+  if (snReady()) return 'GRAND FINAL READY';
+  if (progress.venue === 2 && !gameOver) return 'MCG INN ' + Math.min(s.mcg + 1, snMcgNeed()) + '/' + snMcgNeed() + (snHas('eye') ? ' \u00b7 FINAL ' + f(snTarget()) : '');
+  if (s.no > 1 && ssAllOpen()) return 'SEASON ' + s.no + ' \u00b7 GRADE ' + s.grade;
+  return '';
+}
+function snBoxTxt() {
+  snBonusSync(); if (CLASSIC) return '';
+  if (SN.won) return Math.floor(performance.now() / 260) % 2 ? '' : 'PREMIERS!';
+  if (SN.finInn && !gameOver) return 'GRAND FINAL v RIVAL XI';
+  return '';
+}
+function snNext() { var b = bankedFor(score), t = snTarget(); return { done: false, gf: true, label: 'Grand Final: Rival XI total', current: b, need: t, ready: 0, progress: Math.max(0, Math.min(1, b / t)) }; }
+function snBonusSync() {
+  qcbSync(); var b = el('snBonus'); if (!b) return;
+  var show = !CLASSIC && phase === 'play' && !gameOver && progress.venue === 2 && snHas('bonus') && !cardHold && !gamePaused && !settingsOpen && !gcardOpen();
+  var act = SN.bonusUntil > gt, st = !show ? '' : act ? 'on' : SN.bonusUsed ? '' : 'rdy', sec = act ? Math.ceil(SN.bonusUntil - gt) : 0;
+  if (st === SN.bst && sec === SN.bsec) return;
+  SN.bst = st; SN.bsec = sec; b.className = st; b.style.display = st ? 'block' : 'none';
+  if (st === 'on') b.innerHTML = 'BONUS CARD<small>' + (snBonusOn() ? '\u00d72 runs \u00b7 ' : 'paused for the other \u00d72 \u00b7 ') + sec + ' s</small>';
+  else if (st === 'rdy') b.innerHTML = 'BONUS CARD<small>tap: \u00d72 runs for 15 s</small>';
+}
+function snBonusUse() {
+  if (CLASSIC || SN.bonusUsed || gameOver || phase !== 'play' || !snHas('bonus') || progress.venue !== 2) return false;
+  if (finalOver() || frenzyOn() || bigTurnOn() || QCBR.until > gt) { toast('Save it: the Bonus Card doesn\u2019t stack on another \u00d72', 1800); return false; }
+  SN.bonusUsed = true; SN.bonusUntil = gt + SN_BONUS_SEC; stripTake('BONUS CARD!', '\u00d72 runs for ' + SN_BONUS_SEC + ' s', 4); try { Sfx.chime(); } catch (e) { } snBonusSync(); return true;
+}
+el('snBonus').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); Sfx.unlock(); snBonusUse(); });
+['touchstart', 'pointerdown', 'mousedown'].forEach(function (ev) { el('snBonus').addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
+function snLineRender() {
+  var L = el('snLine'); if (!L) return; if (CLASSIC) { L.innerHTML = ''; return; }
+  var s = snS(), need = snMcgNeed(), eye = snHas('eye'), h = '<b>SEASON ' + s.no + '</b>' + (s.no > 1 || s.grade ? ' \u00b7 Grade ' + s.grade : '');
+  if (s.pend) h += ' \u00b7 Season over';
+  else if (snReady()) h += ' \u00b7 <b class="gf">GRAND FINAL READY</b> next MCG innings v Rival XI ' + ssShortRuns(snTarget());
+  else if (progress.venuesUnlocked >= 2) h += ' \u00b7 MCG innings ' + s.mcg + '/' + need + ', then the Grand Final' + (eye ? ' (' + ssShortRuns(snTarget()) + ')' : '');
+  else h += ' \u00b7 the Grand Final is at the MCG' + (eye ? ' (' + ssShortRuns(snTarget()) + ')' : '');
+  var callable = eye && !s.called && !s.pend && s.mcg >= 1 && !snReady();
+  L.innerHTML = '<span class="snT">' + h + '</span>' + (callable ? '<button type="button" class="sbtn" data-sn="call">CALL THE FINAL</button>' : '') + '<button type="button" class="sbtn" data-sn="info">SEASON \u25b8</button>';
+}
+el('snLine').addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('button[data-sn]'); if (!b) return; e.preventDefault(); e.stopPropagation(); Sfx.unlock();
+  var k = b.getAttribute('data-sn'), s = snS();
+  if (k === 'call') { if (snHas('eye') && !s.pend && s.mcg >= 1) { s.called = true; saveProgress(); toast('Final called: your next MCG innings is the Grand Final', 2600); Sfx.tick(); renderCard(); } return; }
+  if (k === 'info') snInfoOpen();
+});
+function snCardOpen() {
+  if (CLASSIC || !snHold() || SNC.open) return false;
+  var s = snS(), P = s.pend, first = !P.shown;
+  SNC.sel = null; SNC.out = null; SNC.hg = null; SNC.keep = false; SNC.open = true; SNC.t = performance.now();
+  if (el('statsGo').textContent !== SN_GO0) el('statsGo').textContent = SN_GO0;
+  releaseAllInputs(true); dropFlippersNow(); charging = false; power = 0;
+  snCardRender(first); el('snCard').classList.add('open'); cardHold = true;
+  if (first) { P.shown = 1; saveProgress(); if (P.res === 'P') { try { Sfx.cheer(); } catch (e) { } } }
+  try { var f = el('snCard').querySelector('.snList .sbtn') || el('snGo'); f.focus({ preventScroll: true }); } catch (e) { }
+  return true;
+}
+function snCardClose() { if (!SNC.open) return; SNC.open = false; el('snCard').classList.remove('open'); cardHold = false; lastT = performance.now(); }
+function snPkBtn(id, cls, attr) { var p = SN_PERK[id]; return '<button type="button" class="sbtn' + (cls ? ' ' + cls : '') + '" ' + attr + '><b>' + p.name + '</b><small>' + p.d + '</small></button>'; }
+function snShelfName(e) { var p = SN_PERK[e.id]; return p ? p.name + (e.id === 'home' && VENUES[e.g] ? ' (' + VENUES[e.g].name + ')' : '') : '?'; }
+function snGoOk() { var s = snS(), P = s.pend; if (!P) return false; if (SNC.keep || !P.offer.length) return true; if (!SNC.sel) return false; if (SNC.sel === 'home' && SNC.hg == null) return false; return s.shelf.length < s.slots || SNC.out != null; }
+function snCountUp(e, to, ms) { var t0 = performance.now(); (function step() { var k = Math.min(1, (performance.now() - t0) / ms); e.textContent = fmtAU(Math.round(to * k)); if (k < 1 && SNC.open) setTimeout(step, 30); else e.textContent = fmtAU(to); })(); }
+function snCardRender(count) {
+  var s = snS(), P = s.pend; if (!P) return;
+  var foc = document.activeElement, fk = foc && el('snCard').contains(foc) ? (foc.id || foc.getAttribute('data-pk') || foc.getAttribute('data-out') || foc.getAttribute('data-hg')) : null;
+  var win = P.res === 'P', full = s.shelf.length >= s.slots;
+  el('snH').textContent = win ? 'PREMIERS!' : 'RUNNERS-UP';
+  el('snSub').textContent = 'Season ' + P.no + ' \u00b7 Grade ' + P.grade + (win ? ' \u00b7 Premiership flag added to the Honours Board' : ' \u00b7 the Season is over');
+  var rows = [['Grand Final', '<i data-cu="' + P.fr + '">' + fmtAU(P.fr) + '</i> <small>v Rival XI ' + fmtAU(P.tgt) + '</small>'], ['Season total', '<i data-cu="' + P.tot + '">' + fmtAU(P.tot) + '</i>'], ['Best innings', fmtAU(P.best)],
+    ['MP payout', '+' + (P.mp + P.left) + ' MP' + (P.left ? ' <small>(' + P.mp + ' + ' + P.left + ' for leftover runs)</small>' : '')]];
+  if (win) rows.push(['Next Season', 'Grade ' + (P.grade + 1) + ' <small>Final total and payout +25%</small>']);
+  el('snNums').innerHTML = rows.map(function (r) { return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('');
+  if (count) Array.prototype.forEach.call(el('snNums').querySelectorAll('i[data-cu]'), function (e) { snCountUp(e, +e.getAttribute('data-cu'), 900); });
+  el('snPickH').textContent = P.offer.length ? 'Legacy pick: choose 1 of ' + P.offer.length + ' \u00b7 shelf ' + s.shelf.length + '/' + s.slots : 'Every Legacy perk is already on your shelf';
+  el('snOffer').innerHTML = P.offer.map(function (id) { return snPkBtn(id, SNC.sel === id ? 'sel' : '', 'data-pk="' + id + '"'); }).join('');
+  var sw = '';
+  if (full && P.offer.length) {
+    sw += '<div class="snHd">' + (SNC.sel ? 'Shelf full: tap one to swap out' : 'Shelf full (' + s.slots + '): a new pick swaps one out') + '</div><div class="snList">';
+    if (SNC.sel) sw += s.shelf.map(function (e, i) { return '<button type="button" class="sbtn' + (SNC.out === i ? ' out' : '') + '" data-out="' + i + '"><b>' + snShelfName(e) + '</b><small>' + (SNC.out === i ? 'swapped out' : 'tap to swap out') + '</small></button>'; }).join('');
+    sw += '<button type="button" class="sbtn' + (SNC.keep ? ' sel' : '') + '" data-keep="1"><b>KEEP MY SHELF</b><small>no pick this time</small></button></div>';
+    if (s.slots < SN_SHELF + SN_SLOT_COST.length && snCabFull()) { var c = SN_SLOT_COST[s.slots - SN_SHELF]; sw += '<div class="snList"><button type="button" class="sbtn" data-buy="1"' + ((progress.mp || 0) < c ? ' disabled' : '') + '><b>BUY SHELF SLOT ' + (s.slots + 1) + ' \u00b7 ' + c + ' MP</b><small>you have ' + (progress.mp || 0) + ' MP</small></button></div>'; }
+  } else if (s.shelf.length) sw += '<p class="snNote">On your shelf: ' + s.shelf.map(snShelfName).join(', ') + '</p>';
+  el('snSwap').innerHTML = sw;
+  el('snHome').innerHTML = SNC.sel === 'home' ? '<div class="snHd">Home Ground: pick a ground</div><div class="snList snRow">' + VENUES.map(function (v, i) { return '<button type="button" class="sbtn' + (SNC.hg === i ? ' sel' : '') + '" data-hg="' + i + '">' + (v.short || v.name) + '</button>'; }).join('') + '</div>' : '';
+  var ok = snGoOk(), go = el('snGo'); go.disabled = !ok; go.innerHTML = ok ? 'START SEASON ' + (s.no + 1) + ' &#9654;' : 'PICK A LEGACY PERK';
+  if (fk) { var nf = el(fk) || el('snCard').querySelector('[data-pk="' + fk + '"],[data-out="' + fk + '"],[data-hg="' + fk + '"]'); if (nf && !nf.disabled) try { nf.focus({ preventScroll: true }); } catch (e) { } }
+}
+function snGo() {
+  var s = snS(), P = s.pend; if (!P || !snGoOk()) return false;
+  var pick = null;
+  if (!SNC.keep && SNC.sel && P.offer.indexOf(SNC.sel) >= 0) {
+    var e = { id: SNC.sel }; if (SNC.sel === 'home') e.g = SNC.hg;
+    if (s.shelf.length >= s.slots && SNC.out != null) s.shelf.splice(SNC.out, 1);
+    if (s.shelf.length < s.slots) { s.shelf.push(e); pick = snShelfName(e); }
+  }
+  if (P.rowId != null) blSetRating(P.rowId, 'legacy_pick', pick || 'none');
+  snCardClose(); snReset(); restart(true); snHello(pick); return true;
+}
+function snReset() {
+  var s = snS();
+  saveProgress(); saveBackup();
+  var tw = progress.upgrades && progress.upgrades.twelfth;
+  progress.upgrades = {}; if (tw) progress.upgrades.twelfth = tw;
+  if (snHas('bat')) progress.upgrades.bat = 2;
+  if (snHas('nets')) { progress.upgrades.saver = 1; progress.upgrades.keeper = 1; }
+  progress.bank = snHas('sponsor') ? SN_SPONSOR_R : 0;
+  progress.venue = 0; progress.venuesUnlocked = 0; progress.lastB = null;
+  s.no++; s.runs = 0; s.inn = 0; s.mcg = 0; s.called = false; s.best = 0; s.kitDone = false; s.pend = null; s.started = Date.now(); qcbS().seen = [];
+  SN.finInn = false; SN.won = false; SN.finB = null;
+  innClear();
+  draftNewTour();
+  if (snHas('capt') && draftOn()) { DRAFT.pend = 1; draftSave(); }
+  saveProgress(); applyVenue(0); renderCard();
+}
+function snHello(pick) {
+  var s = snS();
+  toast('SEASON ' + s.no + (s.grade ? ' \u00b7 GRADE ' + s.grade : '') + ': back to the Backyard' + (pick ? ' \u00b7 Legacy: ' + pick : ''), 3200);
+  setTimeout(function () { stripTake('SEASON ' + s.no, s.grade ? 'Grade ' + s.grade : 'back to the Backyard', 5); }, 400);
+}
+function snBuySlot() {
+  var s = snS(); if (!snCabFull() || s.slots >= SN_SHELF + SN_SLOT_COST.length) return false;
+  var c = SN_SLOT_COST[s.slots - SN_SHELF]; if ((progress.mp || 0) < c) { toast('Need ' + c + ' MP', 1600); return false; }
+  progress.mp -= c; s.slots++; saveProgress(); toast('Legacy shelf: ' + s.slots + ' slots', 1800); try { Sfx.buy(); } catch (e) { } return true;
+}
+el('snCard').addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('button'); if (!b || b.disabled) return; e.preventDefault(); Sfx.unlock();
+  if (cardEarly(SNC.t, e)) return;
+  if (b.id === 'snGo') { snGo(); return; }
+  if (b.id === 'snStart') { snCardClose(); modeOpen(); return; }
+  var pk = b.getAttribute('data-pk'), out = b.getAttribute('data-out'), hg = b.getAttribute('data-hg');
+  if (pk) { SNC.sel = SNC.sel === pk ? null : pk; SNC.keep = false; if (SNC.sel !== 'home') SNC.hg = null; Sfx.tick(); }
+  else if (out != null) { SNC.out = SNC.out === +out ? null : +out; Sfx.tick(); }
+  else if (hg != null) { SNC.hg = +hg; Sfx.tick(); }
+  else if (b.getAttribute('data-keep')) { SNC.keep = !SNC.keep; if (SNC.keep) { SNC.sel = null; SNC.out = null; SNC.hg = null; } Sfx.tick(); }
+  else if (b.getAttribute('data-buy')) snBuySlot();
+  snCardRender(false);
+});
+function snResTxt(f) { return f.res === 'P' ? '<b>PREMIERS</b>' : f.res === 'R' ? 'RUNNERS-UP' : 'not finished'; }
+function snInfoRender() {
+  var s = snS(), h = '', eye = snHas('eye');
+  el('snIH').textContent = 'SEASON ' + s.no;
+  h += '<p class="snSub">Grade ' + s.grade + (s.pend ? ' \u00b7 Season over' : snReady() ? ' \u00b7 GRAND FINAL READY' : ' \u00b7 MCG innings ' + s.mcg + '/' + snMcgNeed()) + ((eye || snReady()) && !s.pend ? ' \u00b7 Grand Final total ' + fmtAU(snTarget()) : '') + '</p>';
+  h += '<div class="snHd">Legacy shelf ' + s.shelf.length + '/' + s.slots + '</div>';
+  h += s.shelf.length ? '<ul class="snHon">' + s.shelf.map(function (e) { return '<li><b>' + snShelfName(e) + '</b> \u00b7 ' + SN_PERK[e.id].d + '</li>'; }).join('') + '</ul>' : '<p class="snNote">Empty. Finish a Grand Final to pick a Legacy perk.</p>';
+  if (s.slots < SN_SHELF + SN_SLOT_COST.length) {
+    var c = SN_SLOT_COST[s.slots - SN_SHELF];
+    h += snCabFull() ? '<div class="snList"><button type="button" class="sbtn" data-buy="1"' + ((progress.mp || 0) < c ? ' disabled' : '') + '><b>BUY SHELF SLOT ' + (s.slots + 1) + ' \u00b7 ' + c + ' MP</b><small>you have ' + (progress.mp || 0) + ' MP</small></button></div>' : '<p class="snNote">More shelf slots open (for MP) once your Ball Cabinet is full.</p>';
+  }
+  var fl = s.flags.slice(-SN_HON_SHOW).reverse();
+  h += '<div class="snHd">Honours Board</div>' + (fl.length ? '<ul class="snHon">' + fl.map(function (f) { return '<li>Season ' + f.no + ' \u00b7 Grade ' + f.grade + ' \u00b7 ' + snResTxt(f) + (f.res !== 'X' ? ' \u00b7 ' + ssShortRuns(f.fr) + ' v ' + ssShortRuns(f.tgt) : ' \u00b7 ' + ssShortRuns(f.tot || 0) + ' Season runs') + '</li>'; }).join('') + '</ul>' : '<p class="snNote">No Seasons finished yet.</p>');
+  h += '<p class="snNote">Premiership streak ' + s.streak + ' (best ' + s.bestStreak + ') \u00b7 best Grand Final ' + fmtAU(s.bestFinal) + ' \u00b7 best Season total ' + fmtAU(s.bestSeason) + '</p>';
+  el('snIBody').innerHTML = h;
+}
+function snInfoOpen() { if (CLASSIC) return false; snInfoRender(); el('snInfo').classList.add('open'); cardHold = true; try { el('snIClose').focus({ preventScroll: true }); } catch (e) { } return true; }
+function snInfoClose() { el('snInfo').classList.remove('open'); cardHold = false; lastT = performance.now(); if (phase === 'tree') renderCard(); }
+el('snInfo').addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('button'); if (!b || b.disabled) return; e.preventDefault(); Sfx.unlock();
+  if (b.id === 'snIClose') { snInfoClose(); return; }
+  if (b.getAttribute('data-buy')) { snBuySlot(); snInfoRender(); }
+});
+var SN_ROGUE0 = el('modeRogue').innerHTML;
+function snModeSync() {
+  var b = el('modeRogue'), n = el('modeNewSn'); if (!b || !n) return;
+  if (CLASSIC || !snInProg()) { b.innerHTML = SN_ROGUE0; n.style.display = 'none'; return; }
+  var s = snS(), st = s.pend ? 'Season result waiting' : snReady() ? 'GRAND FINAL READY' : (s.grade ? 'Grade ' + s.grade + ' \u00b7 ' : '') + VENUES[progress.venue].name;
+  b.innerHTML = 'CONTINUE SEASON ' + s.no + '<small>Rogue Goats Cricket \u00b7 ' + st + '</small>';
+  n.style.display = s.inn > 0 && !s.pend ? '' : 'none';
+}
+function snNewOpen() {
+  var s = snS(), left = snLeft(); SNN.open = true; SNN.t = performance.now();
+  el('snNewTxt').textContent = 'Season ' + s.no + ' ends here with no result: no Grand Final, no payout and no Legacy pick.' + (left ? ' Your leftover bank still pays ' + left + ' MP.' : '');
+  el('snNew').classList.add('open'); cardHold = true; try { el('snNewNo').focus({ preventScroll: true }); } catch (e) { }
+}
+function snNewClose() { SNN.open = false; el('snNew').classList.remove('open'); cardHold = false; lastT = performance.now(); }
+function snAbandon() {
+  if (CLASSIC) return false; var s = snS(); if (s.pend) return false;
+  var left = snLeft(); progress.mp = (progress.mp || 0) + left;
+  s.flags.push({ no: s.no, grade: s.grade, res: 'X', tot: s.runs, d: Date.now() }); s.streak = 0; s.bestSeason = Math.max(s.bestSeason, s.runs);
+  saveProgress(); snReset(); restart(true); snHello(null);
+  if (left) setTimeout(function () { toast('+' + left + ' MP for leftover runs', 2200); }, 3400);
+  return true;
+}
+el('modeNewSn').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (CLASSIC || snHold()) return; modeClose(); snNewOpen(); });
+el('snNewNo').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (cardEarly(SNN.t, e)) return; snNewClose(); modeOpen(); });
+el('snNewYes').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (cardEarly(SNN.t, e)) return; snNewClose(); snAbandon(); });
+['snCard', 'snInfo', 'snNew'].forEach(function (id) { ['touchstart', 'pointerdown'].forEach(function (ev) { el(id).addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); }); });
+window.addEventListener('keydown', function (e) {
+  var c = ['snCard', 'snNew', 'snInfo'].map(el).filter(function (x) { return x && x.classList.contains('open'); })[0]; if (!c) return;
+  var code = e.code || e.key;
+  if (code === 'Tab') return;
+  e.preventDefault(); e.stopImmediatePropagation(); if (e.repeat) return;
+  if (code === 'Escape') { if (c.id === 'snInfo') snInfoClose(); else if (c.id === 'snNew') { snNewClose(); modeOpen(); } return; }
+  var bs = Array.prototype.filter.call(c.querySelectorAll('button'), function (b) { return !b.disabled && b.offsetParent !== null; });
+  if (/^Arrow/.test(code)) { var i = bs.indexOf(document.activeElement), d = code === 'ArrowUp' || code === 'ArrowLeft' ? -1 : 1, nb = i < 0 ? bs[0] : bs[(i + d + bs.length) % bs.length]; if (nb) nb.focus(); return; }
+  if (code === 'Enter' || code === 'Space' || code === 'NumpadEnter') { var f = document.activeElement; if (!(f && f.tagName === 'BUTTON' && c.contains(f) && !f.disabled)) f = c.querySelector('[data-def]'); if (f && !f.disabled) f.click(); }
+}, true);
+function snDevReady() { if (CLASSIC) return false; var s = snS(); if (s.pend) return false; progress.venuesUnlocked = 2; s.mcg = Math.max(s.mcg, snMcgNeed()); saveProgress(); if (phase === 'tree') renderCard(); return true; }
+el('devSnReady').addEventListener('click', function (e) { e.preventDefault(); if (snDevReady()) toast('Season: GRAND FINAL READY (pick the MCG: the next innings there is the Final)', 2600); else toast('Not now (Classic, or a Season result is waiting)', 1800); });
+el('devSnWin').addEventListener('click', function (e) { e.preventDefault(); if (phase !== 'play' || gameOver || !SN.finInn) { toast('Start the Grand Final innings first', 1800); return; }
+  if (settingsOpen) closeSettings(); score = Math.max(score, Math.ceil(snTarget() / (venueMult() || 1))); snFinalCheck(); });
+var SNDBG = { S: function () { return snS(); }, target: snTarget, ready: snDevReady, live: function () { return !!SN.finInn; }, won: function () { return !!SN.won; }, pend: function () { return snS().pend; },
+  pick: function (id, out, hg) { SNC.sel = id || null; SNC.out = out == null ? null : out; SNC.hg = hg == null ? null : hg; SNC.keep = false; return snGo(); }, keep: function () { SNC.keep = true; return snGo(); },
+  card: function () { return SNC.open; }, open: snCardOpen, abandon: snAbandon, buy: snBuySlot, mult: snMult, lk: snLk, bonus: snBonusUse, need: snNeed, runs: snRuns, strip: function () { return snStripTxt(false); },
+  win: function () { score = Math.max(score, Math.ceil(snTarget() / (venueMult() || 1))); snFinalCheck(); return SN.won; }, rt: SN };
+SNDBG.qcb = { S: qcbS, offer: qcbOffer, pool: qcbPool, claim: qcbClaim, use: qcbUse, sync: function () { QCBR.sig = null; qcbSync(); }, on: qcbX2On, R: QCBR, list: QCB };
 function modeBoot() {
+  tuNewBuild();
   if (nvNeed()) { NV.then = modeBoot2; nvShow(); return; }
   modeBoot2();
 }
 function modeBoot2() {
   var tf = window.__testFlags;
   if (qcBoot()) return;
-  if (tf && !tf.modeCard) { innResumeCheck(); return; }
+  if (tf && !tf.modeCard) { innResumeCheck(); snPendCheck(); return; }
   modeOpen();
 }
-el('modeRogue').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); modeClose(); innResumeCheck(); });
+el('modeRogue').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); modeClose(); innResumeCheck(); snPendCheck(); });
 el('modeClassic').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); enterClassic(); });
 el('clAgain').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); clPlay(); });
 el('clQuit').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); blGuarded(clToStart, true); });
@@ -10696,7 +11177,7 @@ function actionFor(code) {
 }
 function requestRestart() {
   if (CLASSIC) { if (CL.over) clPlay(); return; }
-  if (gameOver || gt - restartArmedT < 2) { blGuarded(function () { restart(); toast('Restarted \u2014 new innings!'); }); return; }
+  if (gameOver || gt - restartArmedT < 2) { blGuarded(function () { if (restart() !== false) toast('Restarted \u2014 new innings!'); }); return; }
   restartArmedT = gt; toast('Press ' + keyName(settings.binds.restart.filter(Boolean)[0]) + ' again to restart');
 }
 function codeOf(e) { return e.code || (e.key === ' ' ? 'Space' : ''); }
@@ -11048,7 +11529,7 @@ var dbg = {
   f4: function () { var f = F4.f; return f ? { angle: f.angle, rest: f.rest, up: f.up, hits: f4Stats.hits, swats: f4Stats.swats } : null; },
   spin2: function () { var S = v1Parts.spinner2, L = v1Parts.spinner; return { L: L ? { x: L.x, z: L.z, hw: L.hw, ticks: L.n || 0 } : null, R: S ? { x: S.x, z: S.z, hw: S.hw, hard: S.hard, ticks: S.n || 0 } : null, stats: JSON.parse(JSON.stringify(spinStats)) }; },
   knob: function () { return KNOB.last; },
-  endInnings: function () { if (!gameOver) endInnings(); }, nextInnings: function () { restart(); },
+  endInnings: function () { if (!gameOver) endInnings(); }, nextInnings: function () { restart(); }, season: SNDBG,
   resetProgress: resetProgress, openConfirm: openConfirm,
   nudge: function () { return nudge(); }, lanes: function () { return topLanes.map(function (l) { return l.lit; }); },
   setLanes: function (a) { topLanes.forEach(function (l, i) { l.lit = !!a[i]; }); }, rollover: function (k) { rollover(k, balls[0]); },
