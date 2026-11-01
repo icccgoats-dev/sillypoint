@@ -1145,6 +1145,7 @@
         <div class="drow"><button class="sbtn devBtn" id="blRateTog" aria-pressed="true">Rating prompt: ON</button><span class="devNote">the rating card after each innings</span></div>
         <div class="drow"><span class="sl">Bats</span><span class="seg" role="group" aria-label="Bats"><button class="sbtn devBtn" id="batsCur" title="v1.3.6 bats (back pass + tip back pass on the Old bats)">current</button><button class="sbtn devBtn" id="batsOld" title="Windback: the exact v1.3.5 bats">v1.3.5</button></span><span class="devNote">windback: v1.3.5 = the bats exactly as in v1.3.5</span></div>
         <div class="drow"><span class="sl">Bat bounce (B1)</span><span class="seg" role="group" aria-label="Bat bounce"><button class="sbtn devBtn" id="bncOff">OFF</button><button class="sbtn devBtn" id="bncOn">ON</button></span><span class="devNote" id="bncNote">first touch on a bat: fast balls hop off (OLD bats)</span></div>
+        <div class="drow"><span class="sl">Top-left gate</span><span class="seg" role="group" aria-label="Top-left gate"><button class="sbtn devBtn" id="tlSpin" title="v1.3.9: Flash MCG orbit-top one-way goat spinner">spinner</button><button class="sbtn devBtn" id="tlFlap" title="Windback: the exact v1.3.8 flap gate">v1.3.8 flap</button></span><span class="devNote">Flash MCG orbit top; applies when the table is next built (ground switch or reload)</span></div>
         <h4>BALANCE LOG</h4>
         <div class="devNote" id="blCount">0 innings logged</div>
         <div class="dgrid devKit"><button class="sbtn devBtn" id="blSaveF">SAVE LOG</button><button class="sbtn devBtn" id="blCopy">COPY (CSV)</button><button class="sbtn devBtn" id="blClear">CLEAR</button><button class="sbtn devBtn" id="blImport">IMPORT (CSV)</button></div>
@@ -1162,7 +1163,7 @@
 <script>
 (function(){
 'use strict';
-var VERSION = 'v1.3.8';
+var VERSION = 'v1.3.9';
 (function () { var e = document.getElementById('modeVer'); if (e) e.textContent = VERSION; })();
 var SN = { finInn: false, won: false, finB: null, justFin: false, row: null, endWhy: null, devGo: false, bonusUsed: false, bonusUntil: 0, tin: false, gold: false, bst: null, bsec: 0, ok: null, dummy: null };
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
@@ -1333,7 +1334,7 @@ var bindMigration = null;
     if (typeof s.volume === 'number') settings.volume = Math.max(0, Math.min(1, s.volume));
     if (s.qv === 103 && (s.quality === 'auto' || s.quality === 'high' || s.quality === 'medium' || s.quality === 'low')) settings.quality = s.quality;
     if (s.twelfthMode === 'normal' || s.twelfthMode === 'on' || s.twelfthMode === 'off') settings.twelfthMode = s.twelfthMode;
-    ['autoPlunger', 'shotLine', 'apSkillOff', 'leftHanded', 'timeUpCard', 'devNoMulti', 'devUnlocked', 'ctlPulsed', 'playtester', 'tmBench', 'batsV135', 'batBounce'].forEach(function (k) { if (typeof s[k] === 'boolean') settings[k] = s[k]; });
+    ['autoPlunger', 'shotLine', 'apSkillOff', 'leftHanded', 'timeUpCard', 'devNoMulti', 'devUnlocked', 'ctlPulsed', 'playtester', 'tmBench', 'batsV135', 'batBounce', 'tlFlap138'].forEach(function (k) { if (typeof s[k] === 'boolean') settings[k] = s[k]; });
     if (s.treeView === 'list' || s.treeView === 'tree') settings.treeView = s.treeView;
     if (typeof s.legendN === 'number') settings.legendN = s.legendN;
     if (typeof s.reduceFlash === 'boolean') settings.reduceFlash = s.reduceFlash;
@@ -1357,6 +1358,7 @@ function devFlagList() {
   if (settings.twelfthMode && settings.twelfthMode !== 'normal') f.push('12th man ' + settings.twelfthMode);
   if (settings.playtester === true && settings.batsV135 === true) f.push('bats v1.3.5');
   if (settings.playtester === true && settings.batBounce === true && settings.batsV135 !== true) f.push('bat bounce B1');
+  if (settings.playtester === true && settings.tlFlap138 === true) f.push('top-left gate v1.3.8 flap');
   if (settings.batGap) f.push('bat gap ' + (settings.batGap > 0 ? '+' : '') + settings.batGap.toFixed(1));
   if (typeof DRAFT !== 'undefined' && DRAFT.on) f.push('draft lite');
   if (typeof progress !== 'undefined' && progress && progress.devSkills) f.push('dev skills');
@@ -4249,7 +4251,7 @@ function updateTopGateFor(b) {
     else if (b.tgG === g && (!near || Math.abs(d) > R + 0.1)) { b.tgG = null; b.tgSwung = false; }
     if (b.tgG === g && near && Math.abs(d) < R + 0.3 && vn > 0.3) {
       g.ang = Math.max(g.ang, Math.min(1.4, 0.55 + Math.hypot(v.x, v.z) * 0.03)); g.w = 0;
-      if (!b.tgSwung) { b.tgSwung = true; g.passes++; Sfx.tick(); if (b.ssArm && i === 0) ssBrakeBall(b); }
+      if (!b.tgSwung) { b.tgSwung = true; g.passes++; Sfx.tick(); if (b.ssArm && i === 0 && !g.noSS) ssBrakeBall(b); }
     }
   }
   b.tgPass = !!b.tgG;
@@ -4281,7 +4283,8 @@ function topGatePoints(L) {
 function buildTopGate(L) {
   topGates.forEach(function (g) { if (g.grp) { scene.remove(g.grp); g.grp.traverse(function (o) { if (o.geometry) o.geometry.dispose(); }); if (g.flapMat) g.flapMat.dispose(); } });
   topGates = []; topGate = null;
-  (L.topGates || (L.id === 'club' ? [] : [null])).forEach(function (P) { topGates.push(buildTopGateAt(L, P)); });
+  tlSpinBuilt = L.id === 'mcg' && !!SPIN3_CFG[2] && tlSpinOn();
+  (L.topGates || (L.id === 'club' ? [] : [null])).forEach(function (P, i) { if (tlSpinBuilt && i === 0) return; var g = buildTopGateAt(L, P); if (tlSpinBuilt) g.noSS = true; topGates.push(g); });
   topGate = topGates[0]; return topGate;
 }
 function buildTopGateAt(L, P0) {
@@ -5052,7 +5055,7 @@ function doubleRollover() {
   });
 }
 var drCount = 0;
-var v1Parts = { maidens: null, spinner: null, spinner2: null, eject: null };
+var v1Parts = { maidens: null, spinner: null, spinner2: null, spinner3: null, eject: null };
 function v1Build(L, vi) { if (typeof buildV1Table === 'function') buildV1Table(L, vi); }
 function v1Step() { keeperStep(); if (typeof v1StepMore === 'function') v1StepMore(); }
 function v1Anim(dt) { keeperAnim(dt); if (typeof v1AnimMore === 'function') v1AnimMore(dt); }
@@ -5270,6 +5273,9 @@ var SPIN_CFG = { 0: { x: -2.008, z: -9.567, hw: 0.346, yaw: -1.0170, oneWay: tru
 var SPIN2_CFG = { 0: { k: 'r', x: 2.05, z: -9.635, hw: 0.476, yaw: 1.0170, oneWay: true, hard: true, noPark: true, noRPost: true, postS: 1, parkV: -0.0001 },
   1: { k: 'c', x: 2.05, z: -12.155, hw: 0.58, yaw: 1.1597 },
   2: { k: 'g', x: -1.71, z: -13.91, hw: 0.61, yaw: -Math.PI / 2, oneWay: true, hard: true, noPark: true, noRPost: true, postS: -1, parkV: -0.0001 } };
+var SPIN3_CFG = { 2: { k: 't', x: -2.70, z: -14.815, hw: 0.45, yaw: Math.atan2(15.07 - 14.56, -3.14 + 2.26) - Math.PI, oneWay: true, hard: true, noPark: true, noRPost: true, postS: -1, parkV: -0.0001, noMb: true, ss: true } };
+var tlSpinBuilt;
+function tlSpinOn() { return !(settings.playtester === true && settings.tlFlap138 === true); }
 var SPIN_FULL_PASS = { g: 0.30 };
 var spinStats = { ticks: 0, passes: 0, bounces: 0, trickles: 0, leaks: 0, nudges: 0, closedHits: 0 };
 var SPIN_PARK_SEC = 1.2, SPIN_PARK_AIM = { cx: 0.55, cz: -7.95, v: 9.0, dv: 0.5, k: 0.5 };
@@ -5281,7 +5287,7 @@ function spinPark(b, S) {
   b.body.velocity.set(vx, 0, vz); b.body.angularVelocity.set(vz / R, 0, -vx / R);
   popup('NUDGE', p.x, p.z, '#ccc');
 }
-function spinSolidFor(b) { return spinSolidFor1(b, v1Parts.spinner) || spinSolidFor1(b, v1Parts.spinner2); }
+function spinSolidFor(b) { return spinSolidFor1(b, v1Parts.spinner) || spinSolidFor1(b, v1Parts.spinner2) || spinSolidFor1(b, v1Parts.spinner3); }
 function spinSolidFor1(b, S) {
   if (!S || !S.wall || b.ramp) return false;
   var p = b.body.position, dx = p.x - S.x, dz = p.z - S.z, v = dx * S.s + dz * S.c;
@@ -5308,7 +5314,7 @@ function buildSpinner(Q) {
   var plateG = new THREE.BoxGeometry(Q.hw * 2 - 0.04, 0.42, 0.03, 6, 3, 1), plate = new THREE.Mesh(plateG, [em, em, em, em, pm, pm]);
   plate.position.y = -0.23; flag.add(plate);
   tAdd(grp);
-  var S = { k: Q.k || '', hard: !!Q.hard, noPark: !!Q.noPark, x: Q.x, z: Q.z, hw: Q.hw, c: Math.cos(Q.yaw || 0), s: Math.sin(Q.yaw || 0), grp: grp, flag: flag, pm: pm, em: em, ang: 0, w: 0, acc: 0, glow: 0, oneWay: !!Q.oneWay, rw: 0, wob: 0, wall: null, closed: true, pw: 0, park: Q.park || null, parkV: Q.parkV || -1.4 };
+  var S = { k: Q.k || '', noMb: !!Q.noMb, ss: !!Q.ss, hard: !!Q.hard, noPark: !!Q.noPark, x: Q.x, z: Q.z, hw: Q.hw, c: Math.cos(Q.yaw || 0), s: Math.sin(Q.yaw || 0), grp: grp, flag: flag, pm: pm, em: em, ang: 0, w: 0, acc: 0, glow: 0, oneWay: !!Q.oneWay, rw: 0, wob: 0, wall: null, closed: true, pw: 0, park: Q.park || null, parkV: Q.parkV || -1.4 };
   spinRipInit(S, plateG, Q.hw * 2 - 0.04);
   if (Q.oneWay) {
     var wb = new CANNON.Body({ mass: 0, material: mWall });
@@ -5320,13 +5326,14 @@ function buildSpinner(Q) {
   }
   return S;
 }
-function spinnerStep() { spinnerStep1(v1Parts.spinner); spinnerStep1(v1Parts.spinner2); }
+function spinnerStep() { spinnerStep1(v1Parts.spinner); spinnerStep1(v1Parts.spinner2); spinnerStep1(v1Parts.spinner3); }
 function spinnerStep1(S) {
   if (!S) return;
   for (var i = 0; i < balls.length; i++) {
     var b = balls[i], p = b.body.position, pz = b[S.k+'spPz'], dx = p.x - S.x, dz = p.z - S.z;
     var u = dx * S.c - dz * S.s, v = dx * S.s + dz * S.c;
     b[S.k+'spPz'] = v;
+    if (S.ss && b.ssArm && !b.ramp && Math.abs(u) < S.hw + R + 0.1 && v > -0.02 && v < R + 0.3 && -(b.body.velocity.x * S.s + b.body.velocity.z * S.c) > 0.3) ssBrakeBall(b);
     if (S.oneWay) {
       var bv = b.body.velocity;
       if (S.closed && !S.noPark && !b.ramp && Math.abs(u) < S.hw + 0.1 && v < 0 && v > S.parkV) {
@@ -5342,7 +5349,7 @@ function spinnerStep1(S) {
       var hb = !!(fp && pz < 0 && v >= 0 && b[S.k+'spH']); if (hb) { b[S.k+'spH'] = null; spinStats.halfBacks = (spinStats.halfBacks || 0) + 1; }
       if (S.oneWay && pz < 0 && v >= 0 && (S.closed || S.hard)) { if (hb) continue; spinStats.leaks++; if (S.k) spinStats['leaks_' + S.k] = (spinStats['leaks_' + S.k] || 0) + 1; continue; }
       var vz = Math.abs(b.body.velocity.x * S.s + b.body.velocity.z * S.c); S.w = Math.min(70, Math.max(S.w, vz * 5));
-      if (hb) continue; if (fp && !(pz < 0 && v >= 0)) b[S.k+'spH'] = { bank: [] }; else { spinStats.passes++; b.mbOK = true; } }
+      if (hb) continue; if (fp && !(pz < 0 && v >= 0)) b[S.k+'spH'] = { bank: [] }; else { spinStats.passes++; if (!S.noMb) b.mbOK = true; } }
   }
   if (S.w > 0.3) {
     S.closed = false; S.pw = 0;
@@ -5385,7 +5392,7 @@ function spinRip(S, wa, t) {
   P.needsUpdate = true; N.needsUpdate = true; S.rOn = true;
 }
 function spinRipFlat(S) { var P = S.rg.attributes.position, N = S.rg.attributes.normal; P.array.set(S.rp0); N.array.set(S.rn0); P.needsUpdate = true; N.needsUpdate = true; S.rOn = false; }
-function spinnerAnim(dt) { spinnerAnim1(dt, v1Parts.spinner); spinnerAnim1(dt, v1Parts.spinner2); }
+function spinnerAnim(dt) { spinnerAnim1(dt, v1Parts.spinner); spinnerAnim1(dt, v1Parts.spinner2); spinnerAnim1(dt, v1Parts.spinner3); }
 function spinnerAnim1(dt, S) {
   if (!S) return;
   if (!S.oneWay) S.rb = S.w > 0 ? S.ang % (Math.PI * 2) : (S.rb || 0) * Math.max(0, 1 - dt * 6);
@@ -5599,6 +5606,7 @@ function ejectRelease() { var E = v1Parts.eject; if (E && E.held) { E.held.eject
 function buildV1Table(L, vi) {
   v1Parts.maidens = buildMaidens(vi);
   v1Parts.spinner2 = buildSpinner(SPIN2_CFG[vi]); if (v1Parts.spinner2) mergeStatic(v1Parts.spinner2.grp, true);
+  v1Parts.spinner3 = tlSpinBuilt ? buildSpinner(SPIN3_CFG[vi]) : null; if (v1Parts.spinner3) mergeStatic(v1Parts.spinner3.grp, true);
   v1Parts.spinner = buildSpinner(SPIN_CFG[vi]); v1Parts.eject = buildEject(EJECT_CFG[vi]);
   if (v1Parts.eject) v1Parts.eject.sur = buildSaucerSurround(EJECT_CFG[vi], vi, L);
   if (v1Parts.spinner) mergeStatic(v1Parts.spinner.grp, true);
@@ -7979,6 +7987,11 @@ el('batsOld').addEventListener('click', function (e) { e.preventDefault(); setBa
 el('bncOff').addEventListener('click', function (e) { e.preventDefault(); setBatBounce(false); });
 el('bncOn').addEventListener('click', function (e) { e.preventDefault(); setBatBounce(true); });
 renderBatsOpt();
+function renderTlOpt() { var f = settings.tlFlap138 === true; [['tlSpin', !f], ['tlFlap', f]].forEach(function (q) { var b = el(q[0]); if (b) { b.classList.toggle('on', q[1]); b.setAttribute('aria-pressed', q[1] ? 'true' : 'false'); } }); }
+function setTlFlap138(on) { settings.tlFlap138 = !!on; saveSettings(); renderTlOpt(); toast('Top-left gate: ' + (on ? 'v1.3.8 flap (windback)' : 'spinner (v1.3.9)') + ' - next table build'); return settings.tlFlap138; }
+el('tlSpin').addEventListener('click', function (e) { e.preventDefault(); setTlFlap138(false); });
+el('tlFlap').addEventListener('click', function (e) { e.preventDefault(); setTlFlap138(true); });
+renderTlOpt();
 function blRateOn() { return ptOn() && !!BL.cfg.rate; }
 function renderPt() { var on = ptOn(); document.body.classList.toggle('ptOn', on); var c = el('ptTools'); if (c) c.checked = on; var h = el('blHideRate'); if (h) h.checked = blRateHidden(); }
 function setPlaytester(on) {
