@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Goats with Flippers</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231f7a3a'/%3E%3Ccircle cx='32' cy='32' r='16' fill='%23c8102e'/%3E%3Cpath d='M22 26q10 6 20 0M22 38q10-6 20 0' stroke='%23fff' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
 <style>  html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#9cc7e0;
     touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
     font-family:"Trebuchet MS",Verdana,Arial,sans-serif;overscroll-behavior:none;position:fixed;inset:0}
@@ -1519,7 +1520,7 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
 <script>
 (function(){
 'use strict';
-var VERSION = 'v2.1.0';
+var VERSION = 'v2.1.1';
 (function () { var e = document.getElementById('modeVer'); if (e) e.textContent = VERSION; })();
 var SN = { finInn: false, won: false, finB: null, justFin: false, row: null, endWhy: null, devGo: false, bonusUsed: false, bonusUntil: 0, tin: false, gold: false, bst: null, bsec: 0, ok: null, dummy: null };
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
@@ -8354,7 +8355,7 @@ addEventListener('resize', blRatePlace);
 if (window.visualViewport) visualViewport.addEventListener('resize', blRatePlace);
 (function devBadge() {
   var b = document.createElement('div'); b.id = 'devBadge'; b.setAttribute('aria-live', 'polite'); document.body.appendChild(b);
-  function sync() { var f = devFlagList(), t = f.length ? 'DEV: ' + f.join(' \u00b7 ') : ''; if (b.textContent !== t) b.textContent = t; b.style.display = t ? 'block' : 'none'; }
+  function sync() { var f = settings.devUnlocked === true ? devFlagList() : [], t = f.length ? 'DEV: ' + f.join(' \u00b7 ') : ''; if (b.textContent !== t) b.textContent = t; b.style.display = t ? 'block' : 'none'; }
   window.devBadgeSync = sync; sync(); setInterval(sync, 700);
 })();
 var BL_NOTE_MAX = 140;
