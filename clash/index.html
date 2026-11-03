@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Quick Clash - ICCC Goats Pinball</title>
+<title>Quick Clash · Goats with Flippers</title>
 <style>:where(.gcard, .gcard *, .overs-pill, .overs-pill *, .btn-gold, .btn-dark, .panel, .panel-dark, .sbar, .sbar *, .cardback){ box-sizing:border-box; border-width:0; border-style:solid; border-color:#e5e7eb; }
 :where(.gcard, .overs-pill, .sbar){ line-height:1.5; }
 :where(button.gcard, .btn-gold, .btn-dark){ font-family:inherit; font-size:100%; font-weight:inherit; line-height:inherit; letter-spacing:inherit; color:inherit; margin:0; padding:0; text-transform:none; -webkit-appearance:button; background-color:transparent; background-image:none; cursor:pointer; }
@@ -338,6 +338,16 @@ button { font-family:inherit; }
 .qc-status b { color:#fde68a; }
 .qc-tip { margin:6px 0; padding:10px 13px; border-radius:14px; border:2px solid #38bdf8; background:#0b1220f5; color:#e2e8f0; font:600 15px/1.4 system-ui, sans-serif; box-shadow:0 0 0 3px #000, 0 0 18px #38bdf855; }
 .qc-tip .tn { display:block; font:800 12px system-ui, sans-serif; color:#7dd3fc; letter-spacing:.1em; margin-bottom:3px; }
+.qc-tut { border-color:#facc15; box-shadow:0 0 0 3px #000, 0 0 14px #facc1555; }
+.qc-tut .tn { color:#fde047; }
+.qc-tut b.tt { display:block; font:800 16px system-ui, sans-serif; color:#fff; margin-bottom:2px; }
+.qc-tut .todo { display:block; margin-top:6px; padding:5px 8px; border-radius:9px; background:#facc1522; color:#fde68a; font-weight:700; }
+.qc-tut .todo:before { content:'\25B6  '; color:#facc15; }
+.qc-tut.nudge { animation:qcTutNudge .45s 1; }
+@keyframes qcTutNudge { 0%,100% { transform:none; } 25% { transform:translateX(-5px); } 75% { transform:translateX(5px); } }
+.tut-hot { outline:3px solid #facc15 !important; outline-offset:2px; animation:qcTutRing 1s ease-in-out infinite; }
+@keyframes qcTutRing { 0%,100% { outline-color:#facc15; } 50% { outline-color:#fff7cc; } }
+.qc-tutgo { margin-top:6px; }
 .qc-ctl { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 0; } .qc-ctl > button { flex:1 1 150px; min-height:46px; }
 .qc-ctl > .btn-dark { font-size:14px; }
 .qc-field { margin:6px 0 4px; padding:6px 8px 8px; border:2px solid var(--gold); border-radius:16px; background:radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.45)), repeating-linear-gradient(90deg, #14491f 0 70px, #185324 70px 140px); box-shadow:0 0 0 2px #0008, inset 0 0 24px #000a; }
@@ -452,6 +462,7 @@ button { font-family:inherit; }
 #app .qc-pick .flav { line-height:1.2; padding-top:2px; padding-bottom:0; max-height:calc(2.4em + 2px); margin-bottom:7px; box-shadow:inset 0 0 0 1px #ffffff12, 0 3px 0 rgba(0,0,0,.34); }
 @media (max-width:640px) {
   #app .qc-dock .hand.qc-hand .hc.gcard { width:calc((100% - 48px) / 3); }
+  #app .qc-dock .hand.qc-hand .hc.gcard { width:calc((100% - 20px) / 2.72); }
 }
 @media (min-width:800px) and (max-height:860px) and (min-height:501px) {
   #app .qc-dock .hand.qc-hand { gap:8px 8px; padding:16px 2px 2px; }
@@ -463,7 +474,7 @@ button { font-family:inherit; }
 }
 @media (min-width:800px) and (max-height:500px) {
   #app .qc-dock .hand.qc-hand { flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; scroll-snap-type:x proximity; gap:6px; padding:12px 2px 6px 10px; scroll-padding-left:10px; scrollbar-width:thin; }
-  #app .qc-dock .hand.qc-hand .hc.gcard { width:calc((100% - 48px) / 3); max-width:7.6rem; flex:0 0 auto; scroll-snap-align:start; }
+  #app .qc-dock .hand.qc-hand .hc.gcard { width:calc((100% - 20px) / 2.72); max-width:7.6rem; flex:0 0 auto; scroll-snap-align:start; }
   #app:has(> .qc-field):has(> #qcTip) > #qcTip { grid-column:1; grid-row:4; }
   #app:has(> .qc-field):has(> #qcTip) > .qc-field { grid-row:5; }
   #app:has(> .qc-field):has(> #qcTip) > .qc-dock { grid-column:2; grid-row:4 / span 2; }
@@ -473,6 +484,17 @@ button { font-family:inherit; }
 #app .gem{justify-content:center;padding-bottom:0;color:#fffbea;font:900 18px/1 Georgia,serif;text-shadow:1px 1px 0 #2a1600,-1px -1px 0 #2a1600,1px -1px 0 #2a1600,-1px 1px 0 #2a1600,0 0 3px #000}
 #app .hand .gem{font-size:19px} #app .gem.qc-bgem{font-size:16px;text-shadow:none}
 #app .gem small{position:absolute;top:100%;bottom:auto;left:50%;right:auto;transform:translateX(-50%);margin-top:1px;font:900 7px/1 system-ui,Arial,sans-serif;letter-spacing:.6px;color:#ffe9a8;background:#2a1600;border:1px solid #d4a73a;border-radius:4px;padding:1px 3px;white-space:nowrap;text-shadow:none}
+</style>
+<style>  .artbox .emb { cursor:help; z-index:2; }
+  .artbox .emb::before { content:''; position:absolute; inset:-7px -4px -2px -7px; }
+  #qcIcoTip { position:fixed; z-index:9999; max-width:230px; padding:6px 9px 7px; border-radius:8px; background:rgba(20,10,12,.96); border:1px solid #d4a43a;
+    box-shadow:0 3px 10px rgba(0,0,0,.6); color:#f4ead2; font:600 12px/1.3 system-ui, sans-serif; pointer-events:none; display:none; text-align:left; }
+  #qcIcoTip.on { display:block; }
+  #qcIcoTip b { display:block; color:#ffd54f; font-size:12.5px; margin-bottom:2px; }
+  #qcIcoTip .it { color:#e8dcc0; font-weight:500; }
+  #qcIcoTip .ib { display:block; margin-top:4px; color:#86efac; font-weight:700; }
+  #qcIcoTip .ib.df { color:#93c5fd; }
+  @media (max-width:640px), (max-height:500px) { #qcIcoTip { max-width:200px; font-size:11.5px; } }
 </style>
 </head>
 <body>
@@ -874,7 +896,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   }
   function endGame(winner, reason) {
     S.over = true; S.winner = winner; S.reason = reason; S.current = null; cancelTimers(); log(reason);
-    if (simming) return;
+    if (simming || TUT.on) { render(); return; }
     tipOff('end');
     writeResult({ win: winner === 'player', tie: winner === null, forfeit: false, runsYou: P('player').runs, runsThem: P('ai').runs, wktsYou: wkDown(P('player')), wktsThem: wkDown(P('ai')), reason: reason });
     render();
@@ -889,6 +911,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     return { target: target, v: v };
   }
   function planMain(id, diff) {
+    if (TUT.on && id === 'ai') return tutAiMain(id);
     var p = P(id), aff = p.hand.filter(function (c) { return canPlay(p, c).ok; }); if (!aff.length) return null;
     if (diff === 'easy') { if (R() < QC.EASY_IDLE) return null; var c = rnd(aff), tl = strategyTargets(id, c); return { uid: c.uid, target: tl ? rnd(tl) : null }; }
     var cand = aff.map(function (c) { var s = stratPlan(id, c); return { c: c, target: s.target, v: s.v }; }).filter(function (o) { return o.c.type !== 'strategy' || o.v > 0; });
@@ -898,6 +921,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     return { uid: best.c.uid, target: best.target };
   }
   function planAction(id, diff) {
+    if (TUT.on && id === 'ai') return tutAiAction(id);
     var p = P(id), e = P(other(id)), ready = p.pitch.filter(function (c) { return canAct(p, c) && hasAction(id, c); }); if (!ready.length) return null;
     if (diff === 'easy') { if (R() < QC.EASY_IDLE) return null; var mv = []; ready.forEach(function (a) { var t = targetsFor(id, a); t.slots.forEach(function (i) { mv.push([a.uid, i]); }); if (t.direct) mv.push([a.uid, 'direct']); }); return mv.length ? rnd(mv) : null; }
     var val = function (c) { return (isBatter(c) ? 10 : 0) + runsOf(e, c); }, i, a, t;
@@ -921,7 +945,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   }
   function stepSide(id, diff) {
     if (S.phase === 'draw') { if (S.tossPick) resolveToss(null); enterMain(id); return true; }
-    if (S.phase === 'main') { var pl = S.aiDone ? null : planMain(id, diff); if (pl && playCard(id, pl.uid, pl.target)) return true; S.aiDone = false; enterAction(id); return true; }
+    if (S.phase === 'main') { var pl = S.aiDone ? null : planMain(id, diff); if (pl && playCard(id, pl.uid, pl.target, pl.slot)) return true; S.aiDone = false; enterAction(id); return true; }
     if (S.phase === 'action') { var ch = planAction(id, diff); if (ch && act(id, ch[0], ch[1])) return true; enterEnd(id); return true; }
     if (S.phase === 'end') { finishTurn(id); return false; }
     return false;
@@ -948,7 +972,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     if (sig !== aiWatch.sig) { aiWatch = { sig: sig, at: now }; return; }
     if (now - aiWatch.at > QC.WATCHDOG_MS) { aiWatch.sig = ''; console.warn('AI watchdog: turn stalled, recovering'); aiRecover('stalled'); }
   }, 1000);
-  function save() { if (simming || !S || !H || S.over || H.state === 'done' || H.state === 'claimed') return; lsSet(MATCH_KEY, { v: 1, id: H.id, S: S }); }
+  function save() { if (simming || TUT.on || !S || !H || S.over || H.state === 'done' || H.state === 'claimed') return; lsSet(MATCH_KEY, { v: 1, id: H.id, S: S }); }
   function writeResult(res) {
     var h = lsGet(HAND_KEY); if (!h || h.id !== H.id) h = H;
     if (h.state === 'done' || h.state === 'claimed') { H = h; return; }
@@ -973,8 +997,79 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   function tipEv(k) { if (tip.on && tip.step === k) tip.step++; }
   function tipHTML() {
     var n = tip.step, last = n >= TIPS.length - 1;
-    return '<div class="tip qc-tip" id="qcTip"><span class="tn">TIP ' + (n + 1) + '/' + TIPS.length + '</span>' + esc(TIPS[n]) + '<div class="ctl qc-ctl"><button class="btn-gold" data-a="' + (last ? 'tipDone' : 'tipNext') + '">' + (last ? 'GOT IT' : 'NEXT') + '</button><button class="btn-dark alt" data-a="tipSkip">SKIP TIPS</button></div></div>';
+    return '<div class="tip qc-tip" id="qcTip"><span class="tn">TIP ' + (n + 1) + '/' + TIPS.length + '</span>' + esc(TIPS[n]) + (n === 0 ? '<div class="qc-tutgo">New to Clash? <b>TUTORIAL</b> walks you through a practice match step by step (Cricket Clash style).</div>' : '') + '<div class="ctl qc-ctl">' + (n === 0 ? '<button class="btn-gold" data-a="tutGo"' + (tutCan() ? '' : ' disabled') + '>TUTORIAL</button>' : '') + '<button class="btn-gold" data-a="' + (last ? 'tipDone' : 'tipNext') + '">' + (last ? 'GOT IT' : 'NEXT') + '</button><button class="btn-dark alt" data-a="tipSkip">SKIP TIPS</button></div></div>';
   }
+  var TUT = { on: false, step: 0, realS: null, realSel: null, nudge: 0 };
+  function tutRuns(key) { var p = P('player'), c = p.pitch.find(function (x) { return x && x.key === key; }); return c ? runsOf(p, c) : LIB[key].runs; }
+  var TUT_STEPS = [null,
+    { t: 'Overs & drawing', b: 'Overs are what you spend to play cards: they refill at the start of every turn (2 on turn 1, +1 each turn, up to ' + QC.OVERS_CAP + '). You draw 1 card at the start of each turn.', todo: 'Tap the gold NEXT button in this box.', btn: 'NEXT' },
+    { t: 'Play a card', b: 'Your Conservative Opener costs 1 Over - you have 2 this turn (see OVERS on your score bar).', todo: 'Tap your Conservative Opener in YOUR HAND (gold ring).', ok: { a: 'hand', key: 'consopener' }, hot: function () { return '[data-a=hand][data-u="' + tutUid('hand', 'consopener') + '"]'; }, done: function () { return sel === tutUid('hand', 'consopener'); } },
+    { t: 'Pick his spot', b: 'You choose which slot a card goes into - and it matters. A \uD83D\uDEE1 Guard covers his own slot and the slots either side, so in the MIDDLE he covers all 3 and the rival can\u2019t hit your stumps at all.', todo: 'Tap the MIDDLE slot on YOUR PITCH (slot 2, gold ring).', ok: { a: 'place', i: 1 }, hot: function () { return '[data-a=place][data-i="1"]'; }, done: function () { var c = P('player').pitch[1]; return !!(c && c.key === 'consopener'); } },
+    { t: 'Setting Up + Guard', b: 'New cards can\u2019t act on the turn they\u2019re played - he\u2019ll be READY on your next turn. (QUICK cards like the Pinch Hitter skip this.) From the middle his \uD83D\uDEE1 Guard covers all 3 of your slots.', todo: 'Nothing else to do this turn: tap TO ACTION.', ok: { a: 'toAction' }, hot: function () { return '[data-a=toAction]'; }, done: function () { return S.phase === 'action' || S.current === 'ai'; } },
+    { t: 'End the turn', b: 'Action Phase: READY cards attack here. Your Opener is still setting up, so there\u2019s nothing to attack with yet.', todo: 'Tap END TURN.', ok: { a: 'endTurn' }, hot: function () { return '[data-a=endTurn]'; }, done: function () { return S.current === 'ai'; } },
+    { t: 'The Nets Coach\u2019s turn', b: 'The Nets Coach is batting. In the tutorial it plays soft and won\u2019t attack you.', todo: 'Nothing to tap - just watch. Your turn starts in a moment.', done: function () { return S.current === 'player' && S.phase === 'main'; } },
+    { t: 'Main Phase - spend your Overs first', b: 'New turn: your Overs refilled to 3 and you drew a card. Cards can ONLY be played in the Main Phase - once you tap TO ACTION you can\u2019t play any more this turn, and unspent Overs don\u2019t carry over.', todo: 'Tap your Pinch Hitter in YOUR HAND (costs 2 Overs; QUICK means he can even attack this turn).', ok: { a: 'hand', key: 'pinch' }, hot: function () { return '[data-a=hand][data-u="' + tutUid('hand', 'pinch') + '"]'; }, done: function () { return sel === tutUid('hand', 'pinch'); } },
+    { t: 'Pick his spot', b: 'Your Opener\u2019s \uD83D\uDEE1 Guard in the middle covers every slot, so either free end is safe.', todo: 'Tap the free slot on YOUR PITCH (slot 3, gold ring).', ok: { a: 'place', i: 2 }, hot: function () { return '[data-a=place][data-i="2"]'; }, done: function () { var c = P('player').pitch[2]; return !!(c && c.key === 'pinch'); } },
+    { t: 'Now go to Action', b: 'Your Opener has finished Setting Up and is READY; the QUICK Pinch Hitter could attack too.', todo: 'Tap TO ACTION.', ok: { a: 'toAction' }, hot: function () { return '[data-a=toAction]'; }, done: function () { return S.phase === 'action'; } },
+    { t: 'Action Phase', b: 'READY cards can attack now.', todo: 'Tap your READY Conservative Opener on YOUR PITCH (gold ring).', ok: { a: 'mine', key: 'consopener' }, hot: function () { return '[data-a=mine][data-i="1"]'; }, done: function () { return sel === tutUid('pitch', 'consopener'); } },
+    { t: 'Bowl them!', b: function () { return 'The Nets Coach has no cards out, so nothing guards its slots. Attack through an open slot: BOWLED! It goes 1/' + QC.WICKETS + ' down (Wickets count up) and you score your Opener\u2019s ' + tutRuns('consopener') + ' Runs (his 2 +1 for the Opening Pair - more on that soon).'; }, todo: 'Tap a gold STUMPS button.', ok: { a: 'direct' }, hot: function () { return '[data-a=direct]'; }, done: function () { return P('ai').wickets < QC.WICKETS; } },
+    { t: 'BOWLED!', b: function () { return 'Stumps cartwheeling: the Nets Coach is 1/' + QC.WICKETS + ' down and you scored ' + P('player').runs + ' Runs - a batter that bowls the rival scores the batter\u2019s own Runs.'; }, todo: 'Tap END TURN - the Nets Coach gets a go next.', ok: { a: 'endTurn' }, hot: function () { return '[data-a=endTurn]'; }, done: function () { return S.current === 'ai'; } },
+    { t: 'The Nets Coach\u2019s turn 2', b: 'The Nets Coach is fighting back this time...', todo: 'Nothing to tap - just watch.', done: function () { return S.current === 'player' && S.phase === 'main'; } },
+    { t: 'Blocked by the Guard', b: function () { return 'The Nets Coach played a Pinch Hitter and attacked. Your Opener\u2019s \uD83D\uDEE1 GUARD covers every slot, so it couldn\u2019t get through to your stumps - it had to take on your Opener head-on: ' + LIB.pinch.runs + ' Runs vs your ' + LIB.consopener.def + ' Defend \u2192 blocked. Runs must BEAT Defend to win a card fight.'; }, todo: 'Tap the gold CONTINUE button in this box.', btn: 'CONTINUE' },
+    { t: 'Your turn 3', b: 'Time for revenge. You could play more cards first (holding them back is fine too) - this time let\u2019s go straight to a fight.', todo: 'Tap TO ACTION.', ok: { a: 'toAction' }, hot: function () { return '[data-a=toAction]'; }, done: function () { return S.phase === 'action'; } },
+    { t: 'Pick your fighter', b: 'Your Pinch Hitter is READY. Runs beat Defend = OUT.', todo: 'Tap your READY Pinch Hitter on YOUR PITCH (gold ring).', ok: { a: 'mine', key: 'pinch' }, hot: function () { return '[data-a=mine][data-i="2"]'; }, done: function () { return sel === tutUid('pitch', 'pinch'); } },
+    { t: 'Duel!', b: function () { var v = P('ai').pitch.find(function (x) { return x && x.key === 'pinch'; }); return 'Take on its batter head-on: your ' + tutRuns('pinch') + ' Runs vs its ' + (v ? defOf(v) : LIB.pinch.def) + ' Defend \u2192 OUT!'; }, todo: 'Tap the Nets Coach\u2019s Pinch Hitter (TARGET) to attack it.', ok: { a: 'hit' }, hot: function () { return '[data-a=hit]'; }, done: function () { return !P('ai').pitch.some(function (x) { return x && x.key === 'pinch'; }); } },
+    { t: 'Synergy: Opening Pair', b: function () { return 'Spotted the \uD83E\uDD1D OPENING PAIR? Your Opener + Pinch Hitter on the pitch together = +1 Runs each - that\u2019s part of your Pinch Hitter\u2019s ' + tutRuns('pinch') + ' Runs in that duel. Combos like this (Pace Battery, Spin Twins, Captain\u2019s Field) show on the cards.'; }, todo: 'Tap the gold NEXT button in this box.', btn: 'NEXT' },
+    { t: 'That\u2019s cricket!', b: 'Recap: MAIN - play cards with your Overs \u00b7 TO ACTION - attack with READY cards \u00b7 END TURN hands over. Two ways to take Wickets: BOWL the rival through an open slot, or beat its batter in a duel. Bowl them all out (' + QC.WICKETS + '/' + QC.WICKETS + ') or have more Runs after ' + QC.TURNS_EACH + ' turns each.', todo: 'Tap FINISH to go back to your Quick Clash.', btn: 'FINISH' }
+  ];
+  var TUT_N = TUT_STEPS.length - 1;
+  function tutUid(where, key) { var p = P('player'), c = (where === 'hand' ? p.hand : p.pitch).find(function (x) { return x && x.key === key; }); return c ? c.uid : -1; }
+  function tutCan() { return !!(S && !S.over && !TUT.on && myTurn('player') && !S.pending && !S.tossPick && !ui.confirmQuit); }
+  function tutStart() {
+    if (!tutCan()) return;
+    cancelTimers(); TUT.realS = S; TUT.realSel = sel; sel = null; TUT.on = true; TUT.step = 1; TUT.nudge = 0;
+    S = { v: 1, id: 'tutorial', rng: 12345, uid: 0, players: { player: makePlayer('player'), ai: makePlayer('ai') }, current: null, phase: null, turnNo: 0, log: [], over: false, winner: null, reason: '',
+          pending: null, tossPick: null, diff: 'normal', pdiff: null, rivalName: 'The Nets Coach', aiDone: false, steps: 0, aiSteps: 0, pSteps: 0, first: 'player', tut: 1 };
+    var mk = function (ks) { return ks.map(makeCard); };
+    P('player').hand = mk(['consopener', 'pinch', 'rock', 'swing']); P('player').deck = mk(['captain', 'mystery', 'freehit', 'review', 'swing']);
+    P('ai').hand = mk(['rock', 'swing', 'pinch', 'mystery']); P('ai').deck = mk(['captain', 'consopener', 'freehit', 'swing', 'rock']);
+    log('TUTORIAL: a practice match v The Nets Coach. Nothing here counts and nothing is saved.');
+    beginTurn('player');
+  }
+  function tutEnd() {
+    if (!TUT.on) return;
+    cancelTimers(); TUT.on = false; TUT.step = 0; S = TUT.realS; sel = TUT.realSel; TUT.realS = null; TUT.realSel = null;
+    render(); kick();
+  }
+  function tutAiMain(id) {
+    var p = P(id); if (p.turnsTaken !== 2 || p.pitch.some(Boolean)) return null;
+    var c = p.hand.find(function (x) { return x.key === 'pinch'; }); return c ? { uid: c.uid, target: null, slot: 1 } : null;
+  }
+  function tutAiAction(id) {
+    var p = P(id), a = p.pitch.find(function (x) { return x && x.key === 'pinch' && canAct(p, x); }); if (!a) return null;
+    var me = P('player'), j = me.pitch.findIndex(function (x) { return x && x.key === 'consopener'; }); return j >= 0 ? [a.uid, j] : null;
+  }
+  function tutSync() { var g = 0; while (TUT.on && TUT.step < TUT_N && TUT_STEPS[TUT.step].done && TUT_STEPS[TUT.step].done() && g++ < 4) TUT.step++; }
+  function tutGate(a, b) {
+    if (a === 'tutNext') { var st = TUT_STEPS[TUT.step]; if (st && st.btn) { if (TUT.step >= TUT_N) tutEnd(); else { TUT.step++; render(); } } return true; }
+    if (a === 'tutExit') { tutEnd(); return true; }
+    var ok = TUT_STEPS[TUT.step] && TUT_STEPS[TUT.step].ok, me = P('player'), i = +b.getAttribute('data-i'), u = +b.getAttribute('data-u');
+    if (ok && ok.a === a) {
+      if (ok.i != null && ok.i !== i) ok = null;
+      else if (ok.key && a === 'hand' && !me.hand.some(function (c) { return c.uid === u && c.key === ok.key; })) ok = null;
+      else if (ok.key && a === 'mine' && !(me.pitch[i] && me.pitch[i].key === ok.key)) ok = null;
+      if (ok) return false;
+    }
+    if (a === 'quit' || a === 'quitYes' || a === 'quitNo') return true;
+    TUT.nudge++; render(); return true;
+  }
+  function tutHTML() {
+    var st = TUT_STEPS[TUT.step]; if (!st) return '';
+    var body = typeof st.b === 'function' ? st.b() : st.b;
+    return '<div class="tip qc-tip qc-tut' + (TUT.nudge ? ' nudge' : '') + '" id="qcTip"><span class="tn">TUTORIAL ' + TUT.step + '/' + TUT_N + '</span><b class="tt">' + esc(st.t) + '</b>' + esc(body) +
+      '<span class="todo">' + esc(st.todo) + '</span><div class="ctl qc-ctl">' + (st.btn ? '<button class="btn-gold tut-hot" data-a="tutNext">' + st.btn + ' &#9654;</button>' : '') + '<button class="btn-dark alt" data-a="tutExit">EXIT TUTORIAL</button></div></div>';
+  }
+  function tutHot() { if (!TUT.on) return; var st = TUT_STEPS[TUT.step]; if (!st || !st.hot) return; [].forEach.call(app.querySelectorAll(st.hot()), function (x) { x.classList.add('tut-hot'); }); TUT.nudge = 0; }
   var app = document.getElementById('app'), ui = { confirmQuit: false }, C = window.CCKit, B = C.BADGE, LOGO = window.QC_LOGO, ovSeen = '';
   function kitCard(c) { var L = LIB[c.key]; return { key: c.key, name: L.name, type: L.type, cost: L.cost, runs: L.runs, def: L.def, guard: L.guard, quick: L.quick, text: L.text }; }
   function backs(n) { var s = ''; for (var i = 0; i < n; i++) s += '<span class="cardback qc-cb" style="background-image:url(' + C.cardBack + ')"></span>'; return s; }
@@ -998,11 +1093,11 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   function head(sub, btn) {
     return '<header class="top qc-top"><img class="qc-logo" src="' + LOGO + '" alt="ICCC Goats"><div class="qc-tt"><h1><span class="title">QUICK CLASH</span>' + (S ? ' <span class="qc-v">v ' + esc(S.rivalName) + '</span>' : '') + '</h1><div class="sub qc-sub">' + sub + '</div></div>' + (btn || '') + '</header>';
   }
-  function noMatchHTML(msg) { return head('ICCC Goats Pinball') + '<div class="res qc-res panel"><h2 class="banner">Quick Clash</h2><p class="big go-title go-draw">No challenge waiting</p><p class="note qc-note">' + esc(msg || 'Challenges come up after an innings in your Season.') + '</p><div class="ctl qc-ctl"><button class="btn-gold" data-a="back">BACK TO THE SEASON</button></div></div>'; }
+  function noMatchHTML(msg) { return head('Goats with Flippers') + '<div class="res qc-res panel"><h2 class="banner">Quick Clash</h2><p class="big go-title go-draw">No challenge waiting</p><p class="note qc-note">' + esc(msg || 'Challenges come up after an innings in your Season.') + '</p><div class="ctl qc-ctl"><button class="btn-gold" data-a="back">BACK TO THE SEASON</button></div></div>'; }
   function resultHTML() {
     var r = H.result, w = r.win, p = H.prize || {}, deck = H.deck || QC.STARTER, rn = (H.rival && H.rival.name) || 'The Rival XI';
     var head1 = r.forfeit ? 'FORFEITED' : w ? 'YOU WIN' : r.tie ? 'TIE' : 'YOU LOSE', cls = w ? 'go-win' : r.tie ? 'go-draw' : 'go-loss';
-    var s = head(esc(GROUND_NAME[H.ground] || 'ICCC Goats Pinball')) + '<div class="res qc-res panel go-panel ' + (w ? 'go-win-p' : r.tie ? '' : 'go-loss-p') + '"><h2 class="banner">Quick Clash v ' + esc(rn) + '</h2><p class="big go-title ' + cls + '">' + head1 + '</p>';
+    var s = head(esc(GROUND_NAME[H.ground] || 'Goats with Flippers')) + '<div class="res qc-res panel go-panel ' + (w ? 'go-win-p' : r.tie ? '' : 'go-loss-p') + '"><h2 class="banner">Quick Clash v ' + esc(rn) + '</h2><p class="big go-title ' + cls + '">' + head1 + '</p>';
     if (!r.forfeit) s += '<table class="scorecard"><tr><th></th><th>Wkts / Runs</th></tr><tr class="big"><td>You</td><td class="' + (w ? 'lead' : '') + '">' + r.wktsYou + '/' + r.runsYou + '</td></tr><tr class="big"><td>' + esc((H.rival && H.rival.name) || 'Rival') + '</td><td class="' + (!w && !r.tie ? 'lead' : '') + '">' + r.wktsThem + '/' + r.runsThem + '</td></tr></table><p class="note qc-note">' + esc(r.reason || '') + '</p>';
     if (w) s += '<p class="qc-prize">Prize: <b>' + esc(p.label || 'a prize') + '</b> - paid when you get back to the Season.' + (H.stake ? ' Your ' + H.stake + ' MP bet comes back too.' : '') + '</p>';
     else if (r.tie) s += '<p class="qc-prize">No win, no loss.' + (H.stake ? ' Your ' + H.stake + ' MP bet is refunded.' : '') + '</p>';
@@ -1047,14 +1142,15 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     var selHand = selC && me.hand.indexOf(selC) >= 0, selPitch = selC && !selHand;
     var tg = selPitch && mine && ph === 'action' ? targetsFor('player', selC) : null;
     var ppT = selHand && selC.effect === 'powerplay' ? strategyTargets('player', selC) : null;
-    var h = head(esc(GROUND_NAME[H.ground] || '') + ' &middot; prize: ' + esc((H.prize && H.prize.label) || '-') + (H.stake ? ' &middot; bet ' + H.stake + ' MP' : ''), '<button class="btn-dark btnS" data-a="quit">FORFEIT</button>');
+    tutSync();
+    var h = TUT.on ? head('TUTORIAL &middot; practice match, nothing at stake', '<button class="btn-dark btnS" data-a="tutExit">EXIT TUTORIAL</button>') : head(esc(GROUND_NAME[H.ground] || '') + ' &middot; prize: ' + esc((H.prize && H.prize.label) || '-') + (H.stake ? ' &middot; bet ' + H.stake + ' MP' : ''), '<button class="btn-dark btnS" data-a="tutGo"' + (tutCan() ? '' : ' disabled') + '>TUTORIAL</button><button class="btn-dark btnS" data-a="quit">FORFEIT</button>');
     h += '<div class="score qc-score">' + scoreBox(me, true) + scoreBox(ai, false) + '</div>';
     var stx = S.current === 'ai' ? '<b>' + esc(S.rivalName) + '</b> is playing (' + ph + ')...' : ph === 'main' ? '<b>Your Main Phase</b> &middot; Overs ' + me.overs + '/' + me.maxOvers + (binOff(me) ? ' &middot; next card -1 Over' : '') + ' &middot; tap a hand card, then a slot' : ph === 'action' ? '<b>Your Action Phase</b> &middot; tap a ready card on your pitch, then a target' : '<b>Your turn</b> (' + ph + ')';
     if (selHand) { var cp = canPlay(me, selC); stx += '<br>' + esc(noThe(selC.name)) + ': ' + (cp.ok ? (selC.type === 'strategy' ? (ppT ? 'tap one of your batters' : 'tap PLAY') : 'tap an empty slot on your pitch') : cp.why); }
     if (tg) stx += '<br>' + esc(noThe(selC.name)) + ': ' + (tg.slots.length || tg.direct ? 'tap a lit target' : 'nothing to hit');
     h += '<div class="status qc-status panel-dark">' + stx + '</div>';
-    if (tip.on && tip.step === 3 && S.current === 'ai') tip.step = 4;
-    if (tip.on) h += tipHTML();
+    if (!TUT.on && tip.on && tip.step === 3 && S.current === 'ai') tip.step = 4;
+    if (TUT.on) h += tutHTML(); else if (tip.on) h += tipHTML();
     h += '<section class="qc-field">';
     h += '<div class="lbl qc-lbl">' + esc(S.rivalName.toUpperCase()) + ' PITCH</div><div class="row qc-row qc-ai">' + ai.pitch.map(function (c, i) {
       var t = tg && tg.slots.indexOf(i) >= 0;
@@ -1083,7 +1179,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     ovSeen = ovKey;
     var hd0 = app.querySelector('.qc-hand'), hsl = hd0 ? hd0.scrollLeft : 0;
     app.innerHTML = h; var lg = document.getElementById('log'); if (lg) lg.scrollTop = lg.scrollHeight;
-    fitAll(); handKeep(hsl);
+    fitAll(); handKeep(hsl); tutHot();
   }
   function handKeep(x) {
     var hd = app.querySelector('.qc-hand'); if (!hd || hd.scrollWidth <= hd.clientWidth + 1) return;
@@ -1104,6 +1200,8 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     if (a === 'back') { location.href = backUrl(); return; }
     if (a === 'pick' || a === 'swap' || a === 'nopick' || a === 'unpick' || a === 'bonus') { pickAction(a, k); return; }
     if (!S || S.over) return;
+    if (a === 'tutGo') { tutStart(); return; }
+    if (TUT.on && tutGate(a, b)) return;
     if (a === 'quit') { ui.confirmQuit = true; render(); return; }
     if (a === 'quitNo') { ui.confirmQuit = false; render(); return; }
     if (a === 'quitYes') { ui.confirmQuit = false; forfeit(); return; }
@@ -1135,6 +1233,70 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
     var h = lsGet(HAND_KEY); if (h && h.id === H.id && h.state === 'done') { h.result.cardPicked = r.cardPicked; h.result.swapOut = r.swapOut || null; h.result.bonusPicked = r.bonusPicked || null; lsSet(HAND_KEY, h); H = h; }
     ui.pickKey = null; render();
   }
+  var ICO = {
+    consopener: ['Brick wall', 'A Guard batter. It covers its own slot and the slots either side, so rival cards have to get past it first.'],
+    pinch: ['Big hit', 'A Quick batter. It can attack on the same turn you play it.'],
+    rock: ['Rock', 'A steady batter. When you play it, you draw 1 card.'],
+    captain: ['Crown', 'The Captain. Your other batters get +1 Runs while it is on your pitch.'],
+    finisher: ['Fire', 'A big-hitting batter. When it beats a card, the leftover Runs also come off the rival\u2019s score.'],
+    swing: ['Swing', 'A bowler. Its Battle Action takes 2 Defend off a rival card for good.'],
+    express: ['Lightning', 'A fast bowler. Its Battle Action dismisses any rival card that costs 2 Overs or less.'],
+    mystery: ['Spiral', 'A spin bowler with Guard. It covers the slots beside it, and any card that attacks it is Locked next turn.'],
+    allrounder: ['Scales', 'An all-rounder. It counts as a Batter and a Bowler: it can attack cards or the stumps, and it scores Runs.'],
+    deathover: ['Stopwatch', 'A late-game bowler. From your turn ' + QC.DEATH_OVER_TURN + ' on it costs only 2 Overs.'],
+    powerplay: ['Powerplay', 'A strategy card. Pick one of your batters: its Runs are doubled this turn.'],
+    review: ['TV screen', 'A strategy card. Look at your top 3 cards, keep 1 in your hand.'],
+    freehit: ['Target', 'A strategy card. Draw 2 cards.']
+  };
+  var ICO_T = { batter: 'Batter', bowler: 'Bowler', allrounder: 'All-Rounder', strategy: 'Strategy' };
+  var SYN_WHO = { open: 'Opener + Pinch Hitter', spin: '2 spin bowlers', pace: '2 pace bowlers', capt: 'The Captain' };
+  function icoCard(e) {
+    var g = e.closest('.gcard'); if (!g) return null;
+    var k = g.getAttribute('data-key'), slot = g.closest('.qc-slot'), u = +(g.getAttribute('data-u') || 0), o = null, c = null;
+    if (S && !S.over && slot && slot.parentNode) {
+      var row = slot.parentNode, i = Array.prototype.indexOf.call(row.children, slot);
+      o = row.classList.contains('qc-ai') ? P('ai') : row.classList.contains('qc-me') ? P('player') : null;
+      c = o ? o.pitch[i] : null; if (c && c.key !== k) { c = null; o = null; }
+    } else if (S && !S.over && u) c = P('player').hand.find(function (x) { return x.uid === u; }) || null;
+    return { k: k, c: c, o: o };
+  }
+  function icoHTML(e) {
+    var r = icoCard(e); if (!r || !LIB[r.k] || !ICO[r.k]) return '';
+    var L = LIB[r.k], I = ICO[r.k], h = '<b>' + esc(e.textContent + ' ' + I[0] + ': ' + ICO_T[L.type] + (L.guard ? ' \u00B7 Guard' : '') + (L.quick ? ' \u00B7 Quick' : '')) + '</b><span class="it">' + esc(I[1]) + '</span>';
+    var o = r.o, c = r.c;
+    if (o && c && L.type !== 'strategy') {
+      var mine = o.id === 'player', where = mine ? 'on your pitch' : 'on their pitch', cb = captainBonus(o, c);
+      synList(o, c).forEach(function (s) {
+        if (s.runs) h += '<span class="ib">+' + s.runs + ' Runs from ' + esc(s.name) + ' (' + esc(SYN_WHO[s.key] || s.name) + ' ' + where + ')</span>';
+        if (s.def) h += '<span class="ib df">+' + s.def + ' Defend from ' + esc(s.name) + ' (' + esc(SYN_WHO[s.key] || s.name) + ' ' + where + ')</span>';
+      });
+      if (cb) h += '<span class="ib">+' + cb + ' Runs from The Captain (' + where + ')</span>';
+      if (c.pp) h += '<span class="ib">x2 Runs from Powerplay (this turn)</span>';
+    }
+    return h;
+  }
+  var IT = { el: null, on: null, t: 0, touch: false };
+  function icoShow(e) {
+    var h = icoHTML(e); if (!h) { icoHide(); return; }
+    if (!IT.el) { IT.el = document.createElement('div'); IT.el.id = 'qcIcoTip'; IT.el.setAttribute('role', 'tooltip'); document.body.appendChild(IT.el); }
+    var t = IT.el; t.innerHTML = h; t.classList.add('on'); IT.on = e;
+    var a = e.getBoundingClientRect(), w = t.offsetWidth, ht = t.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    var x = Math.max(6, Math.min(vw - w - 6, a.left + a.width / 2 - w / 2)), y = a.top - ht - 8;
+    if (y < 6) y = Math.min(vh - ht - 6, a.bottom + 8);
+    t.style.left = Math.round(x) + 'px'; t.style.top = Math.round(y) + 'px';
+    clearTimeout(IT.t); if (IT.touch) IT.t = setTimeout(icoHide, 5000);
+  }
+  function icoHide() { clearTimeout(IT.t); IT.on = null; if (IT.el) IT.el.classList.remove('on'); }
+  function icoAt(t) { var e = t && t.closest && t.closest('.artbox .emb'); return e && app.contains(e) ? e : null; }
+  document.addEventListener('pointerover', function (ev) { if (ev.pointerType !== 'mouse') return; var e = icoAt(ev.target); if (e) { IT.touch = false; icoShow(e); } else if (IT.on && !IT.touch) icoHide(); }, true);
+  document.addEventListener('pointerdown', function (ev) { IT.touch = ev.pointerType !== 'mouse'; }, true);
+  window.addEventListener('click', function (ev) {
+    var e = icoAt(ev.target);
+    if (e && IT.touch) { ev.stopPropagation(); ev.preventDefault(); if (IT.on === e) icoHide(); else icoShow(e); return; }
+    if (IT.touch) icoHide();
+  }, true);
+  window.addEventListener('scroll', function () { if (IT.touch) icoHide(); }, true);
+  app.addEventListener('mouseleave', function () { if (!IT.touch) icoHide(); });
   function boot() {
     var q = new URLSearchParams(location.search).get('h'), h = lsGet(HAND_KEY);
     if (!h || h.v !== 1 || !h.id || ['pending', 'playing', 'done', 'claimed'].indexOf(h.state) < 0) { H = null; render(); return; }
@@ -1148,6 +1310,7 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   }
   window.addEventListener('storage', function (e) {
     if (e.key !== HAND_KEY || !H) return; var h = lsGet(HAND_KEY);
+    if (TUT.on) { TUT.on = false; S = TUT.realS; TUT.realS = null; }
     if (!h || h.id !== H.id) { cancelTimers(); S = null; H = null; ui.why = 'That challenge has gone.'; render(); return; }
     if ((h.state === 'done' || h.state === 'claimed') && H.state !== h.state) { cancelTimers(); H = h; render(); }
   });
