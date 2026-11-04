@@ -486,7 +486,35 @@ button { font-family:inherit; }
 #app .hand .gem{font-size:19px} #app .gem.qc-bgem{font-size:16px;text-shadow:none}
 #app .gem small{position:absolute;top:100%;bottom:auto;left:50%;right:auto;transform:translateX(-50%);margin-top:1px;font:900 7px/1 system-ui,Arial,sans-serif;letter-spacing:.6px;color:#ffe9a8;background:#2a1600;border:1px solid #d4a73a;border-radius:4px;padding:1px 3px;white-space:nowrap;text-shadow:none}
 </style>
-<style>  .artbox .emb { cursor:help; z-index:2; }
+<style>  .onpitch { -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+  #qcRead { position:fixed; z-index:9998; display:none; }
+  #qcRead.on { display:block; }
+  #qcRead.modal { inset:0; background:rgba(0,0,0,.55); }
+  #qcRead.modal.on { display:flex; align-items:center; justify-content:center; padding:10px; box-sizing:border-box; }
+  #qcRead.hov { pointer-events:none; }
+  #qcRead .rd { box-sizing:border-box; width:min(320px, calc(100vw - 20px)); max-height:calc(100vh - 20px); overflow:auto; padding:10px 12px 10px; border-radius:12px;
+    background:linear-gradient(#3a0d16, #22070c); border:2px solid #d4a73a; box-shadow:0 8px 28px #000c, inset 0 0 0 1px #f6d77a33; color:#f3e9d2; font:500 14px/1.3 system-ui, sans-serif; text-align:left; }
+  #qcRead.hov .rd { width:260px; font-size:13px; }
+  #qcRead .rd-h { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  #qcRead .rd-gem { flex:0 0 auto; min-width:34px; padding:2px 4px 1px; border-radius:8px; background:linear-gradient(#f6d77a, #b8862a); color:#2a0a10; font:900 17px/1 Georgia, serif; text-align:center; }
+  #qcRead .rd-gem small { display:block; font:800 7px/1.2 system-ui, sans-serif; letter-spacing:.04em; }
+  #qcRead .rd-nm { flex:1 1 auto; color:#ffd54f; font:900 17px/1.15 Georgia, serif; text-transform:uppercase; letter-spacing:.02em; }
+  #qcRead .rd-who { display:block; color:#d9c9a3; font:700 10px/1.2 system-ui, sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+  #qcRead .rd-tags { display:flex; flex-wrap:wrap; gap:4px; margin:0 0 6px; }
+  #qcRead .rd-tags .tag { font-size:11px; padding:1px 6px; }
+  #qcRead .rd-st { display:flex; gap:14px; margin:0 0 6px; font:900 15px/1 Georgia, serif; }
+  #qcRead .rd-st span { display:inline-flex; align-items:center; gap:4px; }
+  #qcRead .rd-st svg { width:15px; height:15px; }
+  #qcRead .rd-st .up { color:#86efac; } #qcRead .rd-st .down { color:#fca5a5; }
+  #qcRead .rd-bd { display:flex; flex-wrap:wrap; gap:4px; margin:0 0 6px; }
+  #qcRead .rd-bd > span { font:800 10px/1.4 system-ui, sans-serif; color:#fff; border-radius:4px; padding:0 5px; }
+  #qcRead .rd-tx { margin:0 0 6px; font-size:14.5px; line-height:1.3; color:#fff6df; }
+  #qcRead.hov .rd-tx { font-size:13.5px; }
+  #qcRead .rd-fl { margin:0; font-style:italic; color:#d9c9a3; font-size:12.5px; }
+  #qcRead .rd-x { display:block; margin-top:8px; text-align:center; color:#bfae86; font:700 10px/1 system-ui, sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+  #qcRead.hov .rd-x { display:none; }
+  @media (max-height:500px) { #qcRead .rd { width:min(440px, calc(100vw - 20px)); padding:8px 12px; } #qcRead .rd-tx { font-size:13.5px; } }
+  .artbox .emb { cursor:help; z-index:2; }
   .artbox .emb::before { content:''; position:absolute; inset:-7px -4px -2px -7px; }
   #qcIcoTip { position:fixed; z-index:9999; max-width:230px; padding:6px 9px 7px; border-radius:8px; background:rgba(20,10,12,.96); border:1px solid #d4a43a;
     box-shadow:0 3px 10px rgba(0,0,0,.6); color:#f4ead2; font:600 12px/1.3 system-ui, sans-serif; pointer-events:none; display:none; text-align:left; }
@@ -1298,6 +1326,68 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   }, true);
   window.addEventListener('scroll', function () { if (IT.touch) icoHide(); }, true);
   app.addEventListener('mouseleave', function () { if (!IT.touch) icoHide(); });
+  var RD = { el: null, open: false, mode: '', g: null, touch: false, lt: 0, lp: false, x: 0, y: 0, eat: 0 };
+  function rdAt(t) { var g = t && t.closest && t.closest('.onpitch'); return g && app.contains(g) ? g : null; }
+  function rdActs(g) {
+    var sl = g.closest('.qc-slot'); if (sl) return sl.classList.contains('tgt') || sl.classList.contains('sel');
+    return !!g.closest('[data-a]');
+  }
+  function rdCard(g) {
+    var k = g.getAttribute('data-key'), side = g.classList.contains('own-ai') ? 'ai' : 'player', sl = g.closest('.qc-slot'), o = null, c = null;
+    if (S && sl && sl.parentNode) { var i = [].indexOf.call(sl.parentNode.children, sl); o = P(side); c = o && o.pitch[i]; if (!c || c.key !== k) { c = null; o = null; } }
+    return { k: k, side: side, o: o, c: c };
+  }
+  function rdHTML(g) {
+    var r = rdCard(g), L = LIB[r.k]; if (!L) return '';
+    var K = (C.LIB && C.LIB[r.k]) || {}, fl = K.flavour || L.flavour || '', h = '<div class="rd">';
+    h += '<div class="rd-h"><span class="rd-gem">' + L.cost + '<small>OVERS</small></span><b class="rd-nm">' + esc(L.name.replace(/^The /, '')) + '<span class="rd-who">' + (r.side === 'ai' ? 'on their pitch' : 'on your pitch') + '</span></b></div>';
+    h += '<div class="rd-tags"><span class="tag ' + C.TAG_CLS[L.type] + '">' + C.TYPE_LABEL[L.type] + '</span>' + (L.guard ? '<span class="tag bg-blue-600 text-white">\uD83D\uDEE1 Guard</span>' : '') + (L.quick ? '<span class="tag bg-yellow-300 text-yellow-950">\u26A1 Quick</span>' : '') + '</div>';
+    if (L.type !== 'strategy') {
+      var rn = r.c ? runsOf(r.o, r.c) : L.runs, df = r.c ? defOf(r.c) : L.def;
+      h += '<div class="rd-st"><span class="' + (rn > L.runs ? 'up' : rn < L.runs ? 'down' : '') + '">' + C.ICON_BALL + rn + ' Runs</span><span class="' + (df > L.def ? 'up' : df < L.def ? 'down' : '') + '">' + C.ICON_SHIELD + df + ' Defend</span></div>';
+    }
+    if (r.c) { var bd = badgesFor(r.o, r.c); if (bd.length) h += '<div class="rd-bd">' + bd.join('') + '</div>'; }
+    h += '<p class="rd-tx">' + esc(L.text || '') + '</p>' + (fl ? '<p class="rd-fl">\u201C' + esc(fl) + '\u201D</p>' : '');
+    return h + '<span class="rd-x">tap anywhere to close</span></div>';
+  }
+  function rdShow(g, modal) {
+    var h = rdHTML(g); if (!h) { rdHide(); return; }
+    if (!RD.el) { RD.el = document.createElement('div'); RD.el.id = 'qcRead'; document.body.appendChild(RD.el); }
+    var e = RD.el; e.innerHTML = h; e.className = (modal ? 'modal' : 'hov') + ' on'; e.setAttribute('role', modal ? 'dialog' : 'tooltip'); e.setAttribute('aria-label', 'Card: ' + (LIB[g.getAttribute('data-key')] || {}).name);
+    e.style.left = e.style.top = ''; RD.open = true; RD.mode = modal ? 'modal' : 'hov'; RD.g = g; icoHide();
+    if (!modal) {
+      var a = g.getBoundingClientRect(), w = e.offsetWidth, ht = e.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+      var x = a.right + 10; if (x + w > vw - 6) x = a.left - w - 10; if (x < 6) x = Math.max(6, Math.min(vw - w - 6, a.left + a.width / 2 - w / 2));
+      var y = Math.max(6, Math.min(vh - ht - 6, a.top + a.height / 2 - ht / 2));
+      e.style.left = Math.round(x) + 'px'; e.style.top = Math.round(y) + 'px';
+    }
+  }
+  function rdHide() { RD.open = false; RD.mode = ''; RD.g = null; if (RD.el) RD.el.className = ''; }
+  document.addEventListener('pointerdown', function (ev) {
+    RD.touch = ev.pointerType !== 'mouse'; clearTimeout(RD.lt); RD.lp = false;
+    if (!RD.touch || RD.open) return; var g = rdAt(ev.target); if (!g || icoAt(ev.target)) return;
+    RD.x = ev.clientX; RD.y = ev.clientY; RD.lt = setTimeout(function () { RD.lp = true; rdShow(g, true); }, 450);
+  }, true);
+  document.addEventListener('pointermove', function (ev) { if (RD.lt && (Math.abs(ev.clientX - RD.x) > 10 || Math.abs(ev.clientY - RD.y) > 10)) { clearTimeout(RD.lt); RD.lt = 0; } }, true);
+  document.addEventListener('pointerup', function () { clearTimeout(RD.lt); RD.lt = 0; if (RD.lp) { RD.lp = false; RD.eat = performance.now() + 700; } }, true);
+  document.addEventListener('pointercancel', function () { clearTimeout(RD.lt); RD.lt = 0; if (RD.lp) { RD.lp = false; RD.eat = performance.now() + 700; } }, true);
+  document.addEventListener('contextmenu', function (ev) { if (RD.touch && rdAt(ev.target)) ev.preventDefault(); }, true);
+  window.addEventListener('click', function (ev) {
+    if (RD.eat && performance.now() < RD.eat) { RD.eat = 0; ev.stopPropagation(); ev.preventDefault(); return; }
+    RD.eat = 0;
+    if (RD.open && RD.mode === 'modal') { ev.stopPropagation(); ev.preventDefault(); rdHide(); return; }
+    if (!RD.touch || icoAt(ev.target)) return;
+    var g = rdAt(ev.target); if (!g || rdActs(g)) return;
+    ev.stopPropagation(); ev.preventDefault(); rdShow(g, true);
+  }, true);
+  document.addEventListener('pointerover', function (ev) {
+    if (ev.pointerType !== 'mouse' || RD.mode === 'modal') return;
+    var g = rdAt(ev.target);
+    if (g && !icoAt(ev.target)) { if (RD.g !== g || !RD.open) rdShow(g, false); } else if (RD.mode === 'hov' && !(g && RD.g === g)) rdHide();
+  }, true);
+  app.addEventListener('mouseleave', function () { if (RD.mode === 'hov') rdHide(); });
+  window.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && RD.open) rdHide(); }, true);
+  window.addEventListener('resize', function () { if (RD.open) rdHide(); });
   function boot() {
     var q = new URLSearchParams(location.search).get('h'), h = lsGet(HAND_KEY);
     if (!h || h.v !== 1 || !h.id || ['pending', 'playing', 'done', 'claimed'].indexOf(h.state) < 0) { H = null; render(); return; }

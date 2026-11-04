@@ -37,6 +37,8 @@
   #pauseOv{position:fixed;inset:0;z-index:13;display:none;align-items:center;justify-content:center;flex-direction:column;
     background:rgba(5,15,8,.55);color:#fff;cursor:pointer;touch-action:manipulation}
   #pauseOv.open{display:flex}
+  #pauseRes{margin-top:16px;font-size:18px;font-weight:900;min-height:48px;min-width:190px;padding:8px 22px;border:2px solid #b9f6ca;border-radius:12px;background:linear-gradient(#2e7d32,#1b5e20);color:#fff;letter-spacing:2px;cursor:pointer}
+  #pauseRes+#saveQuit{margin-top:10px} body.touch #pauseRes{display:none} body.touch #pauseRes+#saveQuit{margin-top:16px} body:not(.touch) #pauseOv{cursor:default}
   #pauseTitle{display:none}
   #pauseOv.simple{background:rgba(5,15,8,.12);justify-content:flex-start;padding-top:max(14vh,90px)}
   #pauseOv.simple>b,#pauseOv.simple>span,#pauseOv.simple #pauseInfo{display:none!important}
@@ -1068,12 +1070,6 @@
   #ssTake.g1{background:rgba(18,63,36,.72);border-color:#efe6cc} #ssTake.g1 b{color:#fff;font-family:Georgia,'Times New Roman',serif;text-shadow:none} #ssTake.g1 small{color:#efe6cc}
   #ssTake.g2{background:rgba(10,4,20,.68);border-color:#ff4fd8} #ssTake.g2 b{color:#ff4fd8;text-shadow:0 0 8px rgba(255,79,216,.8)} #ssTake.g2 small{color:#00e5ff}
   #sstrip .ssC{display:none}
-  #sstrip .ssTk{flex:1 1 auto;position:relative;overflow:hidden;display:flex;align-items:center}
-  #sstrip .ssTk span{display:block;white-space:nowrap;font:700 17px/1 'Courier New',Courier,monospace;letter-spacing:3px;color:rgba(255,176,0,.5);text-shadow:0 0 4px rgba(255,150,0,.35);
-    padding-left:100%;animation:ssTk 150s linear infinite;will-change:transform}
-  @media (min-width:701px){#sstrip .ssTk span{font-size:20px}}
-  #sstrip .ssTk:after{content:'';position:absolute;inset:0;background:radial-gradient(circle,transparent 0 .9px,rgba(8,5,2,.72) 1.25px) 0 0/3px 3px;pointer-events:none}
-  @keyframes ssTk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   body.tree #bam,body.mpOpen #bam,body.tree #tbPanel,body.mpOpen #tbPanel,body.tree #ssTake,body.mpOpen #ssTake,body.classic #bam,body.classic #tbPanel,body.classic #ssTake{display:none}
   body.tree.ssHold #bam,body.tree.ssHold #tbPanel{display:block} body.tree.ssHold #tbPanel{display:flex}
   @font-face{font-family:GPLucky;font-weight:400;font-style:normal;font-display:block;src:url(data:font/woff;base64,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) format('woff')}
@@ -1096,6 +1092,8 @@
   #rcCard em{display:block;font:800 13px/1.2 Arial,Helvetica,sans-serif;font-style:normal;color:#fff3c4;letter-spacing:1px}
   #rcCard p{margin:5px 0 3px;padding:4px 7px;border-radius:6px;background:rgba(0,0,0,.28);font:700 13px/1.25 Arial,Helvetica,sans-serif;color:#fff}
   #rcCard q{display:block;font:italic 700 13px/1.25 Georgia,serif;color:#ffe9a8}
+  #rcCard .rcTgt{display:block;margin:2px 0 4px;font:900 16px/1.1 'Arial Black',Arial,sans-serif;color:#ffd54f;letter-spacing:1px;-webkit-text-stroke:.5px #3b0a10;text-shadow:0 1px 0 #3b0a10}
+  @media (max-width:520px),(max-height:430px){#rcCard .rcTgt{font-size:14px;margin:1px 0 3px}}
   #rcCard .rcTap{display:block;margin-top:4px;text-align:right;font:700 10px/1 Arial,sans-serif;color:rgba(255,243,196,.65);letter-spacing:1px}
   @media (max-width:520px){#rcCard img{width:70px;height:70px} #rcCard b{font-size:19px} #rcCard p,#rcCard q{font-size:12px}}
   #rcPor{position:fixed;left:0;top:0;z-index:7;display:none;pointer-events:none;border-radius:50%;overflow:hidden;box-sizing:border-box;border:2px solid #f5c542;box-shadow:0 0 0 1.5px #3b0a10;background:#f3e6c8;transform:translate3d(-999px,-999px,0)}
@@ -1244,6 +1242,44 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
   #modeCard .modeBtns .sbtn.mbH{background:linear-gradient(#6b3d1e,#4a2810);color:#ffd54f;border:2px solid #e8c98a;flex-direction:row;gap:12px}
   #modeCard .modeBtns .sbtn.mbH .ic{width:40px;height:40px;border-radius:50%;border:2px solid #e8c98a;background:rgba(40,25,10,.85);display:flex;align-items:center;justify-content:center;flex:none}
   #modeCard .modeBtns .sbtn.mbH .tx{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+  #modeCard .box{box-sizing:border-box;width:min(440px,94vw);max-height:calc(100dvh - 12px);overflow-y:auto}
+  #modeCard .rgV{display:none} #modeCard[data-v="rg"] #rgBox,#modeCard[data-v="ng"] #ngBox,#modeCard[data-v="fs"] #fsBox,#modeCard[data-v="rs"] #rsBox{display:block}
+  #modeCard[data-v="rg"] #modeBox,#modeCard[data-v="ng"] #modeBox,#modeCard[data-v="fs"] #modeBox,#modeCard[data-v="rs"] #modeBox{display:none}
+  #modeCard #rgBox .gwfS{margin:1px 0 8px;font:italic 600 13px/1.2 Georgia,'Times New Roman',serif;color:#ffd54f;opacity:.9;letter-spacing:.4px}
+  #modeCard .modeBtns .sbtn.sec,#modeCard .row2 .sbtn.sec{background:#5d4037;color:#fff;border:2px solid #e8c98a}
+  #modeCard .modeBtns .sbtn.dng,#modeCard .row2 .sbtn.dng{background:linear-gradient(#c62828,#8e1414);color:#fff;border:2px solid #ff8a65}
+  #modeCard .modeBtns .sbtn:disabled{opacity:.45;cursor:default}
+  #modeCard .sbtn.back{margin-top:12px;min-height:36px;font-size:13px;padding:4px 16px;letter-spacing:1px}
+  #modeCard #modeFile{margin-top:12px}
+  #modeCard #fsBox{border-color:#ff5252} #modeCard #fsBox h2{color:#ff5252}
+  #modeCard p.warn{background:rgba(198,40,40,.18);border:2px solid #ff5252;border-radius:10px;padding:10px 12px;text-align:left;font-size:15px;line-height:1.4}
+  #modeCard p.warn b{color:#ff8a80}
+  #modeCard p.tip{font-size:13px;color:#ffe082;text-align:left;margin:0 0 10px}
+  #modeCard p.tip span{display:flex;gap:6px;margin-top:6px} #modeCard p.tip .sbtn{min-height:28px;font-size:12px;padding:2px 8px;margin-left:4px;vertical-align:middle}
+  #modeCard p.rgRes{font-size:13px;color:#ffe082;margin:0 0 8px;min-height:0} #modeCard p.rgRes:empty{display:none}
+  #modeCard .kr{display:flex;gap:10px;text-align:left;margin:0 0 12px}
+  #modeCard .kr div{flex:1;border-radius:10px;padding:8px 10px;font-size:13.5px;line-height:1.4}
+  #modeCard .kr .k{background:rgba(105,240,174,.10);border:2px solid #69f0ae} #modeCard .kr .r{background:rgba(255,138,101,.10);border:2px solid #ff8a65}
+  #modeCard .kr h4{margin:0 0 4px;font-size:13px;letter-spacing:1.5px} #modeCard .kr .k h4{color:#69f0ae} #modeCard .kr .r h4{color:#ff8a65}
+  #modeCard .kr ul{margin:0;padding-left:16px}
+  #modeCard .row2 .sbtn{flex:1;min-height:52px;font-size:16px;font-weight:900;letter-spacing:.5px}
+  #modeCard #rsTxt{font-size:15px}
+  @media (orientation:landscape) and (max-height:520px){
+    #modeCard .box{padding:8px 14px}
+    #modeCard h2{font-size:20px;margin-bottom:4px} #modeCard .gwfS,#modeCard #rgBox .gwfS{margin:0 0 4px}
+    #modeCard #modeBox>p:not(.gwfS):not(.nh){margin:0 0 6px;font-size:14px}
+    #modeCard .modeBtns{gap:7px}
+    #modeCard .modeBtns .sbtn{min-height:48px;font-size:17px}
+    #modeCard .modeBtns .sbtn.mbH .ic{width:32px;height:32px}
+    #modeCard .modeBtns small{font-size:11px;margin-top:1px}
+    #modeCard #modeFile{margin-top:7px;min-height:34px} #modeCard #modeVer{margin-top:4px}
+    #modeCard .sbtn.back{margin-top:8px;min-height:32px}
+    #modeCard #fsBox,#modeCard #rsBox{width:min(640px,94vw)}
+    #modeCard p.warn{font-size:13.5px;padding:7px 10px;margin:2px 0 8px} #modeCard p.tip{margin:0 0 6px}
+    #modeCard #rsTxt{font-size:13.5px;margin:2px 0 6px}
+    #modeCard .kr{margin:0 0 8px} #modeCard .kr div{font-size:12.5px;line-height:1.3;padding:5px 8px}
+    #modeCard .row2 .sbtn{min-height:42px;font-size:15px}
+  }
   #chPause{margin-top:10px;font-size:16px;font-weight:bold;min-height:46px;padding:6px 18px 6px 8px;border:2px solid #e8c98a;border-radius:12px;background:linear-gradient(#6b3d1e,#4a2810);color:#ffd54f;letter-spacing:1px;display:flex;align-items:center;gap:8px;font-family:inherit;cursor:pointer;touch-action:manipulation}
   #chPause .ic{width:32px;height:32px;display:flex;align-items:center;justify-content:center} #chPause .ic svg{width:100%;height:100%}
   #settings .setSec.chSet{grid-area:club;display:flex;align-items:center;gap:12px;background:linear-gradient(#6b3d1e,#4a2810);border:2px solid #e8c98a;border-radius:10px;padding:8px 10px;margin-bottom:2px}
@@ -1261,7 +1297,6 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
   #pfWrap.ph #chBar .sbtn{font-size:15px;flex:1 1 0}
   @media (max-width:360px){ #pfWrap.ph #chBar{gap:8px;padding-left:8px;padding-right:8px} #pfWrap.ph #chBar .sbtn{font-size:13.5px;letter-spacing:.5px} }
   body.tree #gfBan,body.classic #gfBan,body.tree #cbTip,body.mpOpen #cbTip,body.classic #cbTip{display:none}
-  #sstrip .ssTk{display:none}
   #ssCards{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:6px;padding:4px 10px;min-width:0;box-sizing:border-box;pointer-events:auto;--ch:42px}
   #ssCards .ccM{position:relative;flex:none;height:var(--ch);width:calc(var(--ch) * 1.12);opacity:.62;border-radius:3px;cursor:help;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;font:900 13px/1 Arial,sans-serif;color:#111}
   #ssCards .ccM img{display:block;width:100%;height:100%;pointer-events:none}
@@ -1379,10 +1414,10 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
 <div id="qcbBar" role="group" aria-label="Pinball bonus cards"></div>
 <div id="pmDone" class="gcard" role="dialog" aria-label="Saved"><div class="box"><h2>SAVED!</h2><p>Safe to close this tab.</p><p style="font-size:13px;color:#d7c7a5">Browsers don&rsquo;t let a game close its own tab.</p><div class="row2"><button class="sbtn go" id="pmBack" data-def="1">KEEP PLAYING</button></div></div></div>
 <button id="pauseBtn" aria-label="Pause" title="Pause (P)">&#10074;&#10074;</button>
-<div id="pauseOv" role="dialog" aria-label="Paused"><i id="pauseTitle">PAUSE</i><b>PAUSED</b><span>tap to resume</span><div id="pauseInfo"></div><button id="saveQuit" class="sbtn">SAVE &amp; QUIT</button><button id="chPause" class="sbtn"><span class="ic"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M16 1.5V7" stroke="#ffd54f" stroke-width="1.6"/><path d="M16 1.8 L22 3.6 L16 5.4Z" fill="#c62828" stroke="#ffd54f" stroke-width=".8"/><path d="M3 15 L16 7 L29 15Z" fill="#ffd54f" stroke="#2a1606" stroke-width="1.2" stroke-linejoin="round"/><circle cx="16" cy="12" r="1.7" fill="#7a1428"/><rect x="5" y="15" width="22" height="2.4" fill="#ffd54f"/><path d="M7 17.4V26M12.3 17.4V26M19.7 17.4V26M25 17.4V26" stroke="#ffd54f" stroke-width="2.2"/><path d="M14.2 26V20.5a1.8 1.8 0 0 1 3.6 0V26" fill="#7a1428" stroke="#ffd54f" stroke-width="1.2"/><rect x="3.5" y="26" width="25" height="3" rx=".8" fill="#ffd54f"/></svg></span>CLUBHOUSE</button></div>
+<div id="pauseOv" role="dialog" aria-label="Paused"><i id="pauseTitle">PAUSE</i><b>PAUSED</b><span id="pauseHint">tap to resume</span><div id="pauseInfo"></div><button id="pauseRes" class="sbtn">RESUME &#9654;</button><button id="saveQuit" class="sbtn">SAVE &amp; QUIT</button><button id="chPause" class="sbtn"><span class="ic"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M16 1.5V7" stroke="#ffd54f" stroke-width="1.6"/><path d="M16 1.8 L22 3.6 L16 5.4Z" fill="#c62828" stroke="#ffd54f" stroke-width=".8"/><path d="M3 15 L16 7 L29 15Z" fill="#ffd54f" stroke="#2a1606" stroke-width="1.2" stroke-linejoin="round"/><circle cx="16" cy="12" r="1.7" fill="#7a1428"/><rect x="5" y="15" width="22" height="2.4" fill="#ffd54f"/><path d="M7 17.4V26M12.3 17.4V26M19.7 17.4V26M25 17.4V26" stroke="#ffd54f" stroke-width="2.2"/><path d="M14.2 26V20.5a1.8 1.8 0 0 1 3.6 0V26" fill="#7a1428" stroke="#ffd54f" stroke-width="1.2"/><rect x="3.5" y="26" width="25" height="3" rx=".8" fill="#ffd54f"/></svg></span>CLUBHOUSE</button></div>
 <div id="tuCard" class="gcard" role="dialog" aria-label="Time's up"><div class="box"><h2>TIME'S UP!</h2><p id="tuTxt"></p><label><input type="checkbox" id="tuShow" checked> Show this every time</label><button class="sbtn go" id="tuNext" data-def="1">NEXT BALL &#9654;</button></div></div>
 <div id="tuPop" aria-hidden="true">TIME'S UP!<small>Runs safe in the bank · next ball coming up</small></div>
-<div id="modeCard" class="gcard" role="dialog" aria-label="Choose a game"><div class="box"><h2 class="gwfT">GOATS WITH FLIPPERS</h2><p class="gwfS">a pinball cricket roguelite</p><p>Pick a game</p><p id="newHome" class="nh" style="display:none">New home for Goats with Flippers! Got a save code from an old link? Settings → LOAD SAVE.</p><div class="modeBtns"><button class="sbtn go" id="modeRogue" data-def="1">ROGUE GOATS CRICKET<small>runs, kit, skill tree &amp; new grounds</small></button><button class="sbtn mbC" id="modeClassic">CLASSIC 1979<small>Flash MCG &middot; 3 balls &middot; original factory rules</small></button><button class="sbtn mbH" id="modeClub"><span class="ic"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M16 1.5V7" stroke="#ffd54f" stroke-width="1.6"/><path d="M16 1.8 L22 3.6 L16 5.4Z" fill="#c62828" stroke="#ffd54f" stroke-width=".8"/><path d="M3 15 L16 7 L29 15Z" fill="#ffd54f" stroke="#2a1606" stroke-width="1.2" stroke-linejoin="round"/><circle cx="16" cy="12" r="1.7" fill="#7a1428"/><rect x="5" y="15" width="22" height="2.4" fill="#ffd54f"/><path d="M7 17.4V26M12.3 17.4V26M19.7 17.4V26M25 17.4V26" stroke="#ffd54f" stroke-width="2.2"/><path d="M14.2 26V20.5a1.8 1.8 0 0 1 3.6 0V26" fill="#7a1428" stroke="#ffd54f" stroke-width="1.2"/><rect x="3.5" y="26" width="25" height="3" rx=".8" fill="#ffd54f"/></svg></span><span class="tx">THE CLUBHOUSE<small>your profile, trophies &amp; kit &middot; start either game from there</small></span></button></div><button class="sbtn" id="modeNewSn" style="display:none">NEW SEASON<small>end this Season, start again at the Backyard</small></button><button class="sbtn" id="modeFile">LOAD FROM FILE</button><div id="modeVer" aria-hidden="true"></div></div></div>
+<div id="modeCard" class="gcard" role="dialog" aria-label="Choose a game"><div class="box" id="modeBox"><h2 class="gwfT">GOATS WITH FLIPPERS</h2><p class="gwfS">a pinball cricket roguelite</p><p>Pick a game</p><p id="newHome" class="nh" style="display:none">New home for Goats with Flippers! Got a save code from an old link? Settings → LOAD SAVE.</p><div class="modeBtns"><button class="sbtn go" id="modeRogue" data-def="1">ROGUE GOATS CRICKET<small>season runs &middot; kit &middot; skills &middot; grounds</small></button><button class="sbtn mbC" id="modeClassic">CLASSIC 1979<small>Flash MCG &middot; 3 balls &middot; original factory rules</small></button><button class="sbtn mbH" id="modeClub"><span class="ic"><svg viewBox="0 0 32 32" width="62%" height="62%" aria-hidden="true"><path d="M16 1.5V7" stroke="#ffd54f" stroke-width="1.6"/><path d="M16 1.8 L22 3.6 L16 5.4Z" fill="#c62828" stroke="#ffd54f" stroke-width=".8"/><path d="M3 15 L16 7 L29 15Z" fill="#ffd54f" stroke="#2a1606" stroke-width="1.2" stroke-linejoin="round"/><circle cx="16" cy="12" r="1.7" fill="#7a1428"/><rect x="5" y="15" width="22" height="2.4" fill="#ffd54f"/><path d="M7 17.4V26M12.3 17.4V26M19.7 17.4V26M25 17.4V26" stroke="#ffd54f" stroke-width="2.2"/><path d="M14.2 26V20.5a1.8 1.8 0 0 1 3.6 0V26" fill="#7a1428" stroke="#ffd54f" stroke-width="1.2"/><rect x="3.5" y="26" width="25" height="3" rx=".8" fill="#ffd54f"/></svg></span><span class="tx">THE CLUBHOUSE<small>your profile, trophies &amp; kit &middot; start either game from there</small></span></button></div><button class="sbtn" id="modeFile">LOAD FROM FILE</button><div id="modeVer" aria-hidden="true"></div></div><div class="box rgV" id="rgBox"><h2>ROGUE GOATS CRICKET</h2><p class="gwfS">season runs &middot; kit &middot; skills &middot; grounds</p><div class="modeBtns"><button class="sbtn go" id="rgCont" data-def="1">CONTINUE<small id="rgInfo">Season 1</small></button><button class="sbtn sec" id="rgNew">NEW GAME<small>restart the season or start fresh</small></button></div><button class="sbtn back" id="rgBack">&#9664; BACK</button></div><div class="box rgV" id="ngBox"><h2>NEW GAME</h2><p>How fresh do you want it?</p><div class="modeBtns"><button class="sbtn sec" id="rgRestart">RESTART SEASON<small id="rgRestSm">back to the Backyard &middot; keep TOTAL RUNS, kit &amp; balls</small></button><button class="sbtn dng" id="rgFresh">FRESH START<small>wipes EVERYTHING</small></button></div><button class="sbtn back" id="ngBack" data-def="1">&#9664; BACK</button></div><div class="box rgV" id="fsBox" role="alertdialog" aria-label="Fresh start?"><h2>&#9888; FRESH START?</h2><p class="warn">This resets <b>EVERYTHING</b>: TOTAL RUNS, runs bank, skills, kit, balls, MP &amp; Bails, grounds, seasons, clubhouse trophies &amp; records, a saved innings, your Quick Clash deck and the Classic 1979 scores. Sound, graphics and controls stay. <b>It can't be undone.</b></p><p class="tip">Might want it back? Save it first:<span><button class="sbtn" id="fsCopy">COPY SAVE</button><button class="sbtn" id="fsFile">SAVE TO FILE</button></span></p><p id="fsRes" class="rgRes"></p><div class="row2"><button class="sbtn sec" id="fsNo" data-def="1">CANCEL</button><button class="sbtn dng" id="fsYes">YES, WIPE EVERYTHING</button></div></div><div class="box rgV" id="rsBox" role="alertdialog" aria-label="Restart season?"><h2>RESTART SEASON?</h2><p id="rsTxt"></p><div class="kr"><div class="k"><h4>KEPT</h4><ul><li>TOTAL RUNS &amp; best scores</li><li>MP &amp; Bails</li><li>Kit Bag &amp; balls</li><li>the 12th &amp; Legacy shelf</li><li>trophies, grade &amp; Honours Board</li><li>pinball bonus cards</li></ul></div><div class="r"><h4>RESETS</h4><ul><li>runs bank (leftover pays MP)</li><li>skill tree</li><li>grounds (back to the Backyard)</li><li>this season's games &amp; MCG innings</li><li>premiership streak</li><li>Quick Clash deck &amp; a saved innings</li></ul></div></div><div class="row2"><button class="sbtn sec" id="rsNo" data-def="1">CANCEL</button><button class="sbtn go" id="rsYes">RESTART SEASON</button></div></div></div>
 <div id="clOver" class="gcard" role="dialog" aria-label="Game over"><div class="box"><h2>GAME OVER</h2><p id="clOverTxt"></p><div class="row2"><button class="sbtn go" id="clAgain" data-def="1">PLAY AGAIN</button><button class="sbtn" id="clQuit">START SCREEN</button></div></div></div>
 <div id="clStrip" aria-label="Classic score"><div class="c cs"><i>PLAYER 1</i><b id="clScore">0</b></div><div class="c"><i>BALL</i><b id="clBall">1/3</b></div><div class="c"><i>CREDITS</i><b id="clCred">0</b></div><div class="c"><i>HIGH SCORE</i><b id="clHsV">550000</b></div></div><div id="clMsg" aria-live="polite"></div>
 <div id="tmSigned" class="gcard" role="dialog" aria-label="12th signed"><div class="box"><h2>12TH SIGNED!</h2><p>He plays at the MCG for you.</p><p>Want to bat solo? Tap the <b>12th</b> pill (or Settings &rarr; Game) to bench him any time. No refund needed, flip him back whenever.</p><div class="row2"><button class="sbtn go" id="tmSignedOk" data-def="1">GOT IT</button></div></div></div>
@@ -1409,7 +1444,7 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
 <div id="keeperPill" class="card pill" role="status"></div>
 <div id="toast"></div>
 <div id="statsDim"></div><div id="statsCard" role="dialog" aria-label="Innings stats"><h1>INNINGS STATS</h1><div class="ground" id="statsGround"></div> <div class="ground inn" id="statsInn"></div><div class="sum"><div>This innings <b id="statsRuns">0</b> &times; <span id="statsMult">1</span> = <b id="statsEarn">0</b> earned<span id="statsNB"></span></div><div class="sum2" id="statsPrevL">Prev inn score <b id="statsPrev">0</b></div><div class="sum2">Bank to spend <b id="statsBank">0</b> &middot; TOTAL RUNS <b id="statsCareer">0</b></div></div><div class="rows" id="statsRows"></div><button id="statsGo">SKILL TREE &#9654;</button><div class="keys"><b>Enter</b> / tap to continue</div></div>
-<div id="sstrip" class="g0" aria-label="Ticker"><div class="ssC ssRuns"><i>RUNS</i><div class="ssRow"><b id="ssRuns">0</b></div></div><div class="ssTk" aria-hidden="true"><span>RAIN DELAY: COVERS ON, PIES OUT  ◆  TEA INTERVAL: TWO SCONES EACH, NO EXCEPTIONS  ◆  THE KEEPER WANTS HIS SANDWICH BACK  ◆  UMPIRE REMINDS THE CROWD: THAT WAS NOT A WIDE  ◆  SIGHTSCREEN MOVED FOR THE FOURTH TIME THIS OVER  ◆  BALL LOST IN THE NEIGHBOUR’S POOL. AGAIN.  ◆  THE 12TH IS ON DRINKS DUTY  ◆  SLIPS CORDON NOW SIX DEEP AND STILL CHATTING  ◆  SCORER ASKS: WHO HAD THE LAST PIE?  ◆  BAD LIGHT? WE BROUGHT TORCHES  ◆  RAIN DELAY: COVERS ON, PIES OUT  ◆  TEA INTERVAL: TWO SCONES EACH, NO EXCEPTIONS  ◆  THE KEEPER WANTS HIS SANDWICH BACK  ◆  UMPIRE REMINDS THE CROWD: THAT WAS NOT A WIDE  ◆  SIGHTSCREEN MOVED FOR THE FOURTH TIME THIS OVER  ◆  BALL LOST IN THE NEIGHBOUR’S POOL. AGAIN.  ◆  THE 12TH IS ON DRINKS DUTY  ◆  SLIPS CORDON NOW SIX DEEP AND STILL CHATTING  ◆  SCORER ASKS: WHO HAD THE LAST PIE?  ◆  BAD LIGHT? WE BROUGHT TORCHES  ◆  </span></div><div id="ssCards" aria-label="Combo cards"></div></div><div id="tbPanel" class="g0"><span class="tbC ssTime"><i>TIME</i><b id="ssTime">0:00</b></span><span class="tbC ssBalls"><i>BALLS</i><span id="ssBalls"></span></span></div><div id="ssTake"><b></b><small></small></div><div id="rcCard" role="status" aria-live="polite"><div class="rcIn"><img id="rcImg" alt=""><div class="rcTx"><small>GRAND FINAL &middot; RIVAL CAPTAIN</small><b id="rcName"></b><em id="rcTeam"></em><p id="rcRule"></p><q id="rcQuote"></q></div></div><span class="rcTap">PULL THE PLUNGER TO START</span></div><div id="rcPor" aria-hidden="true"><img alt=""></div><div id="pfWrap" role="dialog" aria-label="Player profile"></div><div id="gfBan" aria-hidden="true"><b>GRAND FINAL</b><small>v RIVAL XI<i>YOU'RE ON YOUR OWN &middot; NO 12TH &middot; NO AUTO</i></small></div><button id="qcbSav" type="button" aria-label="Use the Ball Saver card">BALL SAVER<small></small></button><div id="cbTip" role="tooltip" aria-hidden="true"></div><div id="bam" aria-label="Runs"><div class="bmI"><svg class="bmS" viewBox="0 0 300 150" preserveAspectRatio="none"><defs><linearGradient id="bmGd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb21e"/><stop offset=".45" stop-color="#d98a00"/><stop offset="1" stop-color="#b86200"/></linearGradient><linearGradient id="bmG8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc83a"/><stop offset=".5" stop-color="#ff9a1e"/><stop offset="1" stop-color="#e0640e"/></linearGradient><mask id="bmM8" maskUnits="userSpaceOnUse" x="-20" y="-20" width="340" height="190"><rect x="-20" y="-20" width="340" height="190" fill="black"/><polygon points="150.0,9.0 161.4,23.8 177.1,15.0 183.7,26.0 210.4,11.1 204.6,30.4 229.8,23.2 223.1,36.7 256.1,30.0 238.3,44.7 271.2,42.0 249.8,54.1 273.8,56.0 256.8,64.3 297.6,67.7 259.2,75.0 285.1,81.7 256.8,85.7 285.8,95.8 249.8,95.9 271.2,108.0 238.3,105.3 246.8,116.1 223.1,113.3 237.2,131.6 204.6,119.6 205.2,133.5 183.7,124.0 179.7,140.8 161.4,126.2 150.0,141.0 138.6,126.2 122.9,135.0 116.3,124.0 89.6,138.9 95.4,119.6 70.2,126.8 76.9,113.3 43.9,120.0 61.7,105.3 28.8,108.0 50.2,95.9 26.2,94.0 43.2,85.7 2.4,82.3 40.8,75.0 14.9,68.3 43.2,64.3 14.2,54.2 50.2,54.1 28.8,42.0 61.7,44.7 53.2,33.9 76.9,36.7 62.8,18.4 95.4,30.4 94.8,16.5 116.3,26.0 120.3,9.2 138.6,23.8" fill="none" stroke="white" stroke-width="10" stroke-linejoin="miter" vector-effect="non-scaling-stroke"/><polygon points="150.0,9.0 161.4,23.8 177.1,15.0 183.7,26.0 210.4,11.1 204.6,30.4 229.8,23.2 223.1,36.7 256.1,30.0 238.3,44.7 271.2,42.0 249.8,54.1 273.8,56.0 256.8,64.3 297.6,67.7 259.2,75.0 285.1,81.7 256.8,85.7 285.8,95.8 249.8,95.9 271.2,108.0 238.3,105.3 246.8,116.1 223.1,113.3 237.2,131.6 204.6,119.6 205.2,133.5 183.7,124.0 179.7,140.8 161.4,126.2 150.0,141.0 138.6,126.2 122.9,135.0 116.3,124.0 89.6,138.9 95.4,119.6 70.2,126.8 76.9,113.3 43.9,120.0 61.7,105.3 28.8,108.0 50.2,95.9 26.2,94.0 43.2,85.7 2.4,82.3 40.8,75.0 14.9,68.3 43.2,64.3 14.2,54.2 50.2,54.1 28.8,42.0 61.7,44.7 53.2,33.9 76.9,36.7 62.8,18.4 95.4,30.4 94.8,16.5 116.3,26.0 120.3,9.2 138.6,23.8" fill="none" stroke="black" stroke-width="5" stroke-linejoin="miter" vector-effect="non-scaling-stroke"/></mask></defs><polygon points="150.0,9.0 161.4,23.8 177.1,15.0 183.7,26.0 210.4,11.1 204.6,30.4 229.8,23.2 223.1,36.7 256.1,30.0 238.3,44.7 271.2,42.0 249.8,54.1 273.8,56.0 256.8,64.3 297.6,67.7 259.2,75.0 285.1,81.7 256.8,85.7 285.8,95.8 249.8,95.9 271.2,108.0 238.3,105.3 246.8,116.1 223.1,113.3 237.2,131.6 204.6,119.6 205.2,133.5 183.7,124.0 179.7,140.8 161.4,126.2 150.0,141.0 138.6,126.2 122.9,135.0 116.3,124.0 89.6,138.9 95.4,119.6 70.2,126.8 76.9,113.3 43.9,120.0 61.7,105.3 28.8,108.0 50.2,95.9 26.2,94.0 43.2,85.7 2.4,82.3 40.8,75.0 14.9,68.3 43.2,64.3 14.2,54.2 50.2,54.1 28.8,42.0 61.7,44.7 53.2,33.9 76.9,36.7 62.8,18.4 95.4,30.4 94.8,16.5 116.3,26.0 120.3,9.2 138.6,23.8" fill="none" stroke="url(#bmG8)" stroke-width="10" stroke-linejoin="miter" vector-effect="non-scaling-stroke" mask="url(#bmM8)"/></svg><b id="bamN" data-n="0">0</b><i class="bmF">FINAL</i><em class="bmP">+</em></div><div class="bmC"><span id="ssTag"></span></div></div><i id="lgRing" class="lgFx lgRing"></i><i id="lgSpk" class="lgFx lgSpk"></i><div id="abL"><span id="ssNext"></span></div>
+<div id="sstrip" class="g0" aria-label="Scoreboard"><div class="ssC ssRuns"><i>RUNS</i><div class="ssRow"><b id="ssRuns">0</b></div></div><div id="ssCards" aria-label="Combo cards"></div></div><div id="tbPanel" class="g0"><span class="tbC ssTime"><i>TIME</i><b id="ssTime">0:00</b></span><span class="tbC ssBalls"><i>BALLS</i><span id="ssBalls"></span></span></div><div id="ssTake"><b></b><small></small></div><div id="rcCard" role="status" aria-live="polite"><div class="rcIn"><img id="rcImg" alt=""><div class="rcTx"><small>GRAND FINAL &middot; RIVAL CAPTAIN</small><b id="rcName"></b><em id="rcTeam"></em><p id="rcRule"></p><span id="rcTgt" class="rcTgt"></span><q id="rcQuote"></q></div></div><span class="rcTap">PULL THE PLUNGER TO START</span></div><div id="rcPor" aria-hidden="true"><img alt=""></div><div id="pfWrap" role="dialog" aria-label="Player profile"></div><div id="gfBan" aria-hidden="true"><b>GRAND FINAL</b><small>v RIVAL XI<i>YOU'RE ON YOUR OWN &middot; NO 12TH &middot; NO AUTO</i></small></div><button id="qcbSav" type="button" aria-label="Use the Ball Saver card">BALL SAVER<small></small></button><div id="cbTip" role="tooltip" aria-hidden="true"></div><div id="bam" aria-label="Runs"><div class="bmI"><svg class="bmS" viewBox="0 0 300 150" preserveAspectRatio="none"><defs><linearGradient id="bmGd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb21e"/><stop offset=".45" stop-color="#d98a00"/><stop offset="1" stop-color="#b86200"/></linearGradient><linearGradient id="bmG8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc83a"/><stop offset=".5" stop-color="#ff9a1e"/><stop offset="1" stop-color="#e0640e"/></linearGradient><mask id="bmM8" maskUnits="userSpaceOnUse" x="-20" y="-20" width="340" height="190"><rect x="-20" y="-20" width="340" height="190" fill="black"/><polygon points="150.0,9.0 161.4,23.8 177.1,15.0 183.7,26.0 210.4,11.1 204.6,30.4 229.8,23.2 223.1,36.7 256.1,30.0 238.3,44.7 271.2,42.0 249.8,54.1 273.8,56.0 256.8,64.3 297.6,67.7 259.2,75.0 285.1,81.7 256.8,85.7 285.8,95.8 249.8,95.9 271.2,108.0 238.3,105.3 246.8,116.1 223.1,113.3 237.2,131.6 204.6,119.6 205.2,133.5 183.7,124.0 179.7,140.8 161.4,126.2 150.0,141.0 138.6,126.2 122.9,135.0 116.3,124.0 89.6,138.9 95.4,119.6 70.2,126.8 76.9,113.3 43.9,120.0 61.7,105.3 28.8,108.0 50.2,95.9 26.2,94.0 43.2,85.7 2.4,82.3 40.8,75.0 14.9,68.3 43.2,64.3 14.2,54.2 50.2,54.1 28.8,42.0 61.7,44.7 53.2,33.9 76.9,36.7 62.8,18.4 95.4,30.4 94.8,16.5 116.3,26.0 120.3,9.2 138.6,23.8" fill="none" stroke="white" stroke-width="10" stroke-linejoin="miter" vector-effect="non-scaling-stroke"/><polygon points="150.0,9.0 161.4,23.8 177.1,15.0 183.7,26.0 210.4,11.1 204.6,30.4 229.8,23.2 223.1,36.7 256.1,30.0 238.3,44.7 271.2,42.0 249.8,54.1 273.8,56.0 256.8,64.3 297.6,67.7 259.2,75.0 285.1,81.7 256.8,85.7 285.8,95.8 249.8,95.9 271.2,108.0 238.3,105.3 246.8,116.1 223.1,113.3 237.2,131.6 204.6,119.6 205.2,133.5 183.7,124.0 179.7,140.8 161.4,126.2 150.0,141.0 138.6,126.2 122.9,135.0 116.3,124.0 89.6,138.9 95.4,119.6 70.2,126.8 76.9,113.3 43.9,120.0 61.7,105.3 28.8,108.0 50.2,95.9 26.2,94.0 43.2,85.7 2.4,82.3 40.8,75.0 14.9,68.3 43.2,64.3 14.2,54.2 50.2,54.1 28.8,42.0 61.7,44.7 53.2,33.9 76.9,36.7 62.8,18.4 95.4,30.4 94.8,16.5 116.3,26.0 120.3,9.2 138.6,23.8" fill="none" stroke="black" stroke-width="5" stroke-linejoin="miter" vector-effect="non-scaling-stroke"/></mask></defs><polygon points="150.0,9.0 161.4,23.8 177.1,15.0 183.7,26.0 210.4,11.1 204.6,30.4 229.8,23.2 223.1,36.7 256.1,30.0 238.3,44.7 271.2,42.0 249.8,54.1 273.8,56.0 256.8,64.3 297.6,67.7 259.2,75.0 285.1,81.7 256.8,85.7 285.8,95.8 249.8,95.9 271.2,108.0 238.3,105.3 246.8,116.1 223.1,113.3 237.2,131.6 204.6,119.6 205.2,133.5 183.7,124.0 179.7,140.8 161.4,126.2 150.0,141.0 138.6,126.2 122.9,135.0 116.3,124.0 89.6,138.9 95.4,119.6 70.2,126.8 76.9,113.3 43.9,120.0 61.7,105.3 28.8,108.0 50.2,95.9 26.2,94.0 43.2,85.7 2.4,82.3 40.8,75.0 14.9,68.3 43.2,64.3 14.2,54.2 50.2,54.1 28.8,42.0 61.7,44.7 53.2,33.9 76.9,36.7 62.8,18.4 95.4,30.4 94.8,16.5 116.3,26.0 120.3,9.2 138.6,23.8" fill="none" stroke="url(#bmG8)" stroke-width="10" stroke-linejoin="miter" vector-effect="non-scaling-stroke" mask="url(#bmM8)"/></svg><b id="bamN" data-n="0">0</b><i class="bmF">FINAL</i><em class="bmP">+</em></div><div class="bmC"><span id="ssTag"></span></div></div><i id="lgRing" class="lgFx lgRing"></i><i id="lgSpk" class="lgFx lgSpk"></i><div id="abL"><span id="ssNext"></span></div>
 <div id="treeHot" aria-label="Upgrade tree"></div><div id="cabOvDim"></div><div id="cabOv" role="dialog" aria-label="Ball"></div><div id="kitPop" role="dialog" aria-label="Kit item"></div><div id="ballPop" role="tooltip" aria-hidden="true"></div><div id="nbtBan" aria-live="polite"></div><div id="nbTake" aria-hidden="true"><b class="h"></b><span class="s"></span></div>
 <div id="innings" role="dialog" aria-label="End of innings">
  <div id="eoiMain">
@@ -1520,7 +1555,7 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
 <script>
 (function(){
 'use strict';
-var VERSION = 'v2.1.1';
+var VERSION = 'v2.1.2';
 (function () { var e = document.getElementById('modeVer'); if (e) e.textContent = VERSION; })();
 var SN = { finInn: false, won: false, finB: null, justFin: false, row: null, endWhy: null, devGo: false, bonusUsed: false, bonusUntil: 0, tin: false, gold: false, bst: null, bsec: 0, ok: null, dummy: null };
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
@@ -4411,7 +4446,7 @@ function addScore(n, pos, label, color) {
   if (fo) { finalRuns += n; if (label) label += ' x2'; }
   if (n > 0) comboHits.push(gt);
   var before = targetIndex(score);
-  score += n; lifeRuns += n; if (pos && !(tmHit && n <= 0)) { popN = n; popBinB = !!pos.bin; popHold = CB.flav ? 900 : 0; var pd = popup(label || ('+' + n), pos.x, pos.z, color, pos.y);    if (CB.flav) { if (pd) { pd.classList.add('cbh'); pd.style.setProperty('--ps', 1.15); } cbFlavAdd(pd, CB.flav); CB.flav = null; } popBinB = false; if (pos.bin && pd) { pd.classList.add('bin'); pd.style.setProperty('--bx', ((binPopI++ % 3) - 1) * 18 + 'px'); } popN = 0; }
+  score += n; lifeRuns += n; if (pos && !(tmHit && n <= 0)) { popN = n; popBinB = !!pos.bin; popHold = CB.flav ? 900 : 0; var pd = popup(label || ('+' + n), pos.x, pos.z, color, pos.y);    if (CB.flav || CB.cbh) { if (pd) { pd.classList.add('cbh'); pd.style.setProperty('--ps', 1.15); } if (CB.flav) cbFlavAdd(pd, CB.flav); CB.flav = null; } popBinB = false; if (pos.bin && pd) { pd.classList.add('bin'); pd.style.setProperty('--bx', ((binPopI++ % 3) - 1) * 18 + 'px'); } popN = 0; }
   snFinalCheck();
   if (CB.q.length && !CB.busy) cbFlush(pos);
   var after = targetIndex(score);
@@ -8684,7 +8719,7 @@ function boardTick() {
   if (document.body.classList.contains('ctlTable')) { var ln = el('launch'), lx = parseFloat(ln.style.left), lw = parseFloat(ln.style.width) || 48;
     if (lx > a.x + W / 2) R1 = Math.min(R1, lx - 4); else L0 = Math.max(L0, lx + lw + 4); }
   var rcOn = !!rcCur() && !document.body.classList.contains('tree'), pd = rcOn ? Math.round(Math.max(18, Math.min(hz * 0.94, W * 0.15))) : 0;
-  if (RCS.wait) { var rz = !!(settingsOpen || gamePaused); if (rz !== !!RCS.pz) { RCS.pz = rz; var rcd = el('rcCard'); if (rcd) rcd.classList.toggle('on', !rz); } }
+  if (RCS.wait) { rcTgtSync(); var rz = !!(settingsOpen || gamePaused); if (rz !== !!RCS.pz) { RCS.pz = rz; var rcd = el('rcCard'); if (rcd) rcd.classList.toggle('on', !rz); } }
   var PT = P.children[0], PB = P.children[1], mid = a.x + W / 2, xB = (R0 + R1) / 2;
   var kP = Math.round(R1 - R0) + '|' + ssEl('ssBalls').children.length + '|' + ssEl('ssTime').textContent.length + '|' + innerWidth;
   if ((kP !== BOARD.kP || !(BOARD.fc = ((BOARD.fc || 0) + 1) % 30)) && PT.offsetWidth) { BOARD.kP = kP; BOARD.nT = [PT.offsetWidth || 1, PT.offsetHeight || 1]; BOARD.nB = [PB.offsetWidth || 1, PB.offsetHeight || 1]; }
@@ -10246,6 +10281,7 @@ function setPause(on, mode) {
   gamePaused = on;
   if (on) { charging = false; power = 0; ui.launch.classList.remove('active'); releaseAllInputs(true); dropFlippersNow(); }
   else { pressed = {}; twelfthResume(); lastT = performance.now(); }
+  if (on) { var ph = el('pauseHint'); if (ph) ph.textContent = IS_TOUCH ? 'tap to resume' : 'press P or click RESUME'; }
   if (on) pauseInfoFill();
   if (!on && typeof CBT !== 'undefined' && CBT.on) cbTipShow(null);
   el('pauseOv').classList.toggle('open', on); el('pauseBtn').classList.toggle('on', on); if (on) pauseOpenT = performance.now();
@@ -10254,18 +10290,25 @@ function setPause(on, mode) {
 }
 el('pauseBtn').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); Sfx.unlock(); if (settingsOpen) return; setPause(!gamePaused, 'simple'); });
 var pauseOpenT = 0;
+var pausePT = '';
+function pauseMouse(e) { if (!e || e.type === 'touchend') return false; var t = e.pointerType || (e.type === 'click' ? pausePT : ''); return t === 'mouse'; }
 function cbCardAt(e) { var p = e && e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : e; if (!p || typeof p.clientX !== 'number') return null; var cs = document.querySelectorAll('#ssCards .ccM');
   for (var i = 0; i < cs.length; i++) { var r = cs[i].getBoundingClientRect(); if (r.width && p.clientX >= r.left && p.clientX <= r.right && p.clientY >= r.top && p.clientY <= r.bottom) return cs[i]; } return null; }
 function cbPauseCard(e) { var c = cbCardAt(e); if (!c) return false;
   if (e.type === 'pointerup' && e.pointerType !== 'mouse') { var id = c.getAttribute('data-id'); clearTimeout(CBT.t); if (id === CBT.on) cbTipShow(null); else { cbTipShow(id, c); CBT.t = setTimeout(function () { cbTipShow(null); }, 4000); } }
   return true; }
 function pauseTapResume(e) { if (gamePaused && e && cbPauseCard(e)) { if (e.cancelable) e.preventDefault(); e.stopPropagation(); return; }
-  if (!gamePaused || performance.now() - pauseOpenT < 300) return; if (e && e.cancelable) e.preventDefault(); if (e) e.stopPropagation(); for (var k in liveTouchIds) staleTouchIds[k] = 1; setPause(false); }
+  if (!gamePaused || performance.now() - pauseOpenT < 300) return; if (e && e.cancelable) e.preventDefault(); if (e) e.stopPropagation();
+  if (pauseMouse(e)) return;
+  for (var k in liveTouchIds) staleTouchIds[k] = 1; setPause(false); }
 el('pauseOv').addEventListener('click', function (e) { e.preventDefault(); pauseTapResume(e); });
 el('pauseOv').addEventListener('pointerup', pauseTapResume);
 el('pauseOv').addEventListener('touchend', pauseTapResume, { passive: false });
 el('pauseOv').addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse' || !gamePaused) return; var c = cbCardAt(e); if (c) cbTipShow(c.getAttribute('data-id'), c); else if (CBT.on) cbTipShow(null); }, { passive: true });
 el('pauseOv').addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && CBT.on) cbTipShow(null); }, { passive: true });
+el('pauseOv').addEventListener('pointerdown', function (e) { pausePT = e.pointerType || ''; }, { passive: true, capture: true });
+['click', 'pointerup', 'touchend', 'touchstart', 'pointerdown', 'mousedown', 'mouseup'].forEach(function (ev) { el('pauseRes').addEventListener(ev, function (e) { e.stopPropagation();
+  if (ev === 'click') { e.preventDefault(); try { Sfx.unlock(); } catch (x) { } if (gamePaused) { for (var k in liveTouchIds) staleTouchIds[k] = 1; setPause(false); } try { el('pauseRes').blur(); } catch (x) { } } }, { passive: ev !== 'click' }); });
 ['touchstart', 'pointerdown'].forEach(function (ev) { el('pauseOv').addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); el('pauseBtn').addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
 var CL_LADDER = [{ pts: 1000, name: 'THUNDER' }, { pts: 5000, name: 'LIGHTNING' }, { pts: 10000, name: 'TEMPEST' }, { pts: 20000, name: 'SUPER FLASH' }, { pts: 50000, name: '50,000' }];
 function clLoad() { try { var o = JSON.parse(localStorage.getItem(CL_KEY) || 'null'); if (o && o.v === 1) { CL.credits = Math.max(0, Math.min(CL_MAX_CREDITS, o.credits | 0)); CL.hs = Math.max(CL_HSTD, o.hs | 0); CL.games = o.games | 0; CL.best = o.best | 0; } } catch (e) { } }
@@ -10369,11 +10412,11 @@ function modeOpen() {
   cbHideForMenu();
   newHomeSync(); snModeSync();
   releaseAllInputs(true); dropFlippersNow(); charging = false; power = 0;
-  el('modeCard').classList.add('open'); cardHold = true;
+  rgView('', true); el('modeCard').classList.add('open'); cardHold = true;
   try { el('modeRogue').focus({ preventScroll: true }); } catch (e) { }
   chSync();
 }
-function modeClose() { el('modeCard').classList.remove('open'); cardHold = false; lastT = performance.now(); cbMenuBack(); chSync(); }
+function modeClose() { rgView('', true); el('modeCard').classList.remove('open'); cardHold = false; lastT = performance.now(); cbMenuBack(); chSync(); }
 var QC_CHANCE = 0.47;
 var QC_PITY_INN = 3;
 var QC_PRIZE_W = [['card', 40], ['trinket', 25], ['mp', 25], ['kit', 10]];
@@ -10680,6 +10723,12 @@ function nvNeed() {
   if (!has) { nvSeen(); return false; }
   return true;
 }
+function nvQuiet() {
+  var tf = window.__testFlags; if (tf && !tf.nvCard) return false;
+  if (SAVE.storeOK === false || SAVE.newer) return false;
+  var seen = null; try { seen = localStorage.getItem(NV_KEY); } catch (e) { return false; }
+  if (seen !== VERSION) nvSeen(); return true;
+}
 function nvShow() { NV.open = true; NV.t = performance.now(); document.body.classList.add('nvBoot'); el('nvVer').textContent = 'You\u2019re on ' + VERSION + '.'; el('nvCard').classList.add('open'); cardHold = true; try { el('nvKeep').focus({ preventScroll: true }); } catch (e) { } }
 function nvKeep() { if (!NV.open || NG.open) return; nvSeen(); NV.open = false; el('nvCard').classList.remove('open'); document.body.classList.remove('nvBoot'); cardHold = false; var f = NV.then; NV.then = null; if (f) f(); }
 function nvFresh() { if (!NV.open || NG.open) return; el('nvCard').classList.remove('open'); if (!ngOpen(true)) nvShow(); }
@@ -10813,9 +10862,10 @@ function rcTaunt(kind, force) {
 }
 function rcIntroShow() {
   var c = rcCur(), d = el('rcCard'); if (!c || !d || gameOver || RCS.bw) return;
-  el('rcImg').src = c.img; el('rcName').textContent = c.name; el('rcTeam').textContent = 'Captain of the ' + c.team; el('rcRule').textContent = c.rule; el('rcQuote').textContent = c.intro;
+  el('rcImg').src = c.img; el('rcName').textContent = c.name; el('rcTeam').textContent = 'Captain of the ' + c.team; el('rcRule').textContent = c.rule; el('rcQuote').textContent = c.intro; rcTgtSync();
   d.classList.add('on'); clearTimeout(RCS.introT); RCS.wait = true; RCS.pz = false; RCS.tT = gt;
 }
+function rcTgtSync() { var t = el('rcTgt'); if (!t || !SN || !SN.finInn) return; var v = 'SCORE TO BEAT: ' + fmtAU(snTarget()); if (t.textContent !== v) t.textContent = v; }
 function rcIntroHide() { clearTimeout(RCS.introT); RCS.wait = false; RCS.pz = false; var d = el('rcCard'); if (d) d.classList.remove('on'); }
 function rcPorTick(on, x, y, pd) {
   var Q = ssEl('rcPor'); if (!Q) return; var c = on ? rcCur() : null;
@@ -11128,11 +11178,7 @@ el('snInfo').addEventListener('click', function (e) {
 });
 var SN_ROGUE0 = el('modeRogue').innerHTML;
 function snModeSync() {
-  var b = el('modeRogue'), n = el('modeNewSn'); if (!b || !n) return;
-  if (CLASSIC || !snInProg()) { b.innerHTML = SN_ROGUE0; n.style.display = 'none'; return; }
-  var s = snS(), st = s.pend ? 'Season result waiting' : snReady() ? 'GRAND FINAL READY' : (s.grade ? 'Grade ' + s.grade + ' \u00b7 ' : '') + VENUES[progress.venue].name;
-  b.innerHTML = 'CONTINUE SEASON ' + s.no + '<small>Rogue Goats Cricket \u00b7 ' + st + '</small>';
-  n.style.display = s.inn > 0 && !s.pend ? '' : 'none';
+  var b = el('modeRogue'); if (b && b.innerHTML !== SN_ROGUE0) b.innerHTML = SN_ROGUE0;
 }
 function snNewOpen() {
   cbHideForMenu();
@@ -11149,7 +11195,6 @@ function snAbandon() {
   if (left) setTimeout(function () { toast('+' + left + ' MP for leftover runs', 2200); }, 3400);
   return true;
 }
-el('modeNewSn').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (CLASSIC || snHold()) return; modeClose(); snNewOpen(); });
 el('snNewNo').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (cardEarly(SNN.t, e)) return; snNewClose(); modeOpen(); });
 el('snNewYes').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (cardEarly(SNN.t, e)) return; snNewClose(); snAbandon(); });
 ['snCard', 'snInfo', 'snNew'].forEach(function (id) { ['touchstart', 'pointerdown'].forEach(function (ev) { el(id).addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); }); });
@@ -11200,7 +11245,7 @@ function cbS() {
 function cbHand() { if (!cbOn()) return []; var s = progress && progress.season, c = s && s.combo; return c && Array.isArray(c.hand) ? c.hand.filter(function (id) { return !!CB_BY[id]; }) : []; }
 function cbHas(id) { return cbHand().indexOf(id) >= 0; }
 function cbSyn(id) { var y = null; CB_SYN.forEach(function (q) { if (q.id === id) y = q; }); return !!y && cbHas(y.a) && cbHas(y.b); }
-function cbInnStart() { CB.base = 0; CB.got = 0; CB.cuX = 0; CB.meter = 0; CB.mRuns = 0; CB.hits = 0; CB.head = 0; CB.rivalUntil = 0; CB.recent = []; CB.lastMB = -999; CB.q = []; CB.lit = {}; CB.synT = {}; CB.synCh = {}; CB.busy = false; CB.raw = false; }
+function cbInnStart() { CB.base = 0; CB.got = 0; CB.cuX = 0; CB.meter = 0; CB.mRuns = 0; CB.hits = 0; CB.head = 0; CB.rivalUntil = 0; CB.recent = []; CB.lastMB = -999; CB.q = []; CB.lit = {}; CB.synT = {}; CB.synCh = {}; CB.busy = false; CB.raw = false; CB.ltTip = {}; CB.cbh = false; }
 function cbLight(id) { CB.lit[id] = performance.now(); }
 function cbEv(lb) {
   lb = String(lb || '');
@@ -11269,7 +11314,8 @@ function cbFlush(pos) {
       else if (b[0] === '@lgl') cbSynPop('lgl');
       else if (b[0] === '@thunder') { if (cbBall()) { cbSynPop('thunder'); cbFlavAdd(popup('BONUS BALL!', FCX, 2, '#40c4ff'), 'Thunderbolt: a bonus ball from that SIX'); } }
       else if (b[0] === '@ball') { if (cbBall()) cbFlavAdd(popup('LIGHTNING BALL!', FCX, 2.6, '#40c4ff'), 'Lightning: one extra ball'); }
-      else if (b[1] > 0) { CB.flav = b[3] || null; addScore(b[1], pos ? { x: pos.x, z: pos.z - 0.9 - 0.5 * i } : { x: FCX, z: 1.5 - 0.5 * i }, b[0] + ' +' + fmtAU(b[1]), b[2]); CB.flav = null; }
+      else if (b[1] > 0) { var tip = b[3] || null; if (b[0] === 'LIGHTNING' && tip) { var tk = /Gloves/.test(tip) ? 'g' : 'n'; CB.ltTip = CB.ltTip || {}; if (CB.ltTip[tk]) { tip = null; CB.cbh = true; } else CB.ltTip[tk] = 1; }
+        CB.flav = tip; addScore(b[1], pos ? { x: pos.x, z: pos.z - 0.9 - 0.5 * i } : { x: FCX, z: 1.5 - 0.5 * i }, b[0] + ' +' + fmtAU(b[1]), b[2]); CB.flav = null; CB.cbh = false; }
     });
   } finally { CB.busy = false; CB.raw = false; }
 }
@@ -11408,7 +11454,7 @@ function renderCbOpt() { var f = settings.comboOff === true; [['cbOnB', !f], ['c
 function setComboOff(on) { settings.comboOff = !!on; saveSettings(); renderCbOpt(); CB.key = ''; toast('Combo cards: ' + (on ? 'off (plays like v1.3.9)' : 'on')); if (window.devBadgeSync) setTimeout(window.devBadgeSync, 0); return settings.comboOff; }
 function modeBoot() {
   tuNewBuild();
-  if (nvNeed()) { NV.then = modeBoot2; nvShow(); return; }
+  nvQuiet();
   modeBoot2();
 }
 function modeBoot2() {
@@ -11417,7 +11463,62 @@ function modeBoot2() {
   if (tf && !tf.modeCard) { innResumeCheck(); snPendCheck(); return; }
   modeOpen();
 }
-el('modeRogue').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); modeClose(); innResumeCheck(); snPendCheck(); });
+var RG = { v: '', t: null };
+function rgHas() { if (CLASSIC) return false; var inn = null; try { inn = localStorage.getItem(INN_KEY); } catch (e) { } return !saveBlank(progress) || snInProg() || snHold() || !!inn; }
+function rgInfo() { var s = snS(); return 'Season ' + s.no + ' \u00b7 ' + (s.pend ? 'Season result waiting' : snReady() ? 'GRAND FINAL READY' : (s.grade ? 'Grade ' + s.grade + ' \u00b7 ' : '') + VENUES[progress.venue].name); }
+function rgRestOk() { var s = snS(); return !CLASSIC && !s.pend && s.inn > 0; }
+function rgView(v, nofocus) {
+  var c = el('modeCard'); RG.v = v || ''; RG.t = performance.now();
+  if (RG.v) c.setAttribute('data-v', RG.v); else c.removeAttribute('data-v');
+  if (RG.v === 'rg') el('rgInfo').textContent = rgInfo();
+  if (RG.v === 'ng') { var ok = rgRestOk(), s = snS(); el('rgRestart').disabled = !ok;
+    el('rgRestSm').innerHTML = ok ? 'back to the Backyard &middot; keep TOTAL RUNS, kit &amp; balls' : s.pend ? 'season over: CONTINUE to see the result first' : 'nothing to restart yet: no games this season'; }
+  if (RG.v === 'rs') { var s2 = snS(), left = snLeft(); el('rsTxt').textContent = 'Season ' + s2.no + ' ends here with no result (no Grand Final, no payout, no Legacy pick) and you\u2019re back at the ' + VENUES[0].name + '.' + (left ? ' Your leftover bank pays ' + left + ' MP.' : ''); }
+  if (RG.v === 'fs') { el('fsRes').textContent = ''; }
+  if (nofocus) return;
+  var bx = RG.v ? el(RG.v + 'Box') : el('modeBox'), d = bx && (bx.querySelector('[data-def]') || bx.querySelector('button'));
+  if (!RG.v) d = el('modeRogue');
+  if (d) try { d.focus({ preventScroll: true }); } catch (e) { }
+}
+function rgBack() { var b = { rg: '', ng: 'rg', fs: 'ng', rs: 'ng' }[RG.v]; rgView(b || ''); if (!b) try { el('modeRogue').focus({ preventScroll: true }); } catch (e) { } }
+function rgGo() { modeClose(); innResumeCheck(); snPendCheck(); }
+function fsFile() {
+  pmSaveNow();
+  try { var code = saveExport(false), nm = pmFileName(), a = document.createElement('a'), u = URL.createObjectURL(new Blob([code + '\n'], { type: 'text/plain' }));
+    a.href = u; a.download = nm; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+    el('fsRes').textContent = 'Saved to ' + nm + ' (load it with LOAD FROM FILE).'; return nm; }
+  catch (e) { el('fsRes').textContent = 'Couldn\u2019t save a file here. Use COPY SAVE.'; return null; }
+}
+function fsWipe() {
+  if (CLASSIC || NG.wiped) return false;
+  try { var st = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (st && typeof st === 'object') { st.legendN = 0; st.ctlPulsed = false; st.tmBench = false; localStorage.setItem(STORE_KEY, JSON.stringify(st)); } } catch (e) { }
+  settings.legendN = 0; settings.ctlPulsed = false; settings.tmBench = false;
+  nvSeen();
+  SAVE.frozen = true; NG.wiped = true;
+  releaseAllInputs(true); dropFlippersNow();
+  NG_WIPE_KEYS.concat([INN_KEY]).forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { } });
+  el('fsRes').textContent = 'Starting fresh\u2026'; ['fsCopy', 'fsFile', 'fsNo', 'fsYes'].forEach(function (k) { el(k).disabled = true; });
+  setTimeout(function () { if (window.__ngNoReload) return; location.reload(); }, 350);
+  return true;
+}
+function rgOn(id, f) { el(id).addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (cardEarly(RG.t, e)) return; f(); }); }
+el('modeRogue').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); if (rgHas()) { rgView('rg'); return; } rgGo(); });
+rgOn('rgCont', rgGo);
+rgOn('rgNew', function () { rgView('ng'); });
+rgOn('rgBack', rgBack); rgOn('ngBack', rgBack);
+rgOn('rgRestart', function () { if (rgRestOk()) rgView('rs'); });
+rgOn('rgFresh', function () { rgView('fs'); });
+rgOn('rsNo', rgBack);
+rgOn('rsYes', function () { if (CLASSIC || !rgRestOk()) return; modeClose(); snAbandon(); });
+rgOn('fsNo', rgBack);
+rgOn('fsCopy', function () { pmSaveNow(); scOpen('copy'); el('fsRes').textContent = 'Save code ready. Keep it safe before you wipe.'; });
+rgOn('fsFile', fsFile);
+rgOn('fsYes', function () { blGuarded(fsWipe, true); });
+window.addEventListener('keydown', function (e) {
+  if (!RG.v || !el('modeCard').classList.contains('open') || settingsOpen || el('scCard').classList.contains('open') || el('psCard').classList.contains('open') || (typeof PF !== 'undefined' && PF.open)) return;
+  var code = e.code || e.key; if (code !== 'Escape') return;
+  e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) rgBack();
+}, true);
 el('modeClassic').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); enterClassic(); });
 el('clAgain').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); clPlay(); });
 el('clQuit').addEventListener('click', function (e) { e.preventDefault(); Sfx.unlock(); blGuarded(clToStart, true); });
@@ -11809,8 +11910,8 @@ window.addEventListener('keydown', function (e) {
     return;
   }
   var gc = gcardOpen();
-  if (gc && (code === 'ArrowLeft' || code === 'ArrowRight' || code === 'ArrowUp' || code === 'ArrowDown' || code === 'Tab') && (gc.id === 'modeCard' || gc.id === 'clOver')) { e.preventDefault(); if (!e.repeat) { var gb = [].slice.call(gc.querySelectorAll('button')), gi = gb.indexOf(document.activeElement), fw = code === 'ArrowRight' || code === 'ArrowDown' || (code === 'Tab' && !e.shiftKey); gb[((gi < 0 ? (fw ? -1 : 0) : gi) + (fw ? 1 : gb.length - 1)) % gb.length].focus(); } return; }
-  if (gc && (gc.id === 'modeCard' || gc.id === 'clOver') && (code === 'Enter' || code === 'Space' || act === 'launch')) { e.preventDefault(); if (!e.repeat) { var fb = document.activeElement; if (!(fb && fb.tagName === 'BUTTON' && gc.contains(fb))) fb = gc.querySelector('[data-def]'); if (fb) fb.click(); } return; }
+  if (gc && (code === 'ArrowLeft' || code === 'ArrowRight' || code === 'ArrowUp' || code === 'ArrowDown' || code === 'Tab') && (gc.id === 'modeCard' || gc.id === 'clOver')) { e.preventDefault(); if (!e.repeat) { var gb = [].slice.call(gc.querySelectorAll('button')).filter(function (b) { return b.offsetParent !== null && !b.disabled; }), gi = gb.indexOf(document.activeElement), fw = code === 'ArrowRight' || code === 'ArrowDown' || (code === 'Tab' && !e.shiftKey); gb[((gi < 0 ? (fw ? -1 : 0) : gi) + (fw ? 1 : gb.length - 1)) % gb.length].focus(); } return; }
+  if (gc && (gc.id === 'modeCard' || gc.id === 'clOver') && (code === 'Enter' || code === 'Space' || act === 'launch')) { e.preventDefault(); if (!e.repeat) { var fb = document.activeElement; if (!(fb && fb.tagName === 'BUTTON' && gc.contains(fb) && fb.offsetParent !== null)) fb = [].filter.call(gc.querySelectorAll('[data-def]'), function (b) { return b.offsetParent !== null; })[0]; if (fb) fb.click(); } return; }
   if (gc) { if (code === 'Enter' || code === 'Space' || act === 'launch' || (code === 'Escape' && (gc.id === 'revealCard' || gc.id === 'ctlCard'))) { e.preventDefault(); if (!e.repeat) { var db = gc.querySelector('[data-def]'); if (db) db.click(); } } return; }
   if (settings.devUnlocked) {
     if (code === 'F8') { e.preventDefault(); if (!e.repeat) { if (devMid) devCloseTree(); else devOpenTree('tree'); } return; }
