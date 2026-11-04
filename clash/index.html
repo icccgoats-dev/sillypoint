@@ -514,6 +514,30 @@ button { font-family:inherit; }
   #qcRead .rd-x { display:block; margin-top:8px; text-align:center; color:#bfae86; font:700 10px/1 system-ui, sans-serif; letter-spacing:.06em; text-transform:uppercase; }
   #qcRead.hov .rd-x { display:none; }
   @media (max-height:500px) { #qcRead .rd { width:min(440px, calc(100vw - 20px)); padding:8px 12px; } #qcRead .rd-tx { font-size:13.5px; } }
+  #qcPin { display:none; }
+  @media (max-width:640px), (max-height:500px) {
+    html.qc-pin-on { scroll-padding-top:calc(var(--qcpin, 30px) + 4px); }
+    html.qc-pin-on body { padding-top:var(--qcpin, 30px); }
+    #qcPin.on { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:5px; position:fixed; top:0; left:0; right:0; z-index:60; box-sizing:border-box;
+      padding:3px max(6px, env(safe-area-inset-right)) 4px max(6px, env(safe-area-inset-left)); padding-top:max(3px, env(safe-area-inset-top));
+      background:linear-gradient(#3a0a12, #1e050b); border-bottom:2px solid var(--gold); box-shadow:0 3px 10px #000c; pointer-events:none; }
+    #qcPin .pin-s { display:flex; align-items:center; gap:5px; min-width:0; padding:2px 6px; border-radius:8px; border:1px solid #d4a73a55; color:#fff6df; font:800 11px/1.25 system-ui, sans-serif; white-space:nowrap; }
+    #qcPin .pin-s.cur { border-color:#fde68a; box-shadow:0 0 0 1px #fde68a, 0 0 8px #fde68a66; }
+    #qcPin .pin-nm { flex:0 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; color:var(--gold2); font:900 11px/1.25 Georgia, serif; letter-spacing:.03em; }
+    #qcPin .pin-ov { flex:0 0 auto; padding:0 5px; border-radius:7px; border:1px solid #22d3ee; background:#06202a; color:#a5f3fc; letter-spacing:.03em; }
+    #qcPin .pin-ov.empty { border-color:#475569; background:#0f172a; color:#94a3b8; }
+    #qcPin .pin-wk { flex:0 0 auto; margin-left:auto; color:#f3e9d2; letter-spacing:.03em; }
+  }
+  @media (max-width:640px) { #qcPin.on { gap:4px; padding-left:max(4px, env(safe-area-inset-left)); padding-right:max(4px, env(safe-area-inset-right)); }
+    #qcPin .pin-s { gap:4px; padding:2px 4px; font-size:10.5px; } #qcPin .pin-nm { font-size:10.5px; letter-spacing:0; } #qcPin .pin-ov, #qcPin .pin-wk { letter-spacing:0; } #qcPin .pin-ov { padding:0 4px; } }
+  @media (max-width:340px) { #qcPin .pin-wk b { display:none; } }
+  @media (min-width:800px) and (max-height:500px) {
+    #app .qc-field { padding:3px 6px 4px; }
+    #app .qc-field .qc-lbl { margin:0 0 2px; line-height:1.15; }
+    #app .qc-slot { min-height:8.6rem; padding-top:8px; padding-bottom:3px; }
+    #app .qc-slot .gcard { width:min(5.9rem, 100%); }
+    #app .qc-lanes { margin:3px 0; }
+  }
   .artbox .emb { cursor:help; z-index:2; }
   .artbox .emb::before { content:''; position:absolute; inset:-7px -4px -2px -7px; }
   #qcIcoTip { position:fixed; z-index:9999; max-width:230px; padding:6px 9px 7px; border-radius:8px; background:rgba(20,10,12,.96); border:1px solid #d4a43a;
@@ -1388,6 +1412,34 @@ window.QC_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAB9CAYAAAA/
   app.addEventListener('mouseleave', function () { if (RD.mode === 'hov') rdHide(); });
   window.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && RD.open) rdHide(); }, true);
   window.addEventListener('resize', function () { if (RD.open) rdHide(); });
+  var PINQ = '(max-width:640px), (max-height:500px)', pinEl = null, pinHTML0 = '', pinS = null, pinY = -1;
+  function pinNarrow() { return !!(window.matchMedia && matchMedia(PINQ).matches); }
+  function pinSide(p, isMe) {
+    return '<div class="pin-s' + (S.current === p.id ? ' cur' : '') + '"><b class="pin-nm">' + (isMe ? 'YOU' : esc(S.rivalName.toUpperCase())) + '</b>' +
+      '<span class="pin-ov' + (p.overs > 0 ? '' : ' empty') + '">OVERS ' + p.overs + '/' + p.maxOvers + '</span><span class="pin-wk"><b>WKTS </b>' + wkDown(p) + '/' + QC.WICKETS + '</span></div>';
+  }
+  function pinSync() {
+    if (simming) return;
+    if (!pinEl) { pinEl = document.createElement('div'); pinEl.id = 'qcPin'; pinEl.setAttribute('aria-hidden', 'true'); document.body.appendChild(pinEl); }
+    var on = !!(H && S && !S.over && H.state !== 'done' && H.state !== 'claimed' && app.querySelector('.qc-field'));
+    var hx = on ? pinSide(P('player'), true) + pinSide(P('ai'), false) : '';
+    if (hx !== pinHTML0) { pinHTML0 = hx; pinEl.innerHTML = hx; }
+    pinEl.classList.toggle('on', on); document.documentElement.classList.toggle('qc-pin-on', on);
+    if (on && pinNarrow()) document.documentElement.style.setProperty('--qcpin', pinEl.offsetHeight + 'px');
+    if (on && S !== pinS) { pinS = S; if (pinNarrow()) { requestAnimationFrame(function () { requestAnimationFrame(pinView); }); setTimeout(function () { if (pinY >= 0 && Math.abs((window.scrollY || 0) - pinY) < 2) pinView(); }, 350); } }
+  }
+  function pinView() {
+    if (!pinNarrow() || !pinEl || !pinEl.classList.contains('on')) return;
+    var fld = app.querySelector('.qc-field'), lb = fld && fld.querySelector('.qc-lbl'), me = fld && fld.querySelector('.qc-me'), dock = app.querySelector('.qc-dock'), tp = document.getElementById('qcTip');
+    if (!lb || !me) return;
+    var y0 = window.scrollY || 0, bh = pinEl.offsetHeight, top = lb.getBoundingClientRect().top + y0, bot = me.getBoundingClientRect().bottom + y0;
+    var stick = dock && getComputedStyle(dock).position === 'sticky' ? dock.offsetHeight : 0;
+    var hi = top - bh - 4, lo = bot + stick + 4 - innerHeight, pref = hi;
+    if (tp && tp.getBoundingClientRect().top + y0 < top) pref = Math.min(hi, tp.getBoundingClientRect().top + y0 - bh - 4);
+    var y = Math.min(hi, Math.max(pref, lo)); window.scrollTo(0, Math.max(0, Math.round(y))); pinY = window.scrollY || 0;
+  }
+  new MutationObserver(function () { pinSync(); }).observe(app, { childList: true });
+  window.addEventListener('resize', function () { if (pinEl) pinHTML0 = '\u0000'; pinSync(); });
   function boot() {
     var q = new URLSearchParams(location.search).get('h'), h = lsGet(HAND_KEY);
     if (!h || h.v !== 1 || !h.id || ['pending', 'playing', 'done', 'claimed'].indexOf(h.state) < 0) { H = null; render(); return; }

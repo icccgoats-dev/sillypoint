@@ -847,6 +847,7 @@
   #tmPill.gfoff::after,#apPause.gfoff::after{content:'GF';position:absolute;right:-6px;top:-8px;padding:0 3px;border-radius:6px;background:#f5c542;color:#3b0a10;font:900 9px/13px Arial,sans-serif;letter-spacing:0;text-decoration:none}
   #tmPill,#apPause{overflow:visible}
   #apStartPop.gf{background:#5a0f1a;border-color:#f5c542;color:#ffd54f;box-shadow:0 2px 6px rgba(0,0,0,.5);animation:none;font-size:11px}
+  #apStartPop.gf.gfFade{opacity:0;transition:opacity .6s ease-out}
   #gfBan small i{display:block;margin-top:5px;font-style:normal;color:#ffd54f;font-size:.8em;letter-spacing:2px}
   #qcbSav{position:fixed;z-index:21;display:none;box-sizing:border-box;min-width:118px;padding:4px 10px 5px;border:2px solid #69f0ae;border-radius:12px;background:rgba(10,40,24,.9);color:#b9f6ca;font:900 13px/1.1 Trebuchet MS,Arial,sans-serif;letter-spacing:1px;text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   #qcbSav small{display:block;margin-top:2px;font:700 9.5px/1.1 Arial,sans-serif;letter-spacing:0;color:inherit;opacity:.9}
@@ -1555,7 +1556,7 @@ body.ph .wall{width:390px;--dado:40px;padding:8px 9px 50px}
 <script>
 (function(){
 'use strict';
-var VERSION = 'v2.1.2';
+var VERSION = 'v2.1.3';
 (function () { var e = document.getElementById('modeVer'); if (e) e.textContent = VERSION; })();
 var SN = { finInn: false, won: false, finB: null, justFin: false, row: null, endWhy: null, devGo: false, bonusUsed: false, bonusUntil: 0, tin: false, gold: false, bst: null, bsec: 0, ok: null, dummy: null };
 var DRAFT_KEY = 'icccGoatsPinball.dev.draftLite', DRAFT_CAP = 3, DRAFT_AT = [1, 5, 12], DRAFT_SPARE_BAILS = 3;
@@ -11747,8 +11748,8 @@ function apPauseSync(apLv) {
   b.textContent = gf ? 'AUTO: OFF' : apPaused ? '\u25b6 AUTO' : '\u23f8 AUTO'; b.title = gf ? 'Grand Final: you\'re on your own - launch by hand' : apPaused ? 'Auto Plunger paused - tap to resume' : 'Pause the Auto Plunger';
   b.classList.toggle('gfoff', gf); if (gf) { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); }
 }
-var apStartHold = false, apStartKey = '';
-function apStartArm() { apPaused = false; apStartHold = false; var lv = CLASSIC || settings.apSkillOff ? 0 : lvl('autoplunge');
+var apStartHold = false, apStartKey = '', gfPopT0 = 0, gfPopF = 0, gfPopDone = false;
+function apStartArm() { gfPopT0 = 0; gfPopF = 0; gfPopDone = false; apPaused = false; apStartHold = false; var lv = CLASSIC || settings.apSkillOff ? 0 : lvl('autoplunge');
   if (lv >= 1 && !settings.autoPlunger) { apPaused = true; apStartHold = true; } autoPlungeT = 0; apPauseKey = ''; apStartKey = ''; apStartPopSync(); return apStartHold; }
 function apStartEnd(fire) {
   if (!apStartHold) return false; apStartHold = false; apPaused = false; autoPlungeT = 0; apPauseKey = ''; apStartKey = ''; apStartPopSync();
@@ -11760,7 +11761,11 @@ function apStartPopSync() {
   var gf = gfSolo() && phase === 'play' && !gameOver, tp = el('tmPill'); if (gf && !b.classList.contains('show') && tp && tp.classList.contains('show')) b = tp;
   var gt0 = gf ? 'GF: YOU\u2019RE ON YOUR OWN \u2013 NO 12TH, NO AUTO' : 'UNPAUSE TO START \u2013 AUTO PLUNGER ON'; if (P.textContent !== gt0) { P.textContent = gt0; apStartKey = ''; } P.classList.toggle('gf', gf);
   var show = (gf || (apStartHold && apPaused)) && phase === 'play' && !gameOver && b.classList.contains('show');
-  if (!show) { if (P.classList.contains('on')) P.classList.remove('on'); apStartKey = ''; return; }
+  if (!gfSolo()) { gfPopT0 = 0; gfPopF = 0; gfPopDone = false; }
+  if (show && gf && document.body.classList.contains('touch')) { if (gfPopDone) show = false; else { var gfn = performance.now(); if (!gfPopT0 || (!gfPopF && ((typeof RCS === 'object' && RCS.wait) || gamePaused || settingsOpen))) gfPopT0 = gfn;
+    if (gfn - gfPopT0 >= 3000) { if (!gfPopF) { gfPopF = gfn; P.classList.add('gfFade'); } else if (gfn - gfPopF >= 600) { gfPopDone = true; show = false; } } } }
+  if (!show) { if (P.classList.contains('on')) P.classList.remove('on'); P.classList.remove('gfFade'); apStartKey = ''; return; }
+  if (!gf) P.classList.remove('gfFade');
   function R(e) { if (!e) return null; var r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden' ? r : null; }
   var tm = el('ssTime'), tc = el('tbPanel'), r = b.getBoundingClientRect();
   var hard = [R(el('meter')), R(el('meterLbl')), R(el('launch')), tbRect(), r, R(el('tmPill'))].filter(Boolean), soft = [[R(el('nudgeBtn')), 600], [R(el('sstrip')), 120], [R(el('meterZone')), 60]];
